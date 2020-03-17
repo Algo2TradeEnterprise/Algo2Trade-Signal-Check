@@ -127,6 +127,7 @@
     <Compile Include="StrategyRules\PiercingAndDarkCloud.vb" />
     <Compile Include="StrategyRules\PinBarFormation.vb" />
     <Compile Include="StrategyRules\PinocchioBarFormation.vb" />
+    <Compile Include="StrategyRules\RangeIdentifier.vb" />
     <Compile Include="StrategyRules\ReversaHHLLBreakout.vb" />
     <Compile Include="StrategyRules\SpotFutureArbritrage.vb" />
     <Compile Include="StrategyRules\StallPattern.vb" />
