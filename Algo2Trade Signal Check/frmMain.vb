@@ -351,6 +351,8 @@ Public Class frmMain
                     rule = New RangeIdentifier(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 36
                     rule = New IndicatorTester(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 37
+                    rule = New BollingerSqueeze(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -446,6 +448,8 @@ Public Class frmMain
                 lblDescription.Text = String.Format("Identies a range of candles")
             Case 36
                 lblDescription.Text = String.Format("Indicator Testing purpose")
+            Case 37
+                lblDescription.Text = String.Format("Bollinger Band (20,2) squeeze into Keltner Channel(20,1.5)")
             Case Else
                 Throw New NotImplementedException
         End Select
