@@ -15,6 +15,7 @@ Public Class GetRawCandle
         ret.Columns.Add("High")
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
+        ret.Columns.Add("Color")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -80,6 +81,7 @@ Public Class GetRawCandle
                                 row("High") = inputPayload(runningPayload).High
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
+                                row("Color") = inputPayload(runningPayload).CandleColor.Name
 
                                 ret.Rows.Add(row)
                             Next
