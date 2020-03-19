@@ -353,6 +353,8 @@ Public Class frmMain
                     rule = New IndicatorTester(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 37
                     rule = New BollingerSqueeze(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 38
+                    rule = New InsideBarBreakout(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -450,6 +452,8 @@ Public Class frmMain
                 lblDescription.Text = String.Format("Indicator Testing purpose")
             Case 37
                 lblDescription.Text = String.Format("Bollinger Band (20,2) squeeze into Keltner Channel(20,1.5)")
+            Case 38
+                lblDescription.Text = String.Format("Second candle of the day is an inside bar and third candle breaks first candle high/low")
             Case Else
                 Throw New NotImplementedException
         End Select

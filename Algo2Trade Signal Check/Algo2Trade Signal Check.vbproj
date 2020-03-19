@@ -120,6 +120,7 @@
     <Compile Include="StrategyRules\HKTemporaryPause.vb" />
     <Compile Include="StrategyRules\HKTrendOpposingByVolume.vb" />
     <Compile Include="StrategyRules\IndicatorTester.vb" />
+    <Compile Include="StrategyRules\InsideBarBreakout.vb" />
     <Compile Include="StrategyRules\InsideBarHighLow.vb" />
     <Compile Include="StrategyRules\LowLossHighGainVWAP.vb" />
     <Compile Include="StrategyRules\LowSLCandle.vb" />
