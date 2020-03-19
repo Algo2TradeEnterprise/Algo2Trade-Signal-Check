@@ -10,7 +10,11 @@ Public Class InsideBarBreakout
         Dim ret As New DataTable
         ret.Columns.Add("Date")
         ret.Columns.Add("Trading Symbol")
-        ret.Columns.Add("Remarks")
+        ret.Columns.Add("Time")
+        ret.Columns.Add("Direction")
+        ret.Columns.Add("Buy Level")
+        ret.Columns.Add("Sell Level")
+        ret.Columns.Add("Buffer")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -72,18 +76,41 @@ Public Class InsideBarBreakout
                                 If currentDayPayload(runningPayload).PreviousCandlePayload.PreviousCandlePayload.PayloadDate = firstCandleOfTheDay.PayloadDate Then
                                     Dim secondCandle As Payload = currentDayPayload(runningPayload).PreviousCandlePayload
                                     If secondCandle.High < firstCandleOfTheDay.High AndAlso secondCandle.Low > firstCandleOfTheDay.Low Then
-                                        If currentDayPayload(runningPayload).High > firstCandleOfTheDay.High Then
+                                        Dim buffer As Decimal = CalculateBuffer(firstCandleOfTheDay.High, Utilities.Numbers.NumberManipulation.RoundOfType.Floor)
+                                        Dim direction As Integer = 0
+                                        If currentDayPayload(runningPayload).High > firstCandleOfTheDay.High + buffer AndAlso
+                                            currentDayPayload(runningPayload).Low < firstCandleOfTheDay.Low - buffer Then
+                                            If currentDayPayload(runningPayload).CandleColor = Color.Green Then
+                                                direction = -1
+                                            Else
+                                                direction = 1
+                                            End If
+                                        ElseIf currentDayPayload(runningPayload).High > firstCandleOfTheDay.High + buffer Then
+                                            direction = 1
+                                        ElseIf currentDayPayload(runningPayload).Low < firstCandleOfTheDay.Low - buffer Then
+                                            direction = -1
+                                        End If
+
+                                        If direction > 0 Then
                                             Dim row As DataRow = ret.NewRow
                                             row("Date") = inputPayload(runningPayload).PayloadDate.ToString("dd-MM-yyyy")
                                             row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
-                                            row("Remarks") = "Up"
+                                            row("Time") = inputPayload(runningPayload).PayloadDate.ToString("dd-MM-yyyy HH:mm:ss")
+                                            row("Direction") = "BUY"
+                                            row("Buy Level") = firstCandleOfTheDay.High + buffer
+                                            row("Sell Level") = Math.Min(secondCandle.Low, currentDayPayload(runningPayload).Low) - buffer
+                                            row("Buffer") = buffer
 
                                             ret.Rows.Add(row)
-                                        ElseIf currentDayPayload(runningPayload).Low < firstCandleOfTheDay.Low Then
+                                        ElseIf direction < 0 Then
                                             Dim row As DataRow = ret.NewRow
                                             row("Date") = inputPayload(runningPayload).PayloadDate.ToString("dd-MM-yyyy")
                                             row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
-                                            row("Remarks") = "Down"
+                                            row("Time") = inputPayload(runningPayload).PayloadDate.ToString("dd-MM-yyyy HH:mm:ss")
+                                            row("Direction") = "SELL"
+                                            row("Buy Level") = Math.Max(secondCandle.High, currentDayPayload(runningPayload).High) + buffer
+                                            row("Sell Level") = firstCandleOfTheDay.Low - buffer
+                                            row("Buffer") = buffer
 
                                             ret.Rows.Add(row)
                                         End If
