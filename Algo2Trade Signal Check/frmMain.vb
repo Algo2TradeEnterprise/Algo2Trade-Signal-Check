@@ -355,6 +355,8 @@ Public Class frmMain
                     rule = New BollingerSqueeze(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 38
                     rule = New InsideBarBreakout(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 39
+                    rule = New LowSLFractal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -447,13 +449,15 @@ Public Class frmMain
             Case 34
                 lblDescription.Text = String.Format("Fractal high dips lower fractal or vice versa")
             Case 35
-                lblDescription.Text = String.Format("Identies a range of candles")
+                lblDescription.Text = String.Format("Identify a range of candles")
             Case 36
                 lblDescription.Text = String.Format("Indicator Testing purpose")
             Case 37
                 lblDescription.Text = String.Format("Bollinger Band (20,2) squeeze into Keltner Channel(20,1.5)")
             Case 38
                 lblDescription.Text = String.Format("Second candle of the day is an inside bar and third candle breaks first candle high/low")
+            Case 39
+                lblDescription.Text = String.Format("Fractal high, low difference stoploss pl >=600 and <=1200")
             Case Else
                 Throw New NotImplementedException
         End Select
