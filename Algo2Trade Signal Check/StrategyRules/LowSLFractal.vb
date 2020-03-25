@@ -84,15 +84,17 @@ Public Class LowSLFractal
                                 Dim fractalHigh As Decimal = fractalHighPayload(runningPayload)
                                 Dim fractalLow As Decimal = fractalLowPayload(runningPayload)
                                 If preFractalHigh <> fractalHigh OrElse preFractalLow <> fractalLow Then
-                                    Dim slPoint As Decimal = Math.Abs(fractalHigh - fractalLow)
-                                    Dim pl As Decimal = CalculatePL(currentDayPayload(runningPayload).TradingSymbol, currentDayPayload(runningPayload).High, currentDayPayload(runningPayload).High - slPoint, lotSize, lotSize)
-                                    If Math.Abs(pl) >= Math.Abs(_MinSLAmount) AndAlso Math.Abs(pl) <= Math.Abs(_MaxSLAmount) Then
-                                        Dim row As DataRow = ret.NewRow
-                                        row("Date") = runningPayload
-                                        row("Instrument") = currentDayPayload(runningPayload).TradingSymbol
-                                        row("Quantity") = lotSize
-                                        row("Stoploss") = pl
-                                        ret.Rows.Add(row)
+                                    If currentDayPayload(runningPayload).Close > fractalLow AndAlso currentDayPayload(runningPayload).Close < fractalHigh Then
+                                        Dim slPoint As Decimal = Math.Abs(fractalHigh - fractalLow)
+                                        Dim pl As Decimal = CalculatePL(currentDayPayload(runningPayload).TradingSymbol, currentDayPayload(runningPayload).High, currentDayPayload(runningPayload).High - slPoint, lotSize, lotSize)
+                                        If Math.Abs(pl) >= Math.Abs(_MinSLAmount) AndAlso Math.Abs(pl) <= Math.Abs(_MaxSLAmount) Then
+                                            Dim row As DataRow = ret.NewRow
+                                            row("Date") = runningPayload
+                                            row("Instrument") = currentDayPayload(runningPayload).TradingSymbol
+                                            row("Quantity") = lotSize
+                                            row("Stoploss") = pl
+                                            ret.Rows.Add(row)
+                                        End If
                                     End If
                                 End If
                                 preFractalHigh = fractalHigh
