@@ -94,11 +94,12 @@ Public Class LowSLFractal
                                             row("Quantity") = lotSize
                                             row("Stoploss") = pl
                                             ret.Rows.Add(row)
+
+                                            preFractalHigh = fractalHigh
+                                            preFractalLow = fractalLow
                                         End If
                                     End If
                                 End If
-                                preFractalHigh = fractalHigh
-                                preFractalLow = fractalLow
                             Next
                         End If
                     End If
