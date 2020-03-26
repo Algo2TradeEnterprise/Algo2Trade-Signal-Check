@@ -93,7 +93,8 @@ Public Class LowSLFractal
                                         Dim slPoint As Decimal = Math.Abs(fractalHigh - fractalLow)
                                         Dim pl As Decimal = CalculatePL(currentDayPayload(runningPayload).TradingSymbol, currentDayPayload(runningPayload).High, currentDayPayload(runningPayload).High - slPoint, lotSize, lotSize)
                                         'If Math.Abs(pl) >= Math.Abs(_MinSLAmount) AndAlso Math.Abs(pl) <= Math.Abs(_MaxSLAmount) Then
-                                        If slPoint <= atrPayload(runningPayload) * _atrMultiplier Then
+                                        Dim multiplier As Decimal = slPoint / atrPayload(runningPayload)
+                                        If multiplier <= _atrMultiplier Then
                                             Dim row As DataRow = ret.NewRow
                                             row("Date") = runningPayload
                                             row("Instrument") = currentDayPayload(runningPayload).TradingSymbol
@@ -101,7 +102,7 @@ Public Class LowSLFractal
                                             row("Stoploss") = pl
                                             row("Fractal Range") = slPoint
                                             row("ATR") = Math.Round(atrPayload(runningPayload), 4)
-                                            row("Multiplier") = Math.Round(slPoint / atrPayload(runningPayload), 2)
+                                            row("Multiplier") = Math.Round(multiplier, 4)
                                             ret.Rows.Add(row)
 
                                             preFractalHigh = fractalHigh
