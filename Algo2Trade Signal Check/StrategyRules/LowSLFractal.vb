@@ -16,8 +16,9 @@ Public Class LowSLFractal
         ret.Columns.Add("Instrument")
         ret.Columns.Add("Quantity")
         ret.Columns.Add("Stoploss")
-        ret.Columns.Add("Range")
+        ret.Columns.Add("Fractal Range")
         ret.Columns.Add("ATR")
+        ret.Columns.Add("Multiplier")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -98,8 +99,9 @@ Public Class LowSLFractal
                                             row("Instrument") = currentDayPayload(runningPayload).TradingSymbol
                                             row("Quantity") = lotSize
                                             row("Stoploss") = pl
-                                            row("Range") = slPoint
+                                            row("Fractal Range") = slPoint
                                             row("ATR") = Math.Round(atrPayload(runningPayload), 4)
+                                            row("Multiplier") = Math.Round(slPoint / atrPayload(runningPayload), 2)
                                             ret.Rows.Add(row)
 
                                             preFractalHigh = fractalHigh
