@@ -3,11 +3,11 @@ Imports System.Threading
 Public Class LowSLFractal
     Inherits Rule
 
-    Private ReadOnly _MaxSLAmount As Decimal = -1200
-    Private ReadOnly _MinSLAmount As Decimal = -600
+    Private ReadOnly _atrMultiplier As Decimal
 
-    Public Sub New(ByVal canceller As CancellationTokenSource, ByVal stockCategory As Integer, ByVal timeFrame As Integer, ByVal useHA As Boolean, ByVal stockName As String, ByVal fileName As String)
+    Public Sub New(ByVal canceller As CancellationTokenSource, ByVal stockCategory As Integer, ByVal timeFrame As Integer, ByVal useHA As Boolean, ByVal stockName As String, ByVal fileName As String, ByVal atrMultiplier As Decimal)
         MyBase.New(canceller, stockCategory, timeFrame, useHA, stockName, fileName)
+        _atrMultiplier = atrMultiplier
     End Sub
     Public Overrides Async Function RunAsync(startDate As Date, endDate As Date) As Task(Of DataTable)
         Await Task.Delay(0).ConfigureAwait(False)
@@ -16,6 +16,8 @@ Public Class LowSLFractal
         ret.Columns.Add("Instrument")
         ret.Columns.Add("Quantity")
         ret.Columns.Add("Stoploss")
+        ret.Columns.Add("Range")
+        ret.Columns.Add("ATR")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -74,6 +76,8 @@ Public Class LowSLFractal
                         Dim fractalHighPayload As Dictionary(Of Date, Decimal) = Nothing
                         Dim fractalLowPayload As Dictionary(Of Date, Decimal) = Nothing
                         Indicator.FractalBands.CalculateFractal(inputPayload, fractalHighPayload, fractalLowPayload)
+                        Dim atrPayload As Dictionary(Of Date, Decimal) = Nothing
+                        Indicator.ATR.CalculateATR(14, inputPayload, atrPayload)
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
                             Dim lotSize As Integer = _cmn.GetLotSize(_category, currentDayPayload.FirstOrDefault.Value.TradingSymbol, currentDayPayload.FirstOrDefault.Key.Date)
 
@@ -87,12 +91,15 @@ Public Class LowSLFractal
                                     If currentDayPayload(runningPayload).Close > fractalLow AndAlso currentDayPayload(runningPayload).Close < fractalHigh Then
                                         Dim slPoint As Decimal = Math.Abs(fractalHigh - fractalLow)
                                         Dim pl As Decimal = CalculatePL(currentDayPayload(runningPayload).TradingSymbol, currentDayPayload(runningPayload).High, currentDayPayload(runningPayload).High - slPoint, lotSize, lotSize)
-                                        If Math.Abs(pl) >= Math.Abs(_MinSLAmount) AndAlso Math.Abs(pl) <= Math.Abs(_MaxSLAmount) Then
+                                        'If Math.Abs(pl) >= Math.Abs(_MinSLAmount) AndAlso Math.Abs(pl) <= Math.Abs(_MaxSLAmount) Then
+                                        If slPoint <= atrPayload(runningPayload) * _atrMultiplier Then
                                             Dim row As DataRow = ret.NewRow
                                             row("Date") = runningPayload
                                             row("Instrument") = currentDayPayload(runningPayload).TradingSymbol
                                             row("Quantity") = lotSize
                                             row("Stoploss") = pl
+                                            row("Range") = slPoint
+                                            row("ATR") = Math.Round(atrPayload(runningPayload), 4)
                                             ret.Rows.Add(row)
 
                                             preFractalHigh = fractalHigh

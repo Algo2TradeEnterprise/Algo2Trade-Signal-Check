@@ -48,9 +48,13 @@ Partial Class frmMain
         Me.dgvSignal = New System.Windows.Forms.DataGridView()
         Me.opnFile = New System.Windows.Forms.OpenFileDialog()
         Me.lblDescription = New System.Windows.Forms.Label()
+        Me.pnlLowSLFractal = New System.Windows.Forms.Panel()
+        Me.lblLowSLFractalATRMultiplier = New System.Windows.Forms.Label()
+        Me.txtLowSLFractalATRMultiplier = New System.Windows.Forms.TextBox()
         CType(Me.nmrcTimeFrame, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         CType(Me.dgvSignal, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.pnlLowSLFractal.SuspendLayout()
         Me.SuspendLayout()
         '
         'saveFile
@@ -300,15 +304,41 @@ Partial Class frmMain
         Me.lblDescription.Location = New System.Drawing.Point(5, 90)
         Me.lblDescription.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblDescription.Name = "lblDescription"
-        Me.lblDescription.Size = New System.Drawing.Size(1236, 53)
+        Me.lblDescription.Size = New System.Drawing.Size(706, 53)
         Me.lblDescription.TabIndex = 25
         Me.lblDescription.Text = "Description ....."
+        '
+        'pnlLowSLFractal
+        '
+        Me.pnlLowSLFractal.Controls.Add(Me.txtLowSLFractalATRMultiplier)
+        Me.pnlLowSLFractal.Controls.Add(Me.lblLowSLFractalATRMultiplier)
+        Me.pnlLowSLFractal.Location = New System.Drawing.Point(748, 90)
+        Me.pnlLowSLFractal.Name = "pnlLowSLFractal"
+        Me.pnlLowSLFractal.Size = New System.Drawing.Size(200, 50)
+        Me.pnlLowSLFractal.TabIndex = 26
+        '
+        'lblLowSLFractalATRMultiplier
+        '
+        Me.lblLowSLFractalATRMultiplier.AutoSize = True
+        Me.lblLowSLFractalATRMultiplier.Location = New System.Drawing.Point(12, 16)
+        Me.lblLowSLFractalATRMultiplier.Name = "lblLowSLFractalATRMultiplier"
+        Me.lblLowSLFractalATRMultiplier.Size = New System.Drawing.Size(96, 17)
+        Me.lblLowSLFractalATRMultiplier.TabIndex = 0
+        Me.lblLowSLFractalATRMultiplier.Text = "ATR Multiplier"
+        '
+        'txtLowSLFractalATRMultiplier
+        '
+        Me.txtLowSLFractalATRMultiplier.Location = New System.Drawing.Point(115, 13)
+        Me.txtLowSLFractalATRMultiplier.Name = "txtLowSLFractalATRMultiplier"
+        Me.txtLowSLFractalATRMultiplier.Size = New System.Drawing.Size(70, 22)
+        Me.txtLowSLFractalATRMultiplier.TabIndex = 1
         '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1244, 690)
+        Me.Controls.Add(Me.pnlLowSLFractal)
         Me.Controls.Add(Me.lblDescription)
         Me.Controls.Add(Me.btnExport)
         Me.Controls.Add(Me.lblProgress)
@@ -322,6 +352,8 @@ Partial Class frmMain
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         CType(Me.dgvSignal, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.pnlLowSLFractal.ResumeLayout(False)
+        Me.pnlLowSLFractal.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -351,4 +383,7 @@ Partial Class frmMain
     Friend WithEvents btnBrowse As Button
     Friend WithEvents opnFile As OpenFileDialog
     Friend WithEvents lblDescription As Label
+    Friend WithEvents pnlLowSLFractal As Panel
+    Friend WithEvents txtLowSLFractalATRMultiplier As TextBox
+    Friend WithEvents lblLowSLFractalATRMultiplier As Label
 End Class

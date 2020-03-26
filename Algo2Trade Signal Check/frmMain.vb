@@ -17,6 +17,18 @@ Public Class frmMain
         End If
     End Sub
 
+    Delegate Sub SetObjectVisible_Delegate(ByVal [obj] As Object, ByVal [value] As Boolean)
+    Public Sub SetObjectVisible_ThreadSafe(ByVal [obj] As Object, ByVal [value] As Boolean)
+        ' InvokeRequired required compares the thread ID of the calling thread to the thread ID of the creating thread.  
+        ' If these threads are different, it returns true.  
+        If [obj].InvokeRequired Then
+            Dim MyDelegate As New SetObjectVisible_Delegate(AddressOf SetObjectVisible_ThreadSafe)
+            Me.Invoke(MyDelegate, New Object() {[obj], [value]})
+        Else
+            [obj].Visible = [value]
+        End If
+    End Sub
+
     Delegate Sub SetLabelText_Delegate(ByVal [label] As Label, ByVal [text] As String)
     Public Sub SetLabelText_ThreadSafe(ByVal [label] As Label, ByVal [text] As String)
         ' InvokeRequired required compares the thread ID of the calling thread to the thread ID of the creating thread.  
@@ -356,7 +368,7 @@ Public Class frmMain
                 Case 38
                     rule = New InsideBarBreakout(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 39
-                    rule = New LowSLFractal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                    rule = New LowSLFractal(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetTextBoxText_ThreadSafe(txtLowSLFractalATRMultiplier))
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -381,83 +393,123 @@ Public Class frmMain
         Select Case index
             Case 0
             Case 1
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 2
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 3
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Full candle should be outside fractal and candle range less than half atr")
             Case 4
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 5
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 6
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 7
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 8
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 9
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 10
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 11
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 12
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Previous candle bottom wick is 60% of candle range and Previous 3 candle range is 1/2 of ATR and previous 3 candle forms lower high and lower low and current candle breaks previous candle high and vice versa")
             Case 13
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 14
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Previous candle touches the vwap and current candle breaks high/low of previou candle. Entry at previous candle high/low. Stoploss at vwap. Loss is less than 5% of required capital(using 1 future lot and 13x margin). If loss stoploss is less than 1/3 of candle range the 'Tag'=Candle Range or 'Tag'=Capital")
             Case 15
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 16
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 17
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 18
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 19
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 20
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 21
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 22
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Current candle volume is greater than 90% of previous candle volume. Current candle range is greater than 1/3 ATR of the candle. And current candle range with buffer stoploss amount is greater than ₹1000 for respective quantity(calculated for ₹15000 capital)")
             Case 23
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("In a collection of current candle and previous two candle, any one of them is inside bar and difference between highest high and lowest low is less than current candle ATR")
             Case 24
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Previous two candles form HH-HL and current candle breaks lowest Low of previous two candle and vice versa")
             Case 25
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 26
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Top High/Low matching candles")
             Case 27
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 28
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 29
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Candle which creates both swing high and low")
             Case 30
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Daily candle should be above supertrend and 200 MA and for first X minute Open=High and vice versa")
             Case 31
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Doule fractal top with max distance of 1 ATR and vice versa")
             Case 32
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Candle wick is outside the open or close slab level")
             Case 33
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Candle Range % according to ATR and Slab")
             Case 34
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Fractal high dips lower fractal or vice versa")
             Case 35
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Identify a range of candles")
             Case 36
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Indicator Testing purpose")
             Case 37
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Bollinger Band (20,2) squeeze into Keltner Channel(20,1.5)")
             Case 38
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Second candle of the day is an inside bar and third candle breaks first candle high/low")
             Case 39
-                lblDescription.Text = String.Format("Fractal high, low difference stoploss pl >=600 and <=1200")
+                txtLowSLFractalATRMultiplier.Text = 1
+                LoadSettings(pnlLowSLFractal)
+                lblDescription.Text = String.Format("Fractal high, low difference less than equal to X ATR")
             Case Else
                 Throw New NotImplementedException
         End Select
@@ -473,5 +525,18 @@ Public Class frmMain
                 nmrcTimeFrame.Value = 1
                 nmrcTimeFrame.Enabled = False
         End Select
+    End Sub
+
+    Private Sub LoadSettings(ByVal panelName As Panel)
+        Dim panelList As List(Of Panel) = New List(Of Panel)
+        panelList.Add(pnlLowSLFractal)
+
+        For Each runningPanel In panelList
+            If panelName IsNot Nothing AndAlso runningPanel.Name = panelName.Name Then
+                SetObjectVisible_ThreadSafe(runningPanel, True)
+            Else
+                SetObjectVisible_ThreadSafe(runningPanel, False)
+            End If
+        Next
     End Sub
 End Class
