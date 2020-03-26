@@ -385,7 +385,7 @@ Public Class frmMain
             Case 2
                 lblDescription.Text = String.Format("Description ...")
             Case 3
-                lblDescription.Text = String.Format("Description ...")
+                lblDescription.Text = String.Format("Full candle should be outside fractal and candle range less than half atr")
             Case 4
                 lblDescription.Text = String.Format("Description ...")
             Case 5
