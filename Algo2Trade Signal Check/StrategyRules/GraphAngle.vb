@@ -13,7 +13,9 @@ Public Class GraphAngle
         Dim ret As New DataTable
         ret.Columns.Add("Date")
         ret.Columns.Add("Trading Symbol")
-        ret.Columns.Add("Angle")
+        ret.Columns.Add("Total Candles")
+        ret.Columns.Add("Total Candles On The Line")
+        ret.Columns.Add("Percentage")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -77,45 +79,51 @@ Public Class GraphAngle
                         OnHeartbeat("Processing data")
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
                             Dim endTime As Date = New Date(chkDate.Year, chkDate.Month, chkDate.Day, _endTime.Hour, _endTime.Minute, _endTime.Second)
-
-                            Dim candleToCheck As IEnumerable(Of KeyValuePair(Of Date, Payload)) = currentDayPayload.Where(Function(z)
-                                                                                                                              Return z.Key >= exchangeStartTime AndAlso
-                                                                                                                              z.Key <= endTime
+                            Dim candleToCheck As IEnumerable(Of KeyValuePair(Of Date, Payload)) = currentDayPayload.Where(Function(x)
+                                                                                                                              Return x.Key >= exchangeStartTime AndAlso
+                                                                                                                              x.Key <= endTime
                                                                                                                           End Function)
-                            Dim firstCandleTime As Date = candleToCheck.Min(Function(z)
-                                                                                Return z.Key
-                                                                            End Function)
-                            Dim firstCandle As Payload = currentDayPayload(firstCandleTime)
-                            Dim x1 As Integer = 0
-                            Dim y1 As Decimal = firstCandle.Open
-                            Dim c As Decimal = y1
+                            If candleToCheck IsNot Nothing AndAlso candleToCheck.Count > 0 Then
+                                Dim firstCandleTime As Date = candleToCheck.Min(Function(x)
+                                                                                    Return x.Key
+                                                                                End Function)
+                                Dim firstCandle As Payload = currentDayPayload(firstCandleTime)
 
-                            Dim anglePayload As Dictionary(Of Date, Decimal) = Nothing
-                            Dim counter As Integer = 0
-                            For Each runningPayload In candleToCheck.OrderBy(Function(z)
-                                                                                 Return z.Key
+                                Dim highestHigh As Decimal = candleToCheck.Max(Function(x)
+                                                                                   Return x.Value.High
+                                                                               End Function)
+                                Dim lowestlow As Decimal = candleToCheck.Min(Function(x)
+                                                                                 Return x.Value.Low
                                                                              End Function)
-                                _canceller.Token.ThrowIfCancellationRequested()
-                                If counter > 0 Then
-                                    Dim ohlcAvg As Decimal = (runningPayload.Value.Open + runningPayload.Value.High + runningPayload.Value.Low + runningPayload.Value.Close) / 4
-                                    Dim x2 As Integer = counter
-                                    Dim y2 As Decimal = ohlcAvg
+                                Dim diff As Decimal = highestHigh - lowestlow
+                                Dim totalCandles As Integer = candleToCheck.Count
+                                Dim eachPointValue As Decimal = diff / totalCandles
 
-                                    Dim m As Decimal = Math.Round((y2 - y1) / (x2 - x1), 2)
-                                    Dim angle As Decimal = Math.Atan(m) * 180 / Math.PI
+                                Dim totalCandlesOnTheLine As Integer = 0
+                                Dim counter As Integer = 0
+                                For Each runningCandle In candleToCheck.OrderBy(Function(x)
+                                                                                    Return x.Key
+                                                                                End Function)
+                                    Dim y1 As Decimal = 1 * counter + 0
+                                    Dim y2 As Decimal = -1 * counter + 0
 
-                                    If anglePayload Is Nothing Then anglePayload = New Dictionary(Of Date, Decimal)
-                                    anglePayload.Add(runningPayload.Key, angle)
-                                End If
-                                counter += 1
-                            Next
+                                    Dim y1Price As Decimal = lowestlow + y1 * eachPointValue
+                                    Dim y2Price As Decimal = highestHigh + y2 * eachPointValue
 
-                            Dim row As DataRow = ret.NewRow
-                            row("Date") = currentDayPayload.FirstOrDefault.Key.ToString("dd-MM-yyyy")
-                            row("Trading Symbol") = currentDayPayload.FirstOrDefault.Value.TradingSymbol
-                            row("Angle") = Math.Round(anglePayload.Values.Average(), 4)
-                            ret.Rows.Add(row)
+                                    If (runningCandle.Value.High >= y1Price AndAlso runningCandle.Value.Low <= y1Price) OrElse
+                                        (runningCandle.Value.High >= y2Price AndAlso runningCandle.Value.Low <= y2Price) Then
+                                        totalCandlesOnTheLine += 1
+                                    End If
+                                Next
 
+                                Dim row As DataRow = ret.NewRow
+                                row("Date") = currentDayPayload.FirstOrDefault.Value.PayloadDate.ToString("dd-MM-yyyy")
+                                row("Trading Symbol") = currentDayPayload.FirstOrDefault.Value.TradingSymbol
+                                row("Total Candles") = totalCandles
+                                row("Total Candles On The Line") = totalCandlesOnTheLine
+                                row("Percentage") = Math.Round((totalCandlesOnTheLine / totalCandles) * 100, 2)
+                                ret.Rows.Add(row)
+                            End If
                         End If
                     End If
                 Next

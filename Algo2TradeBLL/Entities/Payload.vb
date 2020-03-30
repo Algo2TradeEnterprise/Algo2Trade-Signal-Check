@@ -195,6 +195,14 @@ Public Class Payload
 
     Public Property PayloadSource As CandleDataSource
 
+    Private _OHLC As Decimal
+    Public ReadOnly Property OHLC As Decimal
+        Get
+            _OHLC = (Me.Open + Me.High + Me.Low + Me.Close) / 4
+            Return _OHLC
+        End Get
+    End Property
+
     Private _CandleStrengthNormal As StrongCandle
     Public ReadOnly Property CandleStrengthNormal As StrongCandle
         Get
