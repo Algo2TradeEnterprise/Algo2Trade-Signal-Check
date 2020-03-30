@@ -369,6 +369,8 @@ Public Class frmMain
                     rule = New InsideBarBreakout(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 39
                     rule = New LowSLFractal(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetTextBoxText_ThreadSafe(txtLowSLFractalATRMultiplier))
+                Case 40
+                    rule = New GraphAngle(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetDateTimePickerValue_ThreadSafe(dtPckrGraphAngleEndTime))
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -510,6 +512,10 @@ Public Class frmMain
                 txtLowSLFractalATRMultiplier.Text = 1
                 LoadSettings(pnlLowSLFractal)
                 lblDescription.Text = String.Format("Fractal high, low difference less than equal to X ATR")
+            Case 40
+                dtPckrGraphAngleEndTime.Value = New Date(Now.Year, Now.Month, Now.Day, 9, 45, 0)
+                LoadSettings(pnlGraphAngle)
+                lblDescription.Text = String.Format("Get angle of the graph of a specific time")
             Case Else
                 Throw New NotImplementedException
         End Select
@@ -530,6 +536,7 @@ Public Class frmMain
     Private Sub LoadSettings(ByVal panelName As Panel)
         Dim panelList As List(Of Panel) = New List(Of Panel)
         panelList.Add(pnlLowSLFractal)
+        panelList.Add(pnlGraphAngle)
 
         For Each runningPanel In panelList
             If panelName IsNot Nothing AndAlso runningPanel.Name = panelName.Name Then

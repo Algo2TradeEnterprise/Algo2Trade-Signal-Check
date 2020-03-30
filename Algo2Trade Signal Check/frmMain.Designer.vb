@@ -49,12 +49,16 @@ Partial Class frmMain
         Me.opnFile = New System.Windows.Forms.OpenFileDialog()
         Me.lblDescription = New System.Windows.Forms.Label()
         Me.pnlLowSLFractal = New System.Windows.Forms.Panel()
-        Me.lblLowSLFractalATRMultiplier = New System.Windows.Forms.Label()
         Me.txtLowSLFractalATRMultiplier = New System.Windows.Forms.TextBox()
+        Me.lblLowSLFractalATRMultiplier = New System.Windows.Forms.Label()
+        Me.pnlGraphAngle = New System.Windows.Forms.Panel()
+        Me.dtPckrGraphAngleEndTime = New System.Windows.Forms.DateTimePicker()
+        Me.Label2 = New System.Windows.Forms.Label()
         CType(Me.nmrcTimeFrame, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         CType(Me.dgvSignal, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlLowSLFractal.SuspendLayout()
+        Me.pnlGraphAngle.SuspendLayout()
         Me.SuspendLayout()
         '
         'saveFile
@@ -198,7 +202,7 @@ Partial Class frmMain
         'cmbRule
         '
         Me.cmbRule.FormattingEnabled = True
-        Me.cmbRule.Items.AddRange(New Object() {"Stall Pattern", "Piercing And Dark Cloud", "One Sided Volume", "Constriction At Breakout", "HK Trend Opposing By Volume", "HK Temporary Pause", "HK Reversal", "Get Raw Candle", "Daily Strong HK Opposite Color Volume", "Fractal Cut 2 MA", "Volume Index", "EOD Signal", "Pin Bar Formation", "Bollinger With ATR Bands", "Low Loss High Gain VWAP", "Double Volume EOD", "Fractal Breakout Short Trend", "Donchian Breakout Short Trend", "Pinocchio Bar Formation", "Market Open HA Breakout Screener", "Volume With Candle Range", "DayHighLow", "Low SL Candle", "Inside Bar High Low", "Reversal HHLL Breakout", "Double Inside Bar", "High Low Support Resistance", "Open=High/Open=Low", "Spot Future Arbritrage", "Swing Candle", "Supertrend SMA Open High/Low", "Double Top Double Bottom", "Wick Beyond Slab Level", "Candle Range With ATR", "Fractal Dip", "Range Identifier", "Indicator Tester", "Bollinger Squeeze", "Inside Bar Breakout", "Low SL Fractal"})
+        Me.cmbRule.Items.AddRange(New Object() {"Stall Pattern", "Piercing And Dark Cloud", "One Sided Volume", "Constriction At Breakout", "HK Trend Opposing By Volume", "HK Temporary Pause", "HK Reversal", "Get Raw Candle", "Daily Strong HK Opposite Color Volume", "Fractal Cut 2 MA", "Volume Index", "EOD Signal", "Pin Bar Formation", "Bollinger With ATR Bands", "Low Loss High Gain VWAP", "Double Volume EOD", "Fractal Breakout Short Trend", "Donchian Breakout Short Trend", "Pinocchio Bar Formation", "Market Open HA Breakout Screener", "Volume With Candle Range", "DayHighLow", "Low SL Candle", "Inside Bar High Low", "Reversal HHLL Breakout", "Double Inside Bar", "High Low Support Resistance", "Open=High/Open=Low", "Spot Future Arbritrage", "Swing Candle", "Supertrend SMA Open High/Low", "Double Top Double Bottom", "Wick Beyond Slab Level", "Candle Range With ATR", "Fractal Dip", "Range Identifier", "Indicator Tester", "Bollinger Squeeze", "Inside Bar Breakout", "Low SL Fractal", "Graph Angle"})
         Me.cmbRule.Location = New System.Drawing.Point(108, 7)
         Me.cmbRule.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbRule.Name = "cmbRule"
@@ -317,6 +321,13 @@ Partial Class frmMain
         Me.pnlLowSLFractal.Size = New System.Drawing.Size(200, 50)
         Me.pnlLowSLFractal.TabIndex = 26
         '
+        'txtLowSLFractalATRMultiplier
+        '
+        Me.txtLowSLFractalATRMultiplier.Location = New System.Drawing.Point(115, 13)
+        Me.txtLowSLFractalATRMultiplier.Name = "txtLowSLFractalATRMultiplier"
+        Me.txtLowSLFractalATRMultiplier.Size = New System.Drawing.Size(70, 22)
+        Me.txtLowSLFractalATRMultiplier.TabIndex = 1
+        '
         'lblLowSLFractalATRMultiplier
         '
         Me.lblLowSLFractalATRMultiplier.AutoSize = True
@@ -326,18 +337,39 @@ Partial Class frmMain
         Me.lblLowSLFractalATRMultiplier.TabIndex = 0
         Me.lblLowSLFractalATRMultiplier.Text = "ATR Multiplier"
         '
-        'txtLowSLFractalATRMultiplier
+        'pnlGraphAngle
         '
-        Me.txtLowSLFractalATRMultiplier.Location = New System.Drawing.Point(115, 13)
-        Me.txtLowSLFractalATRMultiplier.Name = "txtLowSLFractalATRMultiplier"
-        Me.txtLowSLFractalATRMultiplier.Size = New System.Drawing.Size(70, 22)
-        Me.txtLowSLFractalATRMultiplier.TabIndex = 1
+        Me.pnlGraphAngle.Controls.Add(Me.dtPckrGraphAngleEndTime)
+        Me.pnlGraphAngle.Controls.Add(Me.Label2)
+        Me.pnlGraphAngle.Location = New System.Drawing.Point(954, 90)
+        Me.pnlGraphAngle.Name = "pnlGraphAngle"
+        Me.pnlGraphAngle.Size = New System.Drawing.Size(200, 50)
+        Me.pnlGraphAngle.TabIndex = 28
+        '
+        'dtPckrGraphAngleEndTime
+        '
+        Me.dtPckrGraphAngleEndTime.Format = System.Windows.Forms.DateTimePickerFormat.Time
+        Me.dtPckrGraphAngleEndTime.Location = New System.Drawing.Point(86, 13)
+        Me.dtPckrGraphAngleEndTime.Name = "dtPckrGraphAngleEndTime"
+        Me.dtPckrGraphAngleEndTime.ShowUpDown = True
+        Me.dtPckrGraphAngleEndTime.Size = New System.Drawing.Size(103, 22)
+        Me.dtPckrGraphAngleEndTime.TabIndex = 1
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(12, 16)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(68, 17)
+        Me.Label2.TabIndex = 0
+        Me.Label2.Text = "End Time"
         '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1244, 690)
+        Me.Controls.Add(Me.pnlGraphAngle)
         Me.Controls.Add(Me.pnlLowSLFractal)
         Me.Controls.Add(Me.lblDescription)
         Me.Controls.Add(Me.btnExport)
@@ -354,6 +386,8 @@ Partial Class frmMain
         CType(Me.dgvSignal, System.ComponentModel.ISupportInitialize).EndInit()
         Me.pnlLowSLFractal.ResumeLayout(False)
         Me.pnlLowSLFractal.PerformLayout()
+        Me.pnlGraphAngle.ResumeLayout(False)
+        Me.pnlGraphAngle.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -386,4 +420,7 @@ Partial Class frmMain
     Friend WithEvents pnlLowSLFractal As Panel
     Friend WithEvents txtLowSLFractalATRMultiplier As TextBox
     Friend WithEvents lblLowSLFractalATRMultiplier As Label
+    Friend WithEvents pnlGraphAngle As Panel
+    Friend WithEvents dtPckrGraphAngleEndTime As DateTimePicker
+    Friend WithEvents Label2 As Label
 End Class
