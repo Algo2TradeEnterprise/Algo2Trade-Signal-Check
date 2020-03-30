@@ -49,8 +49,14 @@ Public Class EODSignal
                     _canceller.Token.ThrowIfCancellationRequested()
                     If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
                         Dim XMinutePayload As Dictionary(Of Date, Payload) = Nothing
+                        Dim exchangeStartTime As Date = Date.MinValue
+                        Select Case _category
+                            Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL, Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Futures
+                                exchangeStartTime = New Date(chkDate.Year, chkDate.Month, chkDate.Day, 9, 15, 0)
+                            Case Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency
+                                exchangeStartTime = New Date(chkDate.Year, chkDate.Month, chkDate.Day, 9, 0, 0)
+                        End Select
                         If _timeFrame > 1 Then
-                            Dim exchangeStartTime As Date = New Date(chkDate.Year, chkDate.Month, chkDate.Day, 9, 15, 0)
                             XMinutePayload = Common.ConvertPayloadsToXMinutes(stockPayload, _timeFrame, exchangeStartTime)
                         Else
                             XMinutePayload = stockPayload
