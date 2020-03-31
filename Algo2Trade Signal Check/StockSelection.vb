@@ -44,21 +44,42 @@ Public Class StockSelection
                 dt = csvHelper.GetDataTableFromCSV(1)
             End Using
             If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-                Dim counter As Integer = 0
+                Dim dateList As List(Of Date) = Nothing
                 For i = 1 To dt.Rows.Count - 1
-                    Dim rowDate As Date = dt.Rows(i)(0)
-                    If rowDate.Date = tradingDate.Date Then
-                        If ret Is Nothing Then ret = New List(Of String)
-                        Dim tradingSymbol As String = dt.Rows(i).Item(1)
-                        Dim instrumentName As String = Nothing
-                        If tradingSymbol.Contains("FUT") Then
-                            instrumentName = tradingSymbol.Remove(tradingSymbol.Count - 8)
-                        Else
-                            instrumentName = tradingSymbol
-                        End If
-                        ret.Add(instrumentName)
-                    End If
+                    Dim rowDate As Date = dt.Rows(i).Item("Date")
+
+                    If dateList Is Nothing Then dateList = New List(Of Date)
+                    If Not dateList.Contains(rowDate.Date) Then dateList.Add(rowDate.Date)
                 Next
+
+                If dateList IsNot Nothing AndAlso dateList.Count > 0 Then
+                    Dim dateToCheck As Date = tradingDate.Date
+                    If Not dateList.Contains(tradingDate.Date) Then
+                        dateToCheck = dateList.Max(Function(x)
+                                                       If x.Date <= tradingDate.Date Then
+                                                           Return x.Date
+                                                       Else
+                                                           Return Date.MinValue
+                                                       End If
+                                                   End Function)
+                    End If
+                    If dateToCheck.Date <> Date.MinValue Then
+                        For i = 1 To dt.Rows.Count - 1
+                            Dim rowDate As Date = dt.Rows(i).Item("Date")
+                            If rowDate.Date = dateToCheck.Date Then
+                                If ret Is Nothing Then ret = New List(Of String)
+                                Dim tradingSymbol As String = dt.Rows(i).Item("Trading Symbol")
+                                Dim instrumentName As String = Nothing
+                                If tradingSymbol.Contains("FUT") Then
+                                    instrumentName = tradingSymbol.Remove(tradingSymbol.Count - 8)
+                                Else
+                                    instrumentName = tradingSymbol
+                                End If
+                                ret.Add(instrumentName)
+                            End If
+                        Next
+                    End If
+                End If
             End If
         Else
             Throw New ApplicationException("Instrument File not available")
