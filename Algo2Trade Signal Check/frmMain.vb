@@ -513,7 +513,7 @@ Public Class frmMain
                 LoadSettings(pnlLowSLFractal)
                 lblDescription.Text = String.Format("Fractal high, low difference less than equal to X ATR")
             Case 40
-                dtPckrGraphAngleEndTime.Value = New Date(Now.Year, Now.Month, Now.Day, 9, 45, 0)
+                dtPckrGraphAngleEndTime.Value = New Date(Now.Year, Now.Month, Now.Day, 9, 30, 0)
                 txtGraphAngleSDMul.Text = 1
                 txtGraphAngleCandlePer.Text = 90
                 LoadSettings(pnlGraphAngle)

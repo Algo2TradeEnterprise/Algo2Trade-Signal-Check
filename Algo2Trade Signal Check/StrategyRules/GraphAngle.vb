@@ -21,6 +21,7 @@ Public Class GraphAngle
         ret.Columns.Add("Total Candles")
         ret.Columns.Add("Total Candles Within SD")
         ret.Columns.Add("Percentage")
+        ret.Columns.Add("Direction")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -157,6 +158,7 @@ Public Class GraphAngle
                                         row("Total Candles") = totalCandles
                                         row("Total Candles Within SD") = totalCandlesWithinSD
                                         row("Percentage") = percentage
+                                        row("Direction") = If(totalCandlesWithinSD = plus45sd, "BUY", "SELL")
                                         ret.Rows.Add(row)
                                     End If
                                 End If
