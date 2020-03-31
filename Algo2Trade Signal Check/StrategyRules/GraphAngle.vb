@@ -19,7 +19,7 @@ Public Class GraphAngle
         ret.Columns.Add("Date")
         ret.Columns.Add("Trading Symbol")
         ret.Columns.Add("Total Candles")
-        ret.Columns.Add("Total Candles On The Line")
+        ret.Columns.Add("Total Candles Within SD")
         ret.Columns.Add("Percentage")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
@@ -155,7 +155,7 @@ Public Class GraphAngle
                                         row("Date") = currentDayPayload.FirstOrDefault.Value.PayloadDate.ToString("dd-MM-yyyy")
                                         row("Trading Symbol") = currentDayPayload.FirstOrDefault.Value.TradingSymbol
                                         row("Total Candles") = totalCandles
-                                        row("Total Candles On The Line") = totalCandlesWithinSD
+                                        row("Total Candles Within SD") = totalCandlesWithinSD
                                         row("Percentage") = percentage
                                         ret.Rows.Add(row)
                                     End If
