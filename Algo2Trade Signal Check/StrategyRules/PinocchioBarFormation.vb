@@ -78,16 +78,16 @@ Public Class PinocchioBarFormation
                             Dim previousDay As Date = Nothing
                             Dim eodPayload As Dictionary(Of Date, Payload) = Nothing
                             Select Case _category
-                                Case "Cash"
+                                Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.Intraday_Cash
                                     previousDay = _cmn.GetPreviousTradingDay(Common.DataBaseTable.Intraday_Cash, currentDayPayload.LastOrDefault.Key.Date)
                                     eodPayload = _cmn.GetRawPayload(Common.DataBaseTable.EOD_Cash, stock, previousDay, previousDay)
-                                Case "Currency"
+                                Case Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.Intraday_Currency
                                     previousDay = _cmn.GetPreviousTradingDay(Common.DataBaseTable.Intraday_Currency, currentDayPayload.LastOrDefault.Key.Date)
                                     eodPayload = _cmn.GetRawPayload(Common.DataBaseTable.EOD_Currency, stock, previousDay, previousDay)
-                                Case "Commodity"
+                                Case Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.Intraday_Commodity
                                     previousDay = _cmn.GetPreviousTradingDay(Common.DataBaseTable.Intraday_Commodity, currentDayPayload.LastOrDefault.Key.Date)
                                     eodPayload = _cmn.GetRawPayload(Common.DataBaseTable.EOD_Commodity, stock, previousDay, previousDay)
-                                Case "Future"
+                                Case Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.Intraday_Futures
                                     previousDay = _cmn.GetPreviousTradingDay(Common.DataBaseTable.Intraday_Futures, currentDayPayload.LastOrDefault.Key.Date)
                                     eodPayload = _cmn.GetRawPayload(Common.DataBaseTable.EOD_Futures, stock, previousDay, previousDay)
                                 Case Else
