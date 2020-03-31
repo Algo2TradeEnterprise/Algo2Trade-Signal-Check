@@ -3,10 +3,15 @@ Imports System.Threading
 Public Class GraphAngle
     Inherits Rule
 
-    Private _endTime As Date
-    Public Sub New(ByVal canceller As CancellationTokenSource, ByVal stockCategory As Integer, ByVal timeFrame As Integer, ByVal useHA As Boolean, ByVal stockName As String, ByVal fileName As String, ByVal endTime As Date)
+    Private ReadOnly _endTime As Date
+    Private ReadOnly _sdMultiplier As Decimal
+    Private ReadOnly _candlePercentage As Decimal
+    Public Sub New(ByVal canceller As CancellationTokenSource, ByVal stockCategory As Integer, ByVal timeFrame As Integer, ByVal useHA As Boolean, ByVal stockName As String, ByVal fileName As String,
+                   ByVal endTime As Date, ByVal sdMultiplier As Decimal, ByVal candlePercentage As Decimal)
         MyBase.New(canceller, stockCategory, timeFrame, useHA, stockName, fileName)
         _endTime = endTime
+        _sdMultiplier = sdMultiplier
+        _candlePercentage = candlePercentage
     End Sub
     Public Overrides Async Function RunAsync(ByVal startDate As Date, ByVal endDate As Date) As Task(Of DataTable)
         Await Task.Delay(0).ConfigureAwait(False)
@@ -99,7 +104,9 @@ Public Class GraphAngle
                                 Dim totalCandles As Integer = candleToCheck.Count
                                 Dim eachPointValue As Decimal = diff / totalCandles
 
-                                Dim totalCandlesOnTheLine As Integer = 0
+                                Dim plus45Payload As Dictionary(Of Date, Decimal) = Nothing
+                                Dim minus45Payload As Dictionary(Of Date, Decimal) = Nothing
+
                                 Dim counter As Integer = 0
                                 For Each runningCandle In candleToCheck.OrderBy(Function(x)
                                                                                     Return x.Key
@@ -110,19 +117,49 @@ Public Class GraphAngle
                                     Dim y1Price As Decimal = lowestlow + y1 * eachPointValue
                                     Dim y2Price As Decimal = highestHigh + y2 * eachPointValue
 
-                                    If (runningCandle.Value.High >= y1Price AndAlso runningCandle.Value.Low <= y1Price) OrElse
-                                        (runningCandle.Value.High >= y2Price AndAlso runningCandle.Value.Low <= y2Price) Then
-                                        totalCandlesOnTheLine += 1
-                                    End If
+                                    If plus45Payload Is Nothing Then plus45Payload = New Dictionary(Of Date, Decimal)
+                                    plus45Payload.Add(runningCandle.Key, y1Price)
+                                    If minus45Payload Is Nothing Then minus45Payload = New Dictionary(Of Date, Decimal)
+                                    minus45Payload.Add(runningCandle.Key, y2Price)
+
+                                    counter += 1
                                 Next
 
-                                Dim row As DataRow = ret.NewRow
-                                row("Date") = currentDayPayload.FirstOrDefault.Value.PayloadDate.ToString("dd-MM-yyyy")
-                                row("Trading Symbol") = currentDayPayload.FirstOrDefault.Value.TradingSymbol
-                                row("Total Candles") = totalCandles
-                                row("Total Candles On The Line") = totalCandlesOnTheLine
-                                row("Percentage") = Math.Round((totalCandlesOnTheLine / totalCandles) * 100, 2)
-                                ret.Rows.Add(row)
+                                If plus45Payload IsNot Nothing AndAlso plus45Payload.Count > 0 AndAlso
+                                    minus45Payload IsNot Nothing AndAlso minus45Payload IsNot Nothing Then
+                                    Dim plus45sd As Decimal = Common.CalculateStandardDeviationPA(plus45Payload)
+                                    Dim minus45sd As Decimal = Common.CalculateStandardDeviationPA(minus45Payload)
+
+                                    Dim plus45Count As Integer = 0
+                                    Dim minus45Count As Integer = 0
+                                    For Each runningCandle In candleToCheck.OrderBy(Function(x)
+                                                                                        Return x.Key
+                                                                                    End Function)
+                                        Dim plus45plusSD As Decimal = plus45Payload(runningCandle.Key) + _sdMultiplier * plus45sd
+                                        Dim plus45minusSD As Decimal = plus45Payload(runningCandle.Key) - _sdMultiplier * plus45sd
+                                        If runningCandle.Value.OHLC <= plus45plusSD AndAlso runningCandle.Value.OHLC >= plus45minusSD Then
+                                            plus45Count += 1
+                                        End If
+
+                                        Dim minus45plusSD As Decimal = minus45Payload(runningCandle.Key) + _sdMultiplier * minus45sd
+                                        Dim minus45minusSD As Decimal = minus45Payload(runningCandle.Key) - _sdMultiplier * minus45sd
+                                        If runningCandle.Value.OHLC <= minus45plusSD AndAlso runningCandle.Value.OHLC >= minus45minusSD Then
+                                            minus45Count += 1
+                                        End If
+                                    Next
+
+                                    Dim totalCandlesWithinSD As Decimal = Math.Max(plus45Count, minus45Count)
+                                    Dim percentage As Decimal = Math.Round(totalCandlesWithinSD / totalCandles * 100, 2)
+                                    If percentage >= _candlePercentage Then
+                                        Dim row As DataRow = ret.NewRow
+                                        row("Date") = currentDayPayload.FirstOrDefault.Value.PayloadDate.ToString("dd-MM-yyyy")
+                                        row("Trading Symbol") = currentDayPayload.FirstOrDefault.Value.TradingSymbol
+                                        row("Total Candles") = totalCandles
+                                        row("Total Candles On The Line") = totalCandlesWithinSD
+                                        row("Percentage") = percentage
+                                        ret.Rows.Add(row)
+                                    End If
+                                End If
                             End If
                         End If
                     End If

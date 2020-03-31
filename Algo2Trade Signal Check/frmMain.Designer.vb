@@ -54,6 +54,10 @@ Partial Class frmMain
         Me.pnlGraphAngle = New System.Windows.Forms.Panel()
         Me.dtPckrGraphAngleEndTime = New System.Windows.Forms.DateTimePicker()
         Me.Label2 = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.txtGraphAngleSDMul = New System.Windows.Forms.TextBox()
+        Me.txtGraphAngleCandlePer = New System.Windows.Forms.TextBox()
+        Me.Label5 = New System.Windows.Forms.Label()
         CType(Me.nmrcTimeFrame, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         CType(Me.dgvSignal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -339,11 +343,15 @@ Partial Class frmMain
         '
         'pnlGraphAngle
         '
+        Me.pnlGraphAngle.Controls.Add(Me.txtGraphAngleCandlePer)
+        Me.pnlGraphAngle.Controls.Add(Me.Label5)
+        Me.pnlGraphAngle.Controls.Add(Me.txtGraphAngleSDMul)
+        Me.pnlGraphAngle.Controls.Add(Me.Label3)
         Me.pnlGraphAngle.Controls.Add(Me.dtPckrGraphAngleEndTime)
         Me.pnlGraphAngle.Controls.Add(Me.Label2)
-        Me.pnlGraphAngle.Location = New System.Drawing.Point(954, 90)
+        Me.pnlGraphAngle.Location = New System.Drawing.Point(748, 90)
         Me.pnlGraphAngle.Name = "pnlGraphAngle"
-        Me.pnlGraphAngle.Size = New System.Drawing.Size(200, 50)
+        Me.pnlGraphAngle.Size = New System.Drawing.Size(461, 50)
         Me.pnlGraphAngle.TabIndex = 28
         '
         'dtPckrGraphAngleEndTime
@@ -360,9 +368,41 @@ Partial Class frmMain
         Me.Label2.AutoSize = True
         Me.Label2.Location = New System.Drawing.Point(12, 16)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(68, 17)
+        Me.Label2.Size = New System.Drawing.Size(72, 17)
         Me.Label2.TabIndex = 0
-        Me.Label2.Text = "End Time"
+        Me.Label2.Text = "End Time:"
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(196, 16)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(31, 17)
+        Me.Label3.TabIndex = 2
+        Me.Label3.Text = "SD:"
+        '
+        'txtGraphAngleSDMul
+        '
+        Me.txtGraphAngleSDMul.Location = New System.Drawing.Point(228, 12)
+        Me.txtGraphAngleSDMul.Name = "txtGraphAngleSDMul"
+        Me.txtGraphAngleSDMul.Size = New System.Drawing.Size(46, 22)
+        Me.txtGraphAngleSDMul.TabIndex = 3
+        '
+        'txtGraphAngleCandlePer
+        '
+        Me.txtGraphAngleCandlePer.Location = New System.Drawing.Point(370, 12)
+        Me.txtGraphAngleCandlePer.Name = "txtGraphAngleCandlePer"
+        Me.txtGraphAngleCandlePer.Size = New System.Drawing.Size(46, 22)
+        Me.txtGraphAngleCandlePer.TabIndex = 5
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Location = New System.Drawing.Point(283, 16)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(85, 17)
+        Me.Label5.TabIndex = 4
+        Me.Label5.Text = "Percentage:"
         '
         'frmMain
         '
@@ -423,4 +463,8 @@ Partial Class frmMain
     Friend WithEvents pnlGraphAngle As Panel
     Friend WithEvents dtPckrGraphAngleEndTime As DateTimePicker
     Friend WithEvents Label2 As Label
+    Friend WithEvents txtGraphAngleSDMul As TextBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents txtGraphAngleCandlePer As TextBox
+    Friend WithEvents Label5 As Label
 End Class

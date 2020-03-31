@@ -370,7 +370,7 @@ Public Class frmMain
                 Case 39
                     rule = New LowSLFractal(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetTextBoxText_ThreadSafe(txtLowSLFractalATRMultiplier))
                 Case 40
-                    rule = New GraphAngle(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetDateTimePickerValue_ThreadSafe(dtPckrGraphAngleEndTime))
+                    rule = New GraphAngle(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetDateTimePickerValue_ThreadSafe(dtPckrGraphAngleEndTime), GetTextBoxText_ThreadSafe(txtGraphAngleSDMul), GetTextBoxText_ThreadSafe(txtGraphAngleCandlePer))
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -514,8 +514,10 @@ Public Class frmMain
                 lblDescription.Text = String.Format("Fractal high, low difference less than equal to X ATR")
             Case 40
                 dtPckrGraphAngleEndTime.Value = New Date(Now.Year, Now.Month, Now.Day, 9, 45, 0)
+                txtGraphAngleSDMul.Text = 1
+                txtGraphAngleCandlePer.Text = 90
                 LoadSettings(pnlGraphAngle)
-                lblDescription.Text = String.Format("Get angle of the graph of a specific time")
+                lblDescription.Text = String.Format("X% candle(OHLC) of total candles passes through X-SD of 45° line(diagonal line of a square which x-axis is defined by total number of candles and y-axis is defined by difference between highest high and lowest low[coverted to total number of candles]) with in specified time.")
             Case Else
                 Throw New NotImplementedException
         End Select
