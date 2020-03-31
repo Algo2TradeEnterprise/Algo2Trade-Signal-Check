@@ -160,7 +160,7 @@ Public Class GraphAngle
                                             row("Total Candles") = totalCandles
                                             row("Total Candles Within SD") = totalCandlesWithinSD
                                             row("Percentage") = percentage
-                                            row("Direction") = If(totalCandlesWithinSD = plus45sd, "BUY", "SELL")
+                                            row("Direction") = If(totalCandlesWithinSD = plus45Count, "BUY", "SELL")
                                             row("Time") = endTime.ToString("HH:mm:ss")
                                             ret.Rows.Add(row)
 
