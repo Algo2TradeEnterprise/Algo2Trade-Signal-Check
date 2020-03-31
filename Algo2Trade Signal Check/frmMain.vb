@@ -465,7 +465,7 @@ Public Class frmMain
                 lblDescription.Text = String.Format("In a collection of current candle and previous two candle, any one of them is inside bar and difference between highest high and lowest low is less than current candle ATR")
             Case 24
                 LoadSettings(Nothing)
-                lblDescription.Text = String.Format("Previous two candles form HH-HL and current candle breaks lowest Low of previous two candle and vice versa")
+                lblDescription.Text = String.Format("Previous three candles form HH-HL and current candle breaks previous candle low and vice versa")
             Case 25
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")

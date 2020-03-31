@@ -71,30 +71,34 @@ Public Class ReversaHHLLBreakout
                             End If
                         Next
                         'Main logic
-                        Dim ATRPayload As Dictionary(Of Date, Decimal) = Nothing
-                        Indicator.ATR.CalculateATR(14, inputPayload, ATRPayload)
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
                             For Each runningPayload In currentDayPayload.Values
                                 _canceller.Token.ThrowIfCancellationRequested()
                                 If runningPayload.PreviousCandlePayload IsNot Nothing AndAlso
-                                    runningPayload.PreviousCandlePayload.PreviousCandlePayload.PayloadDate.Date = runningPayload.PayloadDate.Date Then
-                                    Dim buffer As Decimal = CalculateBuffer(runningPayload.High, RoundOfType.Floor)
-                                    If runningPayload.PreviousCandlePayload.High > runningPayload.PreviousCandlePayload.PreviousCandlePayload.High + buffer AndAlso
-                                        runningPayload.PreviousCandlePayload.Low > runningPayload.PreviousCandlePayload.PreviousCandlePayload.Low + buffer Then
-                                        If runningPayload.Low < runningPayload.PreviousCandlePayload.PreviousCandlePayload.Low - buffer Then
+                                    runningPayload.PreviousCandlePayload.PreviousCandlePayload IsNot Nothing AndAlso
+                                    runningPayload.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload IsNot Nothing AndAlso
+                                    runningPayload.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.PayloadDate.Date = runningPayload.PayloadDate.Date Then
+                                    Dim buffer As Decimal = CalculateBuffer(runningPayload.Open, RoundOfType.Floor)
+                                    If runningPayload.PreviousCandlePayload.High > runningPayload.PreviousCandlePayload.PreviousCandlePayload.High AndAlso
+                                        runningPayload.PreviousCandlePayload.PreviousCandlePayload.High > runningPayload.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.High AndAlso
+                                        runningPayload.PreviousCandlePayload.Low > runningPayload.PreviousCandlePayload.PreviousCandlePayload.Low AndAlso
+                                        runningPayload.PreviousCandlePayload.PreviousCandlePayload.Low > runningPayload.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.Low Then
+                                        If runningPayload.Low < runningPayload.PreviousCandlePayload.Low - buffer Then
                                             Dim row As DataRow = ret.NewRow
                                             row("Date") = runningPayload.PayloadDate
                                             row("Instrument") = runningPayload.TradingSymbol
-                                            row("Signal") = -1
+                                            row("Signal") = "BUY"
                                             ret.Rows.Add(row)
                                         End If
-                                    ElseIf runningPayload.PreviousCandlePayload.Low < runningPayload.PreviousCandlePayload.PreviousCandlePayload.Low - buffer AndAlso
-                                        runningPayload.PreviousCandlePayload.High < runningPayload.PreviousCandlePayload.PreviousCandlePayload.High - buffer Then
-                                        If runningPayload.High > runningPayload.PreviousCandlePayload.PreviousCandlePayload.High + buffer Then
+                                    ElseIf runningPayload.PreviousCandlePayload.High < runningPayload.PreviousCandlePayload.PreviousCandlePayload.High AndAlso
+                                        runningPayload.PreviousCandlePayload.PreviousCandlePayload.High < runningPayload.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.High AndAlso
+                                        runningPayload.PreviousCandlePayload.Low < runningPayload.PreviousCandlePayload.PreviousCandlePayload.Low AndAlso
+                                        runningPayload.PreviousCandlePayload.PreviousCandlePayload.Low < runningPayload.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.Low Then
+                                        If runningPayload.High > runningPayload.PreviousCandlePayload.High + buffer Then
                                             Dim row As DataRow = ret.NewRow
                                             row("Date") = runningPayload.PayloadDate
                                             row("Instrument") = runningPayload.TradingSymbol
-                                            row("Signal") = +1
+                                            row("Signal") = "SELL"
                                             ret.Rows.Add(row)
                                         End If
                                     End If
