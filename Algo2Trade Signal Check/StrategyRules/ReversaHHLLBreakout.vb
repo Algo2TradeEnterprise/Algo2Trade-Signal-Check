@@ -87,7 +87,7 @@ Public Class ReversaHHLLBreakout
                                             Dim row As DataRow = ret.NewRow
                                             row("Date") = runningPayload.PayloadDate
                                             row("Instrument") = runningPayload.TradingSymbol
-                                            row("Signal") = "BUY"
+                                            row("Signal") = "SELL"
                                             ret.Rows.Add(row)
                                         End If
                                     ElseIf runningPayload.PreviousCandlePayload.High < runningPayload.PreviousCandlePayload.PreviousCandlePayload.High AndAlso
@@ -98,7 +98,7 @@ Public Class ReversaHHLLBreakout
                                             Dim row As DataRow = ret.NewRow
                                             row("Date") = runningPayload.PayloadDate
                                             row("Instrument") = runningPayload.TradingSymbol
-                                            row("Signal") = "SELL"
+                                            row("Signal") = "BUY"
                                             ret.Rows.Add(row)
                                         End If
                                     End If
