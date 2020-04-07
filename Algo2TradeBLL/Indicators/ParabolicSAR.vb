@@ -19,7 +19,7 @@ Namespace Indicator
                     Dim AF As Decimal = 0
                     If inputPayload(runningPayload).PreviousCandlePayload IsNot Nothing AndAlso
                         inputPayload(runningPayload).PreviousCandlePayload.PreviousCandlePayload IsNot Nothing Then
-                        CalculatedSAR = Math.Round(previousPSAR + previousAF * (previousEP - previousPSAR), 2)
+                        CalculatedSAR = previousPSAR + previousAF * (previousEP - previousPSAR)
                         If previousTrend < 0 Then
                             TentativeSAR = Math.Max(CalculatedSAR, Math.Max(inputPayload(runningPayload).PreviousCandlePayload.High, inputPayload(runningPayload).PreviousCandlePayload.PreviousCandlePayload.High))
                         Else

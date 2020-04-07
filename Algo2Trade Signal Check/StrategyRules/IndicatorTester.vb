@@ -16,9 +16,8 @@ Public Class IndicatorTester
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
         ret.Columns.Add("Color")
-        ret.Columns.Add("Keltner SMA")
-        ret.Columns.Add("Keltner High")
-        ret.Columns.Add("Keltner Low")
+        ret.Columns.Add("PSAR")
+        ret.Columns.Add("PSAR Trend")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -42,7 +41,8 @@ Public Class IndicatorTester
                     Dim stockPayload As Dictionary(Of Date, Payload) = Nothing
                     Select Case _category
                         Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency, Common.DataBaseTable.Intraday_Futures
-                            stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-8), chkDate)
+                            'stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-8), chkDate)
+                            stockPayload = Await _cmn.GetHistoricalDataAsync(_category, stock, chkDate.AddDays(-8), chkDate).ConfigureAwait(False)
                         Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL
                             stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-200), chkDate)
                     End Select
@@ -80,10 +80,9 @@ Public Class IndicatorTester
 
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            Dim smaPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Dim keltnerHighPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Dim keltnerLowPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Indicator.KeltnerChannel.CalculateSMAKeltnerChannel(20, 1.5, inputPayload, keltnerHighPayload, keltnerLowPayload, smaPayload)
+                            Dim psarPayload As Dictionary(Of Date, Decimal) = Nothing
+                            Dim trendPayload As Dictionary(Of Date, Color) = Nothing
+                            Indicator.ParabolicSAR.CalculatePSAR(0.02, 0.2, inputPayload, psarPayload, trendPayload)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
@@ -96,9 +95,8 @@ Public Class IndicatorTester
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
                                 row("Color") = inputPayload(runningPayload).CandleColor.Name
-                                row("Keltner SMA") = smaPayload(runningPayload)
-                                row("Keltner High") = keltnerHighPayload(runningPayload)
-                                row("Keltner Low") = keltnerLowPayload(runningPayload)
+                                row("PSAR") = psarPayload(runningPayload)
+                                row("PSAR Trend") = trendPayload(runningPayload).Name
 
                                 ret.Rows.Add(row)
                             Next
