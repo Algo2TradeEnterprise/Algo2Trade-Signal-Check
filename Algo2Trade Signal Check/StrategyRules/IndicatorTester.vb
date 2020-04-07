@@ -95,7 +95,7 @@ Public Class IndicatorTester
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
                                 row("Color") = inputPayload(runningPayload).CandleColor.Name
-                                row("PSAR") = psarPayload(runningPayload)
+                                row("PSAR") = Math.Round(psarPayload(runningPayload), 4)
                                 row("PSAR Trend") = trendPayload(runningPayload).Name
 
                                 ret.Rows.Add(row)
