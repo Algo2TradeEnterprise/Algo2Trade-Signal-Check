@@ -41,8 +41,7 @@ Public Class IndicatorTester
                     Dim stockPayload As Dictionary(Of Date, Payload) = Nothing
                     Select Case _category
                         Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency, Common.DataBaseTable.Intraday_Futures
-                            'stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-8), chkDate)
-                            stockPayload = Await _cmn.GetHistoricalDataAsync(_category, stock, chkDate.AddDays(-8), chkDate).ConfigureAwait(False)
+                            stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-8), chkDate)
                         Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL
                             stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-200), chkDate)
                     End Select
