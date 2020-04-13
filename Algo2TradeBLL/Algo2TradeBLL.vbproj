@@ -77,6 +77,7 @@
     <Compile Include="Calculator\BrokerageCalculator.vb" />
     <Compile Include="Calculator\GlobalVar.vb" />
     <Compile Include="Common.vb" />
+    <Compile Include="Entities\PivotRange.vb" />
     <Compile Include="Entities\Payload.vb" />
     <Compile Include="Entities\PivotPoints.vb" />
     <Compile Include="Entities\TrendLineVeriables.vb" />
@@ -87,6 +88,7 @@
     <Compile Include="Indicators\ATRTrailingStop.vb" />
     <Compile Include="Indicators\BollingerBands.vb" />
     <Compile Include="Indicators\CCI.vb" />
+    <Compile Include="Indicators\CentralPivotRange.vb" />
     <Compile Include="Indicators\DonchianChannel.vb" />
     <Compile Include="Indicators\EMA.vb" />
     <Compile Include="Indicators\FractalBands.vb" />

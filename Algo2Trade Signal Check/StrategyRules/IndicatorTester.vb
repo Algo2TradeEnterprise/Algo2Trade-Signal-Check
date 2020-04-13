@@ -16,8 +16,9 @@ Public Class IndicatorTester
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
         ret.Columns.Add("Color")
-        ret.Columns.Add("PSAR")
-        ret.Columns.Add("PSAR Trend")
+        ret.Columns.Add("Pivot")
+        ret.Columns.Add("TC")
+        ret.Columns.Add("BC")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -79,9 +80,8 @@ Public Class IndicatorTester
 
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            Dim psarPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Dim trendPayload As Dictionary(Of Date, Color) = Nothing
-                            Indicator.ParabolicSAR.CalculatePSAR(0.02, 0.2, inputPayload, psarPayload, trendPayload)
+                            Dim cprPayload As Dictionary(Of Date, PivotRange) = Nothing
+                            Indicator.CentralPivotRange.CalculateCPR(inputPayload, cprPayload)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
@@ -94,8 +94,9 @@ Public Class IndicatorTester
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
                                 row("Color") = inputPayload(runningPayload).CandleColor.Name
-                                row("PSAR") = Math.Round(psarPayload(runningPayload), 4)
-                                row("PSAR Trend") = trendPayload(runningPayload).Name
+                                row("Pivot") = Math.Round(cprPayload(runningPayload).Pivot, 4)
+                                row("TC") = Math.Round(cprPayload(runningPayload).TopCentralPivot, 4)
+                                row("BC") = Math.Round(cprPayload(runningPayload).BottomCentralPivot, 4)
 
                                 ret.Rows.Add(row)
                             Next
