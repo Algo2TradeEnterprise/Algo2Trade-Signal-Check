@@ -371,6 +371,8 @@ Public Class frmMain
                     rule = New LowSLFractal(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetTextBoxText_ThreadSafe(txtLowSLFractalATRMultiplier))
                 Case 40
                     rule = New GraphAngle(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetDateTimePickerValue_ThreadSafe(dtPckrGraphAngleEndTime), GetTextBoxText_ThreadSafe(txtGraphAngleSDMul), GetTextBoxText_ThreadSafe(txtGraphAngleCandlePer))
+                Case 41
+                    rule = New MultiEMALine(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -518,6 +520,9 @@ Public Class frmMain
                 txtGraphAngleCandlePer.Text = 90
                 LoadSettings(pnlGraphAngle)
                 lblDescription.Text = String.Format("X% candle(OHLC) of total candles passes through X-SD of 45° line(diagonal line of a square which x-axis is defined by total number of candles and y-axis is defined by difference between highest high and lowest low[coverted to total number of candles]) with in specified time.")
+            Case 41
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("For buy candle close>50 EMA>100 EMA>150 EMA, then close<50 EMA or close<100 EMA and again candle close>50 EMA>100 EMA>150 EMA")
             Case Else
                 Throw New NotImplementedException
         End Select

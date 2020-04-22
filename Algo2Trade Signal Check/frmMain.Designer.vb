@@ -52,12 +52,12 @@ Partial Class frmMain
         Me.txtLowSLFractalATRMultiplier = New System.Windows.Forms.TextBox()
         Me.lblLowSLFractalATRMultiplier = New System.Windows.Forms.Label()
         Me.pnlGraphAngle = New System.Windows.Forms.Panel()
-        Me.dtPckrGraphAngleEndTime = New System.Windows.Forms.DateTimePicker()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label3 = New System.Windows.Forms.Label()
-        Me.txtGraphAngleSDMul = New System.Windows.Forms.TextBox()
         Me.txtGraphAngleCandlePer = New System.Windows.Forms.TextBox()
         Me.Label5 = New System.Windows.Forms.Label()
+        Me.txtGraphAngleSDMul = New System.Windows.Forms.TextBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.dtPckrGraphAngleEndTime = New System.Windows.Forms.DateTimePicker()
+        Me.Label2 = New System.Windows.Forms.Label()
         CType(Me.nmrcTimeFrame, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         CType(Me.dgvSignal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -206,7 +206,7 @@ Partial Class frmMain
         'cmbRule
         '
         Me.cmbRule.FormattingEnabled = True
-        Me.cmbRule.Items.AddRange(New Object() {"Stall Pattern", "Piercing And Dark Cloud", "One Sided Volume", "Constriction At Breakout", "HK Trend Opposing By Volume", "HK Temporary Pause", "HK Reversal", "Get Raw Candle", "Daily Strong HK Opposite Color Volume", "Fractal Cut 2 MA", "Volume Index", "EOD Signal", "Pin Bar Formation", "Bollinger With ATR Bands", "Low Loss High Gain VWAP", "Double Volume EOD", "Fractal Breakout Short Trend", "Donchian Breakout Short Trend", "Pinocchio Bar Formation", "Market Open HA Breakout Screener", "Volume With Candle Range", "DayHighLow", "Low SL Candle", "Inside Bar High Low", "Reversal HHLL Breakout", "Double Inside Bar", "High Low Support Resistance", "Open=High/Open=Low", "Spot Future Arbritrage", "Swing Candle", "Supertrend SMA Open High/Low", "Double Top Double Bottom", "Wick Beyond Slab Level", "Candle Range With ATR", "Fractal Dip", "Range Identifier", "Indicator Tester", "Bollinger Squeeze", "Inside Bar Breakout", "Low SL Fractal", "Graph Angle"})
+        Me.cmbRule.Items.AddRange(New Object() {"Stall Pattern", "Piercing And Dark Cloud", "One Sided Volume", "Constriction At Breakout", "HK Trend Opposing By Volume", "HK Temporary Pause", "HK Reversal", "Get Raw Candle", "Daily Strong HK Opposite Color Volume", "Fractal Cut 2 MA", "Volume Index", "EOD Signal", "Pin Bar Formation", "Bollinger With ATR Bands", "Low Loss High Gain VWAP", "Double Volume EOD", "Fractal Breakout Short Trend", "Donchian Breakout Short Trend", "Pinocchio Bar Formation", "Market Open HA Breakout Screener", "Volume With Candle Range", "DayHighLow", "Low SL Candle", "Inside Bar High Low", "Reversal HHLL Breakout", "Double Inside Bar", "High Low Support Resistance", "Open=High/Open=Low", "Spot Future Arbritrage", "Swing Candle", "Supertrend SMA Open High/Low", "Double Top Double Bottom", "Wick Beyond Slab Level", "Candle Range With ATR", "Fractal Dip", "Range Identifier", "Indicator Tester", "Bollinger Squeeze", "Inside Bar Breakout", "Low SL Fractal", "Graph Angle", "Multi EMA Line"})
         Me.cmbRule.Location = New System.Drawing.Point(108, 7)
         Me.cmbRule.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbRule.Name = "cmbRule"
@@ -354,6 +354,38 @@ Partial Class frmMain
         Me.pnlGraphAngle.Size = New System.Drawing.Size(461, 50)
         Me.pnlGraphAngle.TabIndex = 28
         '
+        'txtGraphAngleCandlePer
+        '
+        Me.txtGraphAngleCandlePer.Location = New System.Drawing.Point(370, 12)
+        Me.txtGraphAngleCandlePer.Name = "txtGraphAngleCandlePer"
+        Me.txtGraphAngleCandlePer.Size = New System.Drawing.Size(46, 22)
+        Me.txtGraphAngleCandlePer.TabIndex = 5
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Location = New System.Drawing.Point(283, 16)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(85, 17)
+        Me.Label5.TabIndex = 4
+        Me.Label5.Text = "Percentage:"
+        '
+        'txtGraphAngleSDMul
+        '
+        Me.txtGraphAngleSDMul.Location = New System.Drawing.Point(228, 12)
+        Me.txtGraphAngleSDMul.Name = "txtGraphAngleSDMul"
+        Me.txtGraphAngleSDMul.Size = New System.Drawing.Size(46, 22)
+        Me.txtGraphAngleSDMul.TabIndex = 3
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(196, 16)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(31, 17)
+        Me.Label3.TabIndex = 2
+        Me.Label3.Text = "SD:"
+        '
         'dtPckrGraphAngleEndTime
         '
         Me.dtPckrGraphAngleEndTime.Format = System.Windows.Forms.DateTimePickerFormat.Time
@@ -371,38 +403,6 @@ Partial Class frmMain
         Me.Label2.Size = New System.Drawing.Size(72, 17)
         Me.Label2.TabIndex = 0
         Me.Label2.Text = "End Time:"
-        '
-        'Label3
-        '
-        Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(196, 16)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(31, 17)
-        Me.Label3.TabIndex = 2
-        Me.Label3.Text = "SD:"
-        '
-        'txtGraphAngleSDMul
-        '
-        Me.txtGraphAngleSDMul.Location = New System.Drawing.Point(228, 12)
-        Me.txtGraphAngleSDMul.Name = "txtGraphAngleSDMul"
-        Me.txtGraphAngleSDMul.Size = New System.Drawing.Size(46, 22)
-        Me.txtGraphAngleSDMul.TabIndex = 3
-        '
-        'txtGraphAngleCandlePer
-        '
-        Me.txtGraphAngleCandlePer.Location = New System.Drawing.Point(370, 12)
-        Me.txtGraphAngleCandlePer.Name = "txtGraphAngleCandlePer"
-        Me.txtGraphAngleCandlePer.Size = New System.Drawing.Size(46, 22)
-        Me.txtGraphAngleCandlePer.TabIndex = 5
-        '
-        'Label5
-        '
-        Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(283, 16)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(85, 17)
-        Me.Label5.TabIndex = 4
-        Me.Label5.Text = "Percentage:"
         '
         'frmMain
         '
