@@ -80,8 +80,9 @@ Public Class IndicatorTester
 
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            Dim cprPayload As Dictionary(Of Date, PivotRange) = Nothing
-                            Indicator.CentralPivotRange.CalculateCPR(inputPayload, cprPayload)
+                            Dim highPayload As Dictionary(Of Date, TrendLineVeriables) = Nothing
+                            Dim lowPayload As Dictionary(Of Date, TrendLineVeriables) = Nothing
+                            Indicator.FractalUTrendLine.CalculateFractalUTrendLine(inputPayload, highPayload, lowPayload, Nothing, Nothing)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
@@ -94,9 +95,9 @@ Public Class IndicatorTester
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
                                 row("Color") = inputPayload(runningPayload).CandleColor.Name
-                                row("Pivot") = Math.Round(cprPayload(runningPayload).Pivot, 4)
-                                row("TC") = Math.Round(cprPayload(runningPayload).TopCentralPivot, 4)
-                                row("BC") = Math.Round(cprPayload(runningPayload).BottomCentralPivot, 4)
+                                'row("Pivot") = Math.Round(cprPayload(runningPayload).Pivot, 4)
+                                'row("TC") = Math.Round(cprPayload(runningPayload).TopCentralPivot, 4)
+                                'row("BC") = Math.Round(cprPayload(runningPayload).BottomCentralPivot, 4)
 
                                 ret.Rows.Add(row)
                             Next
