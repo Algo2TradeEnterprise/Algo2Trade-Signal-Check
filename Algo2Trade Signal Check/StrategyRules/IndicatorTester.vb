@@ -16,9 +16,8 @@ Public Class IndicatorTester
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
         ret.Columns.Add("Color")
-        ret.Columns.Add("Pivot")
-        ret.Columns.Add("TC")
-        ret.Columns.Add("BC")
+        ret.Columns.Add("Supertrend")
+        ret.Columns.Add("Supertrend Color")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -80,9 +79,15 @@ Public Class IndicatorTester
 
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            Dim highPayload As Dictionary(Of Date, TrendLineVeriables) = Nothing
-                            Dim lowPayload As Dictionary(Of Date, TrendLineVeriables) = Nothing
-                            Indicator.FractalUTrendLine.CalculateFractalUTrendLine(inputPayload, highPayload, lowPayload, Nothing, Nothing)
+                            'Dim highFractalPayload As Dictionary(Of Date, Decimal) = Nothing
+                            'Dim lowFractalPayload As Dictionary(Of Date, Decimal) = Nothing
+                            'Dim highFractalUPayload As Dictionary(Of Date, Date) = Nothing
+                            'Dim highFractalMPayload As Dictionary(Of Date, Date) = Nothing
+                            'Dim lowFractalUPayload As Dictionary(Of Date, Date) = Nothing
+                            'Dim lowFractalMPayload As Dictionary(Of Date, Date) = Nothing
+                            Dim super As Dictionary(Of Date, Decimal) = Nothing
+                            Dim superC As Dictionary(Of Date, Color) = Nothing
+                            Indicator.Supertrend.CalculateSupertrend(7, 2.5, inputPayload, super, superC)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
@@ -95,9 +100,8 @@ Public Class IndicatorTester
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
                                 row("Color") = inputPayload(runningPayload).CandleColor.Name
-                                'row("Pivot") = Math.Round(cprPayload(runningPayload).Pivot, 4)
-                                'row("TC") = Math.Round(cprPayload(runningPayload).TopCentralPivot, 4)
-                                'row("BC") = Math.Round(cprPayload(runningPayload).BottomCentralPivot, 4)
+                                row("Supertrend") = super(runningPayload)
+                                row("Supertrend Color") = superC(runningPayload).Name
 
                                 ret.Rows.Add(row)
                             Next
