@@ -411,6 +411,24 @@ Public Class Common
         End If
         Return ret
     End Function
+
+    Public Shared Function GetCurrentXMinuteCandleTime(ByVal lowerTFTime As Date, ByVal exchangeStartTime As Date, ByVal signalTimeframe As Integer) As Date
+        Dim ret As Date = Nothing
+        If exchangeStartTime.Minute Mod signalTimeframe = 0 Then
+            ret = New Date(lowerTFTime.Year,
+                                lowerTFTime.Month,
+                                lowerTFTime.Day,
+                                lowerTFTime.Hour,
+                                Math.Floor(lowerTFTime.Minute / signalTimeframe) * signalTimeframe, 0)
+        Else
+            Dim exchangeTime As Date = New Date(lowerTFTime.Year, lowerTFTime.Month, lowerTFTime.Day, exchangeStartTime.Hour, exchangeStartTime.Minute, 0)
+            Dim currentTime As Date = New Date(lowerTFTime.Year, lowerTFTime.Month, lowerTFTime.Day, lowerTFTime.Hour, lowerTFTime.Minute, 0)
+            Dim timeDifference As Double = currentTime.Subtract(exchangeTime).TotalMinutes
+            Dim adjustedTimeDifference As Integer = Math.Floor(timeDifference / signalTimeframe) * signalTimeframe
+            ret = exchangeTime.AddMinutes(adjustedTimeDifference)
+        End If
+        Return ret
+    End Function
 #End Region
 
 #Region "Public Functions"

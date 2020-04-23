@@ -373,6 +373,8 @@ Public Class frmMain
                     rule = New GraphAngle(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetDateTimePickerValue_ThreadSafe(dtPckrGraphAngleEndTime), GetTextBoxText_ThreadSafe(txtGraphAngleSDMul), GetTextBoxText_ThreadSafe(txtGraphAngleCandlePer))
                 Case 41
                     rule = New MultiEMALine(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 42
+                    rule = New MultiTimeframeMultiMA(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetNumericUpDownValue_ThreadSafe(nmrcMultiTFMultiMAHigherTF))
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -523,6 +525,10 @@ Public Class frmMain
             Case 41
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("For buy candle close>50 EMA>100 EMA>150 EMA, then close<50 EMA or close<100 EMA and again candle close>50 EMA>100 EMA>150 EMA")
+            Case 42
+                nmrcMultiTFMultiMAHigherTF.Value = 15
+                LoadSettings(pnlMultiTFMultiMA)
+                lblDescription.Text = String.Format("Description...")
             Case Else
                 Throw New NotImplementedException
         End Select
@@ -544,6 +550,7 @@ Public Class frmMain
         Dim panelList As List(Of Panel) = New List(Of Panel)
         panelList.Add(pnlLowSLFractal)
         panelList.Add(pnlGraphAngle)
+        panelList.Add(pnlMultiTFMultiMA)
 
         For Each runningPanel In panelList
             If panelName IsNot Nothing AndAlso runningPanel.Name = panelName.Name Then
