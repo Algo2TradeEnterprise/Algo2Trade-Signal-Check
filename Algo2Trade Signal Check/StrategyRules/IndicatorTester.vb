@@ -16,8 +16,8 @@ Public Class IndicatorTester
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
         ret.Columns.Add("Color")
-        ret.Columns.Add("Supertrend")
-        ret.Columns.Add("Supertrend Color")
+        ret.Columns.Add("AROON UP")
+        ret.Columns.Add("AROON DOWN")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -85,9 +85,9 @@ Public Class IndicatorTester
                             'Dim highFractalMPayload As Dictionary(Of Date, Date) = Nothing
                             'Dim lowFractalUPayload As Dictionary(Of Date, Date) = Nothing
                             'Dim lowFractalMPayload As Dictionary(Of Date, Date) = Nothing
-                            Dim super As Dictionary(Of Date, Decimal) = Nothing
-                            Dim superC As Dictionary(Of Date, Color) = Nothing
-                            Indicator.Supertrend.CalculateSupertrend(7, 2.5, inputPayload, super, superC)
+                            Dim highAroonPayload As Dictionary(Of Date, Decimal) = Nothing
+                            Dim lowAroonPayload As Dictionary(Of Date, Decimal) = Nothing
+                            Indicator.AROON.CalculateAROON(14, inputPayload, highAroonPayload, lowAroonPayload)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
@@ -100,8 +100,8 @@ Public Class IndicatorTester
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
                                 row("Color") = inputPayload(runningPayload).CandleColor.Name
-                                row("Supertrend") = super(runningPayload)
-                                row("Supertrend Color") = superC(runningPayload).Name
+                                row("AROON UP") = highAroonPayload(runningPayload)
+                                row("AROON DOWN") = lowAroonPayload(runningPayload)
 
                                 ret.Rows.Add(row)
                             Next
