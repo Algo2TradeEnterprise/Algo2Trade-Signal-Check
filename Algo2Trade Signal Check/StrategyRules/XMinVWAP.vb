@@ -88,7 +88,7 @@ Public Class XMinVWAP
 
                             For Each runningPayload In currentDayPayload
                                 _canceller.Token.ThrowIfCancellationRequested()
-                                If runningPayload.Key > lastTimeToCheck Then
+                                If runningPayload.Key >= lastTimeToCheck Then
                                     Exit For
                                 Else
                                     If runningPayload.Value.Close < runningPayload.Value.Open Then
@@ -96,6 +96,28 @@ Public Class XMinVWAP
                                             If runningPayload.Value.Volume > smaPayload(runningPayload.Value.PayloadDate) * 2 Then
                                                 If runningPayload.Value.Close < vwapPayload(runningPayload.Value.PayloadDate) AndAlso
                                                     runningPayload.Value.PreviousCandlePayload.Close > vwapPayload(runningPayload.Value.PreviousCandlePayload.PayloadDate) Then
+                                                    Dim row As DataRow = ret.NewRow
+                                                    row("Date") = runningPayload.Value.PayloadDate.ToString("dd-MMM-yyyy")
+                                                    row("Time") = runningPayload.Value.PayloadDate.ToString("HH:mm:ss")
+                                                    row("Trading Symbol") = runningPayload.Value.TradingSymbol
+                                                    row("Open") = runningPayload.Value.Open
+                                                    row("Low") = runningPayload.Value.Low
+                                                    row("High") = runningPayload.Value.High
+                                                    row("Close") = runningPayload.Value.Close
+                                                    row("Volume") = runningPayload.Value.Volume
+                                                    row("Color") = runningPayload.Value.CandleColor.Name
+                                                    row("SMA") = Math.Round(smaPayload(runningPayload.Value.PayloadDate), 4)
+                                                    row("VWAP") = Math.Round(vwapPayload(runningPayload.Value.PayloadDate), 4)
+                                                    ret.Rows.Add(row)
+                                                End If
+                                            End If
+                                        End If
+                                    End If
+                                    If runningPayload.Value.Close > runningPayload.Value.Open Then
+                                        If runningPayload.Value.Close > runningPayload.Value.Open * 1.01 Then
+                                            If runningPayload.Value.Volume > smaPayload(runningPayload.Value.PayloadDate) * 2 Then
+                                                If runningPayload.Value.Close > vwapPayload(runningPayload.Value.PayloadDate) AndAlso
+                                                    runningPayload.Value.PreviousCandlePayload.Close < vwapPayload(runningPayload.Value.PreviousCandlePayload.PayloadDate) Then
                                                     Dim row As DataRow = ret.NewRow
                                                     row("Date") = runningPayload.Value.PayloadDate.ToString("dd-MMM-yyyy")
                                                     row("Time") = runningPayload.Value.PayloadDate.ToString("HH:mm:ss")

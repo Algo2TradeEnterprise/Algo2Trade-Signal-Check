@@ -533,7 +533,7 @@ Public Class frmMain
                 lblDescription.Text = String.Format("Description...")
             Case 43
                 LoadSettings(Nothing)
-                lblDescription.Text = String.Format("X-Min Close<1% of X-Min Open and Volume>2*SMA(Volume,10) and Close crossed below vwap")
+                lblDescription.Text = String.Format("X-Min Close<1% of X-Min Open and Volume>2*SMA(Volume,10) and Close crossed below vwap and vice versa")
             Case Else
                 Throw New NotImplementedException
         End Select
