@@ -59,8 +59,8 @@ Partial Class frmMain
         Me.dtPckrGraphAngleEndTime = New System.Windows.Forms.DateTimePicker()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.pnlMultiTFMultiMA = New System.Windows.Forms.Panel()
-        Me.Label7 = New System.Windows.Forms.Label()
         Me.nmrcMultiTFMultiMAHigherTF = New System.Windows.Forms.NumericUpDown()
+        Me.Label7 = New System.Windows.Forms.Label()
         CType(Me.nmrcTimeFrame, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         CType(Me.dgvSignal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -211,7 +211,7 @@ Partial Class frmMain
         'cmbRule
         '
         Me.cmbRule.FormattingEnabled = True
-        Me.cmbRule.Items.AddRange(New Object() {"Stall Pattern", "Piercing And Dark Cloud", "One Sided Volume", "Constriction At Breakout", "HK Trend Opposing By Volume", "HK Temporary Pause", "HK Reversal", "Get Raw Candle", "Daily Strong HK Opposite Color Volume", "Fractal Cut 2 MA", "Volume Index", "EOD Signal", "Pin Bar Formation", "Bollinger With ATR Bands", "Low Loss High Gain VWAP", "Double Volume EOD", "Fractal Breakout Short Trend", "Donchian Breakout Short Trend", "Pinocchio Bar Formation", "Market Open HA Breakout Screener", "Volume With Candle Range", "DayHighLow", "Low SL Candle", "Inside Bar High Low", "Reversal HHLL Breakout", "Double Inside Bar", "High Low Support Resistance", "Open=High/Open=Low", "Spot Future Arbritrage", "Swing Candle", "Supertrend SMA Open High/Low", "Double Top Double Bottom", "Wick Beyond Slab Level", "Candle Range With ATR", "Fractal Dip", "Range Identifier", "Indicator Tester", "Bollinger Squeeze", "Inside Bar Breakout", "Low SL Fractal", "Graph Angle", "Multi EMA Line", "Multi Timeframe Multi MA"})
+        Me.cmbRule.Items.AddRange(New Object() {"Stall Pattern", "Piercing And Dark Cloud", "One Sided Volume", "Constriction At Breakout", "HK Trend Opposing By Volume", "HK Temporary Pause", "HK Reversal", "Get Raw Candle", "Daily Strong HK Opposite Color Volume", "Fractal Cut 2 MA", "Volume Index", "EOD Signal", "Pin Bar Formation", "Bollinger With ATR Bands", "Low Loss High Gain VWAP", "Double Volume EOD", "Fractal Breakout Short Trend", "Donchian Breakout Short Trend", "Pinocchio Bar Formation", "Market Open HA Breakout Screener", "Volume With Candle Range", "DayHighLow", "Low SL Candle", "Inside Bar High Low", "Reversal HHLL Breakout", "Double Inside Bar", "High Low Support Resistance", "Open=High/Open=Low", "Spot Future Arbritrage", "Swing Candle", "Supertrend SMA Open High/Low", "Double Top Double Bottom", "Wick Beyond Slab Level", "Candle Range With ATR", "Fractal Dip", "Range Identifier", "Indicator Tester", "Bollinger Squeeze", "Inside Bar Breakout", "Low SL Fractal", "Graph Angle", "Multi EMA Line", "Multi Timeframe Multi MA", "X-Min VWAP"})
         Me.cmbRule.Location = New System.Drawing.Point(108, 7)
         Me.cmbRule.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbRule.Name = "cmbRule"
@@ -418,6 +418,13 @@ Partial Class frmMain
         Me.pnlMultiTFMultiMA.Size = New System.Drawing.Size(461, 50)
         Me.pnlMultiTFMultiMA.TabIndex = 29
         '
+        'nmrcMultiTFMultiMAHigherTF
+        '
+        Me.nmrcMultiTFMultiMAHigherTF.Location = New System.Drawing.Point(147, 15)
+        Me.nmrcMultiTFMultiMAHigherTF.Name = "nmrcMultiTFMultiMAHigherTF"
+        Me.nmrcMultiTFMultiMAHigherTF.Size = New System.Drawing.Size(79, 22)
+        Me.nmrcMultiTFMultiMAHigherTF.TabIndex = 3
+        '
         'Label7
         '
         Me.Label7.AutoSize = True
@@ -426,13 +433,6 @@ Partial Class frmMain
         Me.Label7.Size = New System.Drawing.Size(125, 17)
         Me.Label7.TabIndex = 2
         Me.Label7.Text = "Higher Timeframe:"
-        '
-        'nmrcMultiTFMultiMAHigherTF
-        '
-        Me.nmrcMultiTFMultiMAHigherTF.Location = New System.Drawing.Point(147, 15)
-        Me.nmrcMultiTFMultiMAHigherTF.Name = "nmrcMultiTFMultiMAHigherTF"
-        Me.nmrcMultiTFMultiMAHigherTF.Size = New System.Drawing.Size(79, 22)
-        Me.nmrcMultiTFMultiMAHigherTF.TabIndex = 3
         '
         'frmMain
         '

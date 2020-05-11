@@ -143,6 +143,7 @@
     <Compile Include="StrategyRules\VolumeIndex.vb" />
     <Compile Include="StrategyRules\VolumeWithCandleRange.vb" />
     <Compile Include="StrategyRules\WickBeyondSlabLevel.vb" />
+    <Compile Include="StrategyRules\XMinVWAP.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="frmMain.resx">

@@ -375,6 +375,8 @@ Public Class frmMain
                     rule = New MultiEMALine(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 42
                     rule = New MultiTimeframeMultiMA(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetNumericUpDownValue_ThreadSafe(nmrcMultiTFMultiMAHigherTF))
+                Case 43
+                    rule = New XMinVWAP(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -529,6 +531,9 @@ Public Class frmMain
                 nmrcMultiTFMultiMAHigherTF.Value = 15
                 LoadSettings(pnlMultiTFMultiMA)
                 lblDescription.Text = String.Format("Description...")
+            Case 43
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("X-Min Close<1% of X-Min Open and Volume>2*SMA(Volume,10) and Close crossed below vwap")
             Case Else
                 Throw New NotImplementedException
         End Select
