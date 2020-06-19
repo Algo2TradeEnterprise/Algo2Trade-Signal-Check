@@ -133,11 +133,11 @@ Public Class PriceVolumeImbalance
                                     row("High") = inputPayload(runningPayload).High
                                     row("Close") = inputPayload(runningPayload).Close
                                     row("Volume") = inputPayload(runningPayload).Volume
-                                    row("(High-Low)/Volume") = highLowVol
-                                    row("MA") = sma
-                                    row("SD") = Math.Round(sd, 4)
-                                    row("+ xSD") = Math.Round(sma + sd * _sdMultiplier, 4)
-                                    row("- xSD") = Math.Round(sma - sd * _sdMultiplier, 4)
+                                    row("(High-Low)/Volume") = Math.Round(highLowVol, 8)
+                                    row("MA") = Math.Round(sma, 8)
+                                    row("SD") = Math.Round(sd, 8)
+                                    row("+ xSD") = Math.Round(sma + sd * _sdMultiplier, 8)
+                                    row("- xSD") = Math.Round(sma - sd * _sdMultiplier, 8)
                                     row("Condition") = condition
 
                                     ret.Rows.Add(row)

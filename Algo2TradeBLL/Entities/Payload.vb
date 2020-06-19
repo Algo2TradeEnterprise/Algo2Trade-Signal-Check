@@ -127,7 +127,7 @@ Public Class Payload
     Private _Additional_Field As Decimal
     Public Property Additional_Field As Decimal
         Get
-            Return Math.Round(_Additional_Field, 4)
+            Return _Additional_Field
         End Get
         Set(value As Decimal)
             _Additional_Field = value
