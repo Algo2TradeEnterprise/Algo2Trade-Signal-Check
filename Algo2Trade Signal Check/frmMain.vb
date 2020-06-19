@@ -377,6 +377,8 @@ Public Class frmMain
                     rule = New MultiTimeframeMultiMA(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetNumericUpDownValue_ThreadSafe(nmrcMultiTFMultiMAHigherTF))
                 Case 43
                     rule = New XMinVWAP(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 44
+                    rule = New PriceVolumeImbalance(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetNumericUpDownValue_ThreadSafe(nmrcPriceVolumeImbalancePeriod), GetTextBoxText_ThreadSafe(txtPriceVolumeImbalanceSDMul))
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -534,6 +536,11 @@ Public Class frmMain
             Case 43
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("X-Min Close<1% of X-Min Open and Volume>2*SMA(Volume,10) and Close crossed below vwap and vice versa")
+            Case 44
+                nmrcPriceVolumeImbalancePeriod.Value = 20
+                txtPriceVolumeImbalanceSDMul.Text = 3
+                LoadSettings(pnlPriceVolumeImbalance)
+                lblDescription.Text = "X-period moving average of (High-Low)/Volume is outside +/- xSD"
             Case Else
                 Throw New NotImplementedException
         End Select
@@ -556,6 +563,7 @@ Public Class frmMain
         panelList.Add(pnlLowSLFractal)
         panelList.Add(pnlGraphAngle)
         panelList.Add(pnlMultiTFMultiMA)
+        panelList.Add(pnlPriceVolumeImbalance)
 
         For Each runningPanel In panelList
             If panelName IsNot Nothing AndAlso runningPanel.Name = panelName.Name Then

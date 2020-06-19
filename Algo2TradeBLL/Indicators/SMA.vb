@@ -25,6 +25,8 @@ Namespace Indicator
                                 finalPriceToBeAdded += runningInputPayload.Value.Open
                             Case Payload.PayloadFields.Volume
                                 finalPriceToBeAdded += runningInputPayload.Value.Volume
+                            Case Payload.PayloadFields.Additional_Field
+                                finalPriceToBeAdded += runningInputPayload.Value.Additional_Field
                             Case Else
                                 Throw New NotImplementedException
                         End Select
@@ -47,6 +49,9 @@ Namespace Indicator
                             Case Payload.PayloadFields.Volume
                                 totalOfAllPrices = runningInputPayload.Value.Volume
                                 totalOfAllPrices += previousNInputFieldPayload.Sum(Function(s) s.Value.Volume)
+                            Case Payload.PayloadFields.Additional_Field
+                                totalOfAllPrices = runningInputPayload.Value.Additional_Field
+                                totalOfAllPrices += previousNInputFieldPayload.Sum(Function(s) s.Value.Additional_Field)
                             Case Else
                                 Throw New NotImplementedException
                         End Select
@@ -69,6 +74,9 @@ Namespace Indicator
                             Case Payload.PayloadFields.Volume
                                 totalOfAllPrices = runningInputPayload.Value.Volume
                                 totalOfAllPrices += previousNInputFieldPayload.Sum(Function(s) s.Value.Volume)
+                            Case Payload.PayloadFields.Additional_Field
+                                totalOfAllPrices = runningInputPayload.Value.Additional_Field
+                                totalOfAllPrices += previousNInputFieldPayload.Sum(Function(s) s.Value.Additional_Field)
                             Case Else
                                 Throw New NotImplementedException
                         End Select

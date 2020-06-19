@@ -124,12 +124,12 @@ Public Class Payload
         End Set
     End Property
 
-    Private _Additional_Field As Double
-    Public Property Additional_Field As Double
+    Private _Additional_Field As Decimal
+    Public Property Additional_Field As Decimal
         Get
             Return Math.Round(_Additional_Field, 4)
         End Get
-        Set(value As Double)
+        Set(value As Decimal)
             _Additional_Field = value
         End Set
     End Property

@@ -61,6 +61,11 @@ Partial Class frmMain
         Me.pnlMultiTFMultiMA = New System.Windows.Forms.Panel()
         Me.nmrcMultiTFMultiMAHigherTF = New System.Windows.Forms.NumericUpDown()
         Me.Label7 = New System.Windows.Forms.Label()
+        Me.pnlPriceVolumeImbalance = New System.Windows.Forms.Panel()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.nmrcPriceVolumeImbalancePeriod = New System.Windows.Forms.NumericUpDown()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.txtPriceVolumeImbalanceSDMul = New System.Windows.Forms.TextBox()
         CType(Me.nmrcTimeFrame, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         CType(Me.dgvSignal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -68,6 +73,8 @@ Partial Class frmMain
         Me.pnlGraphAngle.SuspendLayout()
         Me.pnlMultiTFMultiMA.SuspendLayout()
         CType(Me.nmrcMultiTFMultiMAHigherTF, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.pnlPriceVolumeImbalance.SuspendLayout()
+        CType(Me.nmrcPriceVolumeImbalancePeriod, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'saveFile
@@ -211,7 +218,7 @@ Partial Class frmMain
         'cmbRule
         '
         Me.cmbRule.FormattingEnabled = True
-        Me.cmbRule.Items.AddRange(New Object() {"Stall Pattern", "Piercing And Dark Cloud", "One Sided Volume", "Constriction At Breakout", "HK Trend Opposing By Volume", "HK Temporary Pause", "HK Reversal", "Get Raw Candle", "Daily Strong HK Opposite Color Volume", "Fractal Cut 2 MA", "Volume Index", "EOD Signal", "Pin Bar Formation", "Bollinger With ATR Bands", "Low Loss High Gain VWAP", "Double Volume EOD", "Fractal Breakout Short Trend", "Donchian Breakout Short Trend", "Pinocchio Bar Formation", "Market Open HA Breakout Screener", "Volume With Candle Range", "DayHighLow", "Low SL Candle", "Inside Bar High Low", "Reversal HHLL Breakout", "Double Inside Bar", "High Low Support Resistance", "Open=High/Open=Low", "Spot Future Arbritrage", "Swing Candle", "Supertrend SMA Open High/Low", "Double Top Double Bottom", "Wick Beyond Slab Level", "Candle Range With ATR", "Fractal Dip", "Range Identifier", "Indicator Tester", "Bollinger Squeeze", "Inside Bar Breakout", "Low SL Fractal", "Graph Angle", "Multi EMA Line", "Multi Timeframe Multi MA", "X-Min VWAP"})
+        Me.cmbRule.Items.AddRange(New Object() {"Stall Pattern", "Piercing And Dark Cloud", "One Sided Volume", "Constriction At Breakout", "HK Trend Opposing By Volume", "HK Temporary Pause", "HK Reversal", "Get Raw Candle", "Daily Strong HK Opposite Color Volume", "Fractal Cut 2 MA", "Volume Index", "EOD Signal", "Pin Bar Formation", "Bollinger With ATR Bands", "Low Loss High Gain VWAP", "Double Volume EOD", "Fractal Breakout Short Trend", "Donchian Breakout Short Trend", "Pinocchio Bar Formation", "Market Open HA Breakout Screener", "Volume With Candle Range", "DayHighLow", "Low SL Candle", "Inside Bar High Low", "Reversal HHLL Breakout", "Double Inside Bar", "High Low Support Resistance", "Open=High/Open=Low", "Spot Future Arbritrage", "Swing Candle", "Supertrend SMA Open High/Low", "Double Top Double Bottom", "Wick Beyond Slab Level", "Candle Range With ATR", "Fractal Dip", "Range Identifier", "Indicator Tester", "Bollinger Squeeze", "Inside Bar Breakout", "Low SL Fractal", "Graph Angle", "Multi EMA Line", "Multi Timeframe Multi MA", "X-Min VWAP", "Price Volume Imbalance"})
         Me.cmbRule.Location = New System.Drawing.Point(108, 7)
         Me.cmbRule.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbRule.Name = "cmbRule"
@@ -434,11 +441,55 @@ Partial Class frmMain
         Me.Label7.TabIndex = 2
         Me.Label7.Text = "Higher Timeframe:"
         '
+        'pnlPriceVolumeImbalance
+        '
+        Me.pnlPriceVolumeImbalance.Controls.Add(Me.txtPriceVolumeImbalanceSDMul)
+        Me.pnlPriceVolumeImbalance.Controls.Add(Me.nmrcPriceVolumeImbalancePeriod)
+        Me.pnlPriceVolumeImbalance.Controls.Add(Me.Label8)
+        Me.pnlPriceVolumeImbalance.Controls.Add(Me.Label6)
+        Me.pnlPriceVolumeImbalance.Location = New System.Drawing.Point(748, 90)
+        Me.pnlPriceVolumeImbalance.Name = "pnlPriceVolumeImbalance"
+        Me.pnlPriceVolumeImbalance.Size = New System.Drawing.Size(461, 50)
+        Me.pnlPriceVolumeImbalance.TabIndex = 30
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(15, 16)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(91, 17)
+        Me.Label6.TabIndex = 2
+        Me.Label6.Text = "SD Multiplier:"
+        '
+        'nmrcPriceVolumeImbalancePeriod
+        '
+        Me.nmrcPriceVolumeImbalancePeriod.Location = New System.Drawing.Point(270, 14)
+        Me.nmrcPriceVolumeImbalancePeriod.Name = "nmrcPriceVolumeImbalancePeriod"
+        Me.nmrcPriceVolumeImbalancePeriod.Size = New System.Drawing.Size(79, 22)
+        Me.nmrcPriceVolumeImbalancePeriod.TabIndex = 5
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Location = New System.Drawing.Point(216, 16)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(53, 17)
+        Me.Label8.TabIndex = 4
+        Me.Label8.Text = "Period:"
+        '
+        'txtPriceVolumeImbalanceSDMul
+        '
+        Me.txtPriceVolumeImbalanceSDMul.Location = New System.Drawing.Point(109, 14)
+        Me.txtPriceVolumeImbalanceSDMul.Name = "txtPriceVolumeImbalanceSDMul"
+        Me.txtPriceVolumeImbalanceSDMul.Size = New System.Drawing.Size(77, 22)
+        Me.txtPriceVolumeImbalanceSDMul.TabIndex = 6
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1244, 690)
+        Me.Controls.Add(Me.pnlPriceVolumeImbalance)
         Me.Controls.Add(Me.pnlMultiTFMultiMA)
         Me.Controls.Add(Me.pnlGraphAngle)
         Me.Controls.Add(Me.pnlLowSLFractal)
@@ -462,6 +513,9 @@ Partial Class frmMain
         Me.pnlMultiTFMultiMA.ResumeLayout(False)
         Me.pnlMultiTFMultiMA.PerformLayout()
         CType(Me.nmrcMultiTFMultiMAHigherTF, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.pnlPriceVolumeImbalance.ResumeLayout(False)
+        Me.pnlPriceVolumeImbalance.PerformLayout()
+        CType(Me.nmrcPriceVolumeImbalancePeriod, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -504,4 +558,9 @@ Partial Class frmMain
     Friend WithEvents pnlMultiTFMultiMA As Panel
     Friend WithEvents nmrcMultiTFMultiMAHigherTF As NumericUpDown
     Friend WithEvents Label7 As Label
+    Friend WithEvents pnlPriceVolumeImbalance As Panel
+    Friend WithEvents nmrcPriceVolumeImbalancePeriod As NumericUpDown
+    Friend WithEvents Label8 As Label
+    Friend WithEvents Label6 As Label
+    Friend WithEvents txtPriceVolumeImbalanceSDMul As TextBox
 End Class
