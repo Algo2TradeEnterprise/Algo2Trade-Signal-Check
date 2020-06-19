@@ -101,7 +101,9 @@ Public Class PriceVolumeImbalance
                             For Each runningPayload In inputPayload
                                 _canceller.Token.ThrowIfCancellationRequested()
                                 If highLowVolPayload Is Nothing Then highLowVolPayload = New Dictionary(Of Date, Decimal)
-                                highLowVolPayload.Add(runningPayload.Key, (runningPayload.Value.High - runningPayload.Value.Low) / runningPayload.Value.Volume)
+                                If runningPayload.Value.Volume > 0 Then
+                                    highLowVolPayload.Add(runningPayload.Key, (runningPayload.Value.High - runningPayload.Value.Low) / runningPayload.Value.Volume)
+                                End If
                             Next
 
                             Dim highLowVolConPayload As Dictionary(Of Date, Payload) = Nothing
@@ -115,32 +117,33 @@ Public Class PriceVolumeImbalance
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
+                                If highLowVolConPayload.ContainsKey(runningPayload) Then
+                                    Dim highLowVol As Decimal = highLowVolConPayload(runningPayload).Additional_Field
+                                    Dim sma As Decimal = smaPayload(runningPayload)
+                                    Dim sd As Decimal = sdPayload(runningPayload)
+                                    Dim condition As Boolean = False
+                                    If highLowVol > sma + _sdMultiplier * sd OrElse highLowVol < sma - _sdMultiplier * sd Then
+                                        condition = True
+                                    End If
 
-                                Dim highLowVol As Decimal = highLowVolConPayload(runningPayload).Additional_Field
-                                Dim sma As Decimal = smaPayload(runningPayload)
-                                Dim sd As Decimal = sdPayload(runningPayload)
-                                Dim condition As Boolean = False
-                                If highLowVol > sma + _sdMultiplier * sd OrElse highLowVol < sma - _sdMultiplier * sd Then
-                                    condition = True
-                                End If
+                                    If condition Then
+                                        Dim row As DataRow = ret.NewRow
+                                        row("Date") = inputPayload(runningPayload).PayloadDate
+                                        row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
+                                        row("Open") = inputPayload(runningPayload).Open
+                                        row("Low") = inputPayload(runningPayload).Low
+                                        row("High") = inputPayload(runningPayload).High
+                                        row("Close") = inputPayload(runningPayload).Close
+                                        row("Volume") = inputPayload(runningPayload).Volume
+                                        row("(High-Low)/Volume") = Math.Round(highLowVol, 8)
+                                        row("MA") = Math.Round(sma, 8)
+                                        row("SD") = Math.Round(sd, 8)
+                                        row("+ xSD") = Math.Round(sma + sd * _sdMultiplier, 8)
+                                        row("- xSD") = Math.Round(sma - sd * _sdMultiplier, 8)
+                                        row("Condition") = condition
 
-                                If condition Then
-                                    Dim row As DataRow = ret.NewRow
-                                    row("Date") = inputPayload(runningPayload).PayloadDate
-                                    row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
-                                    row("Open") = inputPayload(runningPayload).Open
-                                    row("Low") = inputPayload(runningPayload).Low
-                                    row("High") = inputPayload(runningPayload).High
-                                    row("Close") = inputPayload(runningPayload).Close
-                                    row("Volume") = inputPayload(runningPayload).Volume
-                                    row("(High-Low)/Volume") = Math.Round(highLowVol, 8)
-                                    row("MA") = Math.Round(sma, 8)
-                                    row("SD") = Math.Round(sd, 8)
-                                    row("+ xSD") = Math.Round(sma + sd * _sdMultiplier, 8)
-                                    row("- xSD") = Math.Round(sma - sd * _sdMultiplier, 8)
-                                    row("Condition") = condition
-
-                                    ret.Rows.Add(row)
+                                        ret.Rows.Add(row)
+                                    End If
                                 End If
                             Next
                         End If
