@@ -16,8 +16,7 @@ Public Class IndicatorTester
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
         ret.Columns.Add("Color")
-        ret.Columns.Add("AROON UP")
-        ret.Columns.Add("AROON DOWN")
+        ret.Columns.Add("CMF")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -79,15 +78,8 @@ Public Class IndicatorTester
 
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            'Dim highFractalPayload As Dictionary(Of Date, Decimal) = Nothing
-                            'Dim lowFractalPayload As Dictionary(Of Date, Decimal) = Nothing
-                            'Dim highFractalUPayload As Dictionary(Of Date, Date) = Nothing
-                            'Dim highFractalMPayload As Dictionary(Of Date, Date) = Nothing
-                            'Dim lowFractalUPayload As Dictionary(Of Date, Date) = Nothing
-                            'Dim lowFractalMPayload As Dictionary(Of Date, Date) = Nothing
-                            Dim highAroonPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Dim lowAroonPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Indicator.AROON.CalculateAROON(14, inputPayload, highAroonPayload, lowAroonPayload)
+                            Dim chaikinPayload As Dictionary(Of Date, Decimal) = Nothing
+                            Indicator.ChaikinMoneyFlow.CalculateCMF(20, inputPayload, chaikinPayload)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
@@ -100,8 +92,7 @@ Public Class IndicatorTester
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
                                 row("Color") = inputPayload(runningPayload).CandleColor.Name
-                                row("AROON UP") = highAroonPayload(runningPayload)
-                                row("AROON DOWN") = lowAroonPayload(runningPayload)
+                                row("CMF") = Math.Round(chaikinPayload(runningPayload), 4)
 
                                 ret.Rows.Add(row)
                             Next

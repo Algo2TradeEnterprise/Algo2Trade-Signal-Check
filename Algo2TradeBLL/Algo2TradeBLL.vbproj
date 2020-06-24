@@ -90,6 +90,7 @@
     <Compile Include="Indicators\BollingerBands.vb" />
     <Compile Include="Indicators\CCI.vb" />
     <Compile Include="Indicators\CentralPivotRange.vb" />
+    <Compile Include="Indicators\ChaikinMoneyFlow.vb" />
     <Compile Include="Indicators\DonchianChannel.vb" />
     <Compile Include="Indicators\EMA.vb" />
     <Compile Include="Indicators\FractalBands.vb" />
