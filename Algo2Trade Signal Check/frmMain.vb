@@ -379,6 +379,8 @@ Public Class frmMain
                     rule = New XMinVWAP(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 44
                     rule = New PriceVolumeImbalance(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetNumericUpDownValue_ThreadSafe(nmrcPriceVolumeImbalancePeriod), GetTextBoxText_ThreadSafe(txtPriceVolumeImbalanceSDMul))
+                Case 45
+                    rule = New Divergence(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -541,6 +543,9 @@ Public Class frmMain
                 txtPriceVolumeImbalanceSDMul.Text = 3
                 LoadSettings(pnlPriceVolumeImbalance)
                 lblDescription.Text = "X-period moving average of (High-Low)/Volume is outside +/- xSD"
+            Case 45
+                LoadSettings(Nothing)
+                lblDescription.Text = ""
             Case Else
                 Throw New NotImplementedException
         End Select
