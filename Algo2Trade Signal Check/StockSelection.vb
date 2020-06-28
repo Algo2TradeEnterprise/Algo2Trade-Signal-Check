@@ -45,7 +45,7 @@ Public Class StockSelection
             End Using
             If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
                 Dim dateList As List(Of Date) = Nothing
-                For i = 1 To dt.Rows.Count - 1
+                For i = 0 To dt.Rows.Count - 1
                     Dim rowDate As Date = dt.Rows(i).Item("Date")
 
                     If dateList Is Nothing Then dateList = New List(Of Date)
@@ -64,7 +64,7 @@ Public Class StockSelection
                                                    End Function)
                     End If
                     If dateToCheck.Date <> Date.MinValue Then
-                        For i = 1 To dt.Rows.Count - 1
+                        For i = 0 To dt.Rows.Count - 1
                             Dim rowDate As Date = dt.Rows(i).Item("Date")
                             If rowDate.Date = dateToCheck.Date Then
                                 If ret Is Nothing Then ret = New List(Of String)

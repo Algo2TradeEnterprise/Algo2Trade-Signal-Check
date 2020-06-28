@@ -15,7 +15,6 @@ Public Class IndicatorTester
         ret.Columns.Add("High")
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
-        ret.Columns.Add("Color")
         ret.Columns.Add("CMF")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
@@ -84,14 +83,13 @@ Public Class IndicatorTester
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
                                 Dim row As DataRow = ret.NewRow
-                                row("Date") = inputPayload(runningPayload).PayloadDate
+                                row("Date") = inputPayload(runningPayload).PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
                                 row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
                                 row("Open") = inputPayload(runningPayload).Open
                                 row("Low") = inputPayload(runningPayload).Low
                                 row("High") = inputPayload(runningPayload).High
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
-                                row("Color") = inputPayload(runningPayload).CandleColor.Name
                                 row("CMF") = Math.Round(chaikinPayload(runningPayload), 4)
 
                                 ret.Rows.Add(row)
