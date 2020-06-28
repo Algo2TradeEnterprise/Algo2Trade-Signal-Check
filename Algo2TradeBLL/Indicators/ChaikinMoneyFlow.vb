@@ -2,9 +2,6 @@
     Public Module ChaikinMoneyFlow
         Public Sub CalculateCMF(ByVal Period As Integer, ByVal inputPayload As Dictionary(Of Date, Payload), ByRef outputPayload As Dictionary(Of Date, Decimal), Optional neglectValidation As Boolean = False)
             If inputPayload IsNot Nothing AndAlso inputPayload.Count > 0 Then
-                If Not neglectValidation AndAlso inputPayload.Count < 100 Then
-                    Throw New ApplicationException("Can't Calculate Chaikin Money Flow")
-                End If
                 outputPayload = New Dictionary(Of Date, Decimal)
                 Dim moneyFlowVolumeData As Dictionary(Of Date, Decimal) = Nothing
                 For Each runningInputPayload In inputPayload
