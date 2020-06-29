@@ -19,8 +19,12 @@
                     If previousNInputFieldPayload IsNot Nothing AndAlso previousNInputFieldPayload.Count > 0 Then
                         Dim previousNCMFFieldPayload As List(Of KeyValuePair(Of Date, Decimal)) = Common.GetSubPayload(moneyFlowVolumeData, runningInputPayload.Key, Period, True)
                         Dim totalVolume As Long = previousNInputFieldPayload.Sum(Function(x) x.Value.Volume)
-                        Dim totalMoneyFlowVolume As Decimal = previousNCMFFieldPayload.Sum(Function(x) x.Value)
-                        outputPayload.Add(runningInputPayload.Key, totalMoneyFlowVolume / totalVolume)
+                        If totalVolume <> 0 Then
+                            Dim totalMoneyFlowVolume As Decimal = previousNCMFFieldPayload.Sum(Function(x) x.Value)
+                            outputPayload.Add(runningInputPayload.Key, totalMoneyFlowVolume / totalVolume)
+                        Else
+                            outputPayload.Add(runningInputPayload.Key, moneyFlowVolume)
+                        End If
                     Else
                         outputPayload.Add(runningInputPayload.Key, moneyFlowVolume)
                     End If
