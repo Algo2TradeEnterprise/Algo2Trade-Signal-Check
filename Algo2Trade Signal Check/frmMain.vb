@@ -379,7 +379,9 @@ Public Class frmMain
                 Case 44
                     rule = New PriceVolumeImbalance(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetNumericUpDownValue_ThreadSafe(nmrcPriceVolumeImbalancePeriod), GetTextBoxText_ThreadSafe(txtPriceVolumeImbalanceSDMul))
                 Case 45
-                    rule = New Divergence(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                    rule = New FirstCandleDifference(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 46
+                    rule = New SmallBodyCandles(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -544,7 +546,10 @@ Public Class frmMain
                 lblDescription.Text = "X-period moving average of (High-Low)/Volume is outside +/- xSD"
             Case 45
                 LoadSettings(Nothing)
-                lblDescription.Text = ""
+                lblDescription.Text = "Difference of first candle of the day close with previous day first candle of the day"
+            Case 46
+                LoadSettings(Nothing)
+                lblDescription.Text = "Current candle body<=1/4 of previous candle body and current candle should be formed at the edge of the previous candle, ie. it should not cross the midpoint of the previous candle. Previous candle should have body more than 50% of its range."
             Case Else
                 Throw New NotImplementedException
         End Select

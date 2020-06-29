@@ -1,6 +1,7 @@
-﻿Imports Algo2TradeBLL
-Imports System.Threading
-Public Class Divergence
+﻿Imports System.Threading
+Imports Algo2TradeBLL
+
+Public Class SmallBodyCandles
     Inherits Rule
     Public Sub New(ByVal canceller As CancellationTokenSource, ByVal stockCategory As Integer, ByVal timeFrame As Integer, ByVal useHA As Boolean, ByVal stockName As String, ByVal fileName As String)
         MyBase.New(canceller, stockCategory, timeFrame, useHA, stockName, fileName)
@@ -9,9 +10,7 @@ Public Class Divergence
         Await Task.Delay(0).ConfigureAwait(False)
         Dim ret As New DataTable
         ret.Columns.Add("Date")
-        ret.Columns.Add("Trading Symbol")
-        ret.Columns.Add("Divergence")
-
+        ret.Columns.Add("Instrument")
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
         AddHandler stockData.WaitingFor, AddressOf OnWaitingFor
@@ -69,25 +68,24 @@ Public Class Divergence
                                 currentDayPayload.Add(runningPayload, inputPayload(runningPayload))
                             End If
                         Next
-
-                        'Main Logic
+                        'Main logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            Dim firstCandleOfTheDay As Payload = currentDayPayload.FirstOrDefault.Value
-                            Dim previousDayFirstCandleTime As Date = inputPayload.Min(Function(x)
-                                                                                          If x.Key.Date = firstCandleOfTheDay.PreviousCandlePayload.PayloadDate.Date Then
-                                                                                              Return x.Key
-                                                                                          Else
-                                                                                              Return Date.MaxValue
-                                                                                          End If
-                                                                                      End Function)
-                            Dim previousDayFirstCandle As Payload = inputPayload(previousDayFirstCandleTime)
-
-                            Dim row As DataRow = ret.NewRow
-                            row("Date") = firstCandleOfTheDay.PayloadDate.ToString("dd-MMM-yyyy")
-                            row("Trading Symbol") = firstCandleOfTheDay.TradingSymbol
-                            row("Divergence") = Math.Round(((firstCandleOfTheDay.Close - previousDayFirstCandle.Close) / firstCandleOfTheDay.Close) * 100, 4)
-
-                            ret.Rows.Add(row)
+                            For Each runningPayload In currentDayPayload.Keys
+                                _canceller.Token.ThrowIfCancellationRequested()
+                                If currentDayPayload(runningPayload).PreviousCandlePayload IsNot Nothing Then
+                                    If currentDayPayload(runningPayload).CandleBody <= currentDayPayload(runningPayload).PreviousCandlePayload.CandleBody / 4 AndAlso
+                                        currentDayPayload(runningPayload).PreviousCandlePayload.CandleBody >= currentDayPayload(runningPayload).PreviousCandlePayload.CandleRange * 50 / 100 Then
+                                        Dim middlePoint As Decimal = (currentDayPayload(runningPayload).PreviousCandlePayload.High + currentDayPayload(runningPayload).PreviousCandlePayload.Low) / 2
+                                        If currentDayPayload(runningPayload).High <= middlePoint OrElse
+                                            currentDayPayload(runningPayload).Low >= middlePoint Then
+                                            Dim row As DataRow = ret.NewRow
+                                            row("Date") = runningPayload
+                                            row("Instrument") = currentDayPayload(runningPayload).TradingSymbol
+                                            ret.Rows.Add(row)
+                                        End If
+                                    End If
+                                End If
+                            Next
                         End If
                     End If
                 Next
