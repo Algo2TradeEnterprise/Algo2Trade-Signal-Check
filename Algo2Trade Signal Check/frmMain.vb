@@ -412,14 +412,14 @@ Public Class frmMain
             End If
 
         Catch cx As OperationCanceledException
-        MsgBox(String.Format("Error: {0}", cx.Message), MsgBoxStyle.Critical)
+            MsgBox(String.Format("Error: {0}", cx.Message), MsgBoxStyle.Critical)
         Catch ex As Exception
-        MsgBox(String.Format("Error: {0}", ex.ToString), MsgBoxStyle.Critical)
+            MsgBox(String.Format("Error: {0}", ex.ToString), MsgBoxStyle.Critical)
         Finally
-        SetLabelText_ThreadSafe(lblProgress, String.Format("Process Complete. Number of records: {0}", dgvSignal.Rows.Count))
-        SetObjectEnableDisable_ThreadSafe(btnView, True)
-        SetObjectEnableDisable_ThreadSafe(btnCancel, False)
-        SetObjectEnableDisable_ThreadSafe(btnExport, True)
+            SetLabelText_ThreadSafe(lblProgress, String.Format("Process Complete. Number of records: {0}", dgvSignal.Rows.Count))
+            SetObjectEnableDisable_ThreadSafe(btnView, True)
+            SetObjectEnableDisable_ThreadSafe(btnCancel, False)
+            SetObjectEnableDisable_ThreadSafe(btnExport, True)
         End Try
     End Function
 
