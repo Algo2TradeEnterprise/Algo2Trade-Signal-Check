@@ -284,133 +284,109 @@ Public Class frmMain
         Dim instrumentName As String = GetTextBoxText_ThreadSafe(txtInstrumentName)
         Dim filePath As String = GetTextBoxText_ThreadSafe(txtFilePath)
 
-        Dim stockData As StockSelection = New StockSelection(_canceller, category, Nothing, filePath)
-        AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
-        AddHandler stockData.WaitingFor, AddressOf OnWaitingFor
-        AddHandler stockData.DocumentRetryStatus, AddressOf OnDocumentRetryStatus
-        AddHandler stockData.DocumentDownloadComplete, AddressOf OnDocumentDownloadComplete
-        Dim stockList As List(Of String) = Await stockData.GetStockList(Now.Date).ConfigureAwait(False)
-
         Try
-            If stockList IsNot Nothing AndAlso stockList.Count > 0 Then
-                For Each runningStock In stockList
-                    instrumentName = runningStock
-                    filePath = ""
-
-
-                    Dim dt As DataTable = Nothing
-                    Dim rule As Rule = Nothing
-                    Select Case selectedRule
-                        Case 0
-                            rule = New StallPattern(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 1
-                            rule = New PiercingAndDarkCloud(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 2
-                            rule = New OneSidedVolume(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 3
-                            rule = New ConstrictionAtBreakout(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 4
-                            rule = New HKTrendOpposingByVolume(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 5
-                            rule = New HKTemporaryPause(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 6
-                            rule = New HKReversal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 7
-                            rule = New GetRawCandle(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 8
-                            rule = New DailyStrongHKOppositeVolume(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 9
-                            rule = New FractalCut2MA(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 10
-                            rule = New VolumeIndex(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 11
-                            rule = New EODSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 12
-                            rule = New PinBarFormation(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 13
-                            rule = New BollingerWithATRBands(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 14
-                            rule = New LowLossHighGainVWAP(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 15
-                            rule = New DoubleVolumeEOD(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 16
-                            rule = New FractalBreakoutShortTrend(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 17
-                            rule = New DonchianBreakoutShortTrend(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 18
-                            rule = New PinocchioBarFormation(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 19
-                            rule = New MarketOpenHABreakoutScreener(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 20
-                            rule = New VolumeWithCandleRange(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 21
-                            rule = New DayHighLow(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 22
-                            rule = New LowSLCandle(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 23
-                            rule = New InsideBarHighLow(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 24
-                            rule = New ReversaHHLLBreakout(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 25
-                            rule = New DoubleInsideBar(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 26
-                            rule = New HighLowSupportResistance(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 27
-                            rule = New OHL(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 28
-                            rule = New SpotFutureArbritrage(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 29
-                            rule = New SwingCandle(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 30
-                            rule = New SupertrendSMAOpenHighLow(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 31
-                            rule = New DoubleTopDoubleBottom(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 32
-                            rule = New WickBeyondSlabLevel(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 33
-                            rule = New CandleRangeWithATR(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 34
-                            rule = New FractalDip(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 35
-                            rule = New RangeIdentifier(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 36
-                            rule = New IndicatorTester(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 37
-                            rule = New BollingerSqueeze(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 38
-                            rule = New InsideBarBreakout(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 39
-                            rule = New LowSLFractal(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetTextBoxText_ThreadSafe(txtLowSLFractalATRMultiplier))
-                        Case 40
-                            rule = New GraphAngle(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetDateTimePickerValue_ThreadSafe(dtPckrGraphAngleEndTime), GetTextBoxText_ThreadSafe(txtGraphAngleSDMul), GetTextBoxText_ThreadSafe(txtGraphAngleCandlePer))
-                        Case 41
-                            rule = New MultiEMALine(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 42
-                            rule = New MultiTimeframeMultiMA(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetNumericUpDownValue_ThreadSafe(nmrcMultiTFMultiMAHigherTF))
-                        Case 43
-                            rule = New XMinVWAP(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                        Case 44
-                            rule = New PriceVolumeImbalance(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetNumericUpDownValue_ThreadSafe(nmrcPriceVolumeImbalancePeriod), GetTextBoxText_ThreadSafe(txtPriceVolumeImbalanceSDMul))
-                        Case 45
-                            rule = New Divergence(_canceller, category, timeFrame, useHA, instrumentName, filePath)
-                    End Select
-                    AddHandler rule.Heartbeat, AddressOf OnHeartbeat
-                    AddHandler rule.WaitingFor, AddressOf OnWaitingFor
-                    AddHandler rule.DocumentRetryStatus, AddressOf OnDocumentRetryStatus
-                    AddHandler rule.DocumentDownloadComplete, AddressOf OnDocumentDownloadComplete
-                    dt = Await rule.RunAsync(startDate, endDate).ConfigureAwait(False)
-                    'SetDatagridBindDatatable_ThreadSafe(dgvSignal, dt)
-
-                    If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-                        Dim outputFilename As String = Path.Combine(My.Application.Info.DirectoryPath, "Indicator Output", String.Format("{0} {1} {2}.csv", instrumentName, timeFrame, GetComboBoxItem_ThreadSafe(cmbCategory)))
-                        OnHeartbeat(String.Format("Generating {0}", outputFilename))
-                        Using export As New CSVHelper(outputFilename, ",", _canceller)
-                            export.GetCSVFromDataTable(dt)
-                        End Using
-                    End If
-                Next
-            End If
-
+            Dim dt As DataTable = Nothing
+            Dim rule As Rule = Nothing
+            Select Case selectedRule
+                Case 0
+                    rule = New StallPattern(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 1
+                    rule = New PiercingAndDarkCloud(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 2
+                    rule = New OneSidedVolume(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 3
+                    rule = New ConstrictionAtBreakout(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 4
+                    rule = New HKTrendOpposingByVolume(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 5
+                    rule = New HKTemporaryPause(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 6
+                    rule = New HKReversal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 7
+                    rule = New GetRawCandle(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 8
+                    rule = New DailyStrongHKOppositeVolume(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 9
+                    rule = New FractalCut2MA(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 10
+                    rule = New VolumeIndex(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 11
+                    rule = New EODSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 12
+                    rule = New PinBarFormation(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 13
+                    rule = New BollingerWithATRBands(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 14
+                    rule = New LowLossHighGainVWAP(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 15
+                    rule = New DoubleVolumeEOD(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 16
+                    rule = New FractalBreakoutShortTrend(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 17
+                    rule = New DonchianBreakoutShortTrend(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 18
+                    rule = New PinocchioBarFormation(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 19
+                    rule = New MarketOpenHABreakoutScreener(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 20
+                    rule = New VolumeWithCandleRange(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 21
+                    rule = New DayHighLow(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 22
+                    rule = New LowSLCandle(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 23
+                    rule = New InsideBarHighLow(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 24
+                    rule = New ReversaHHLLBreakout(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 25
+                    rule = New DoubleInsideBar(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 26
+                    rule = New HighLowSupportResistance(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 27
+                    rule = New OHL(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 28
+                    rule = New SpotFutureArbritrage(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 29
+                    rule = New SwingCandle(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 30
+                    rule = New SupertrendSMAOpenHighLow(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 31
+                    rule = New DoubleTopDoubleBottom(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 32
+                    rule = New WickBeyondSlabLevel(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 33
+                    rule = New CandleRangeWithATR(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 34
+                    rule = New FractalDip(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 35
+                    rule = New RangeIdentifier(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 36
+                    rule = New IndicatorTester(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 37
+                    rule = New BollingerSqueeze(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 38
+                    rule = New InsideBarBreakout(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 39
+                    rule = New LowSLFractal(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetTextBoxText_ThreadSafe(txtLowSLFractalATRMultiplier))
+                Case 40
+                    rule = New GraphAngle(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetDateTimePickerValue_ThreadSafe(dtPckrGraphAngleEndTime), GetTextBoxText_ThreadSafe(txtGraphAngleSDMul), GetTextBoxText_ThreadSafe(txtGraphAngleCandlePer))
+                Case 41
+                    rule = New MultiEMALine(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 42
+                    rule = New MultiTimeframeMultiMA(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetNumericUpDownValue_ThreadSafe(nmrcMultiTFMultiMAHigherTF))
+                Case 43
+                    rule = New XMinVWAP(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 44
+                    rule = New PriceVolumeImbalance(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetNumericUpDownValue_ThreadSafe(nmrcPriceVolumeImbalancePeriod), GetTextBoxText_ThreadSafe(txtPriceVolumeImbalanceSDMul))
+                Case 45
+                    rule = New Divergence(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+            End Select
+            AddHandler rule.Heartbeat, AddressOf OnHeartbeat
+            AddHandler rule.WaitingFor, AddressOf OnWaitingFor
+            AddHandler rule.DocumentRetryStatus, AddressOf OnDocumentRetryStatus
+            AddHandler rule.DocumentDownloadComplete, AddressOf OnDocumentDownloadComplete
+            dt = Await rule.RunAsync(startDate, endDate).ConfigureAwait(False)
+            SetDatagridBindDatatable_ThreadSafe(dgvSignal, dt)
         Catch cx As OperationCanceledException
             MsgBox(String.Format("Error: {0}", cx.Message), MsgBoxStyle.Critical)
         Catch ex As Exception
