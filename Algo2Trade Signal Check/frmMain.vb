@@ -395,7 +395,7 @@ Public Class frmMain
                 dt = Await rule.RunAsync(tempStartDate, tempEndDate).ConfigureAwait(False)
                 'SetDatagridBindDatatable_ThreadSafe(dgvSignal, dt)
                 If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-                    Dim outputFilename As String = Path.Combine(My.Application.Info.DirectoryPath, "Indicator Output", String.Format("{0} {1}.csv", timeFrame, GetComboBoxItem_ThreadSafe(cmbCategory)))
+                    Dim outputFilename As String = Path.Combine(My.Application.Info.DirectoryPath, "Indicator Output", String.Format("{0} {1} {2}.csv", timeFrame, GetComboBoxItem_ThreadSafe(cmbCategory), tempEndDate.ToString("MMM-yy")))
                     OnHeartbeat(String.Format("Generating {0}", outputFilename))
                     Using export As New CSVHelper(outputFilename, ",", _canceller)
                         export.GetCSVFromDataTable(dt)
