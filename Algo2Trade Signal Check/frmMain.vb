@@ -382,6 +382,8 @@ Public Class frmMain
                     rule = New FirstCandleDifference(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 46
                     rule = New SmallBodyCandles(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 47
+                    rule = New ReverseCandles(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -550,6 +552,9 @@ Public Class frmMain
             Case 46
                 LoadSettings(Nothing)
                 lblDescription.Text = "Current candle body<=1/4 of previous candle body and current candle should be formed at the edge of the previous candle, ie. it should not cross the midpoint of the previous candle. Previous candle should have body more than 50% of its range."
+            Case 47
+                LoadSettings(Nothing)
+                lblDescription.Text = "Current candle color Red but creats as Higher high and vice versa"
             Case Else
                 Throw New NotImplementedException
         End Select

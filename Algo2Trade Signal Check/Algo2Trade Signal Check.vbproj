@@ -138,6 +138,7 @@
     <Compile Include="StrategyRules\PriceVolumeImbalance.vb" />
     <Compile Include="StrategyRules\RangeIdentifier.vb" />
     <Compile Include="StrategyRules\ReversaHHLLBreakout.vb" />
+    <Compile Include="StrategyRules\ReverseCandles.vb" />
     <Compile Include="StrategyRules\SmallBodyCandles.vb" />
     <Compile Include="StrategyRules\SpotFutureArbritrage.vb" />
     <Compile Include="StrategyRules\StallPattern.vb" />
