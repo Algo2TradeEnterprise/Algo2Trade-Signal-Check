@@ -74,6 +74,7 @@ Public Class SmallBodyCandles
                                 _canceller.Token.ThrowIfCancellationRequested()
                                 If currentDayPayload(runningPayload).PreviousCandlePayload IsNot Nothing Then
                                     If currentDayPayload(runningPayload).CandleBody <= currentDayPayload(runningPayload).PreviousCandlePayload.CandleBody / 4 AndAlso
+                                        currentDayPayload(runningPayload).CandleRange <= currentDayPayload(runningPayload).PreviousCandlePayload.CandleRange / 2 AndAlso
                                         currentDayPayload(runningPayload).PreviousCandlePayload.CandleBody >= currentDayPayload(runningPayload).PreviousCandlePayload.CandleRange * 50 / 100 Then
                                         Dim middlePoint As Decimal = (currentDayPayload(runningPayload).PreviousCandlePayload.High + currentDayPayload(runningPayload).PreviousCandlePayload.Low) / 2
                                         If currentDayPayload(runningPayload).High <= middlePoint OrElse

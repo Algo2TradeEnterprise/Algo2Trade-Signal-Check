@@ -384,6 +384,8 @@ Public Class frmMain
                     rule = New SmallBodyCandles(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 47
                     rule = New ReverseCandles(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 48
+                    rule = New InsideWickCandles(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -555,6 +557,9 @@ Public Class frmMain
             Case 47
                 LoadSettings(Nothing)
                 lblDescription.Text = "Current candle color Red but creats as Higher high and vice versa"
+            Case 48
+                LoadSettings(Nothing)
+                lblDescription.Text = "Current candle body less than previous candle wick"
             Case Else
                 Throw New NotImplementedException
         End Select

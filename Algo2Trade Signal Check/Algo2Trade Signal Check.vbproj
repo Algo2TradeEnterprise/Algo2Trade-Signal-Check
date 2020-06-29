@@ -124,6 +124,7 @@
     <Compile Include="StrategyRules\IndicatorTester.vb" />
     <Compile Include="StrategyRules\InsideBarBreakout.vb" />
     <Compile Include="StrategyRules\InsideBarHighLow.vb" />
+    <Compile Include="StrategyRules\InsideWickCandles.vb" />
     <Compile Include="StrategyRules\LowLossHighGainVWAP.vb" />
     <Compile Include="StrategyRules\LowSLCandle.vb" />
     <Compile Include="StrategyRules\LowSLFractal.vb" />
