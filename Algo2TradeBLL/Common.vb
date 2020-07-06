@@ -389,7 +389,13 @@ Public Class Common
                 tempPayload.Close = dt.Rows(i).Item(closeColumnIndex)
                 tempPayload.PayloadDate = dt.Rows(i).Item(dateColumnIndex)
                 tempPayload.TradingSymbol = dt.Rows(i).Item(tradingSymbolColumnIndex)
-                If oiColumnIndex <> Integer.MinValue Then tempPayload.OI = dt.Rows(i).Item(oiColumnIndex)
+                If oiColumnIndex <> Integer.MinValue Then
+                    If Not IsDBNull(dt.Rows(i).Item(oiColumnIndex)) Then
+                        tempPayload.OI = dt.Rows(i).Item(oiColumnIndex)
+                    Else
+                        tempPayload.OI = 0
+                    End If
+                End If
                 If tempPayload.PreviousCandlePayload IsNot Nothing Then
                     If tempPayload.PayloadDate.Date = tempPayload.PreviousCandlePayload.PayloadDate.Date Then
                         tempPayload.CumulativeVolume = tempPayload.PreviousCandlePayload.CumulativeVolume + dt.Rows(i).Item(volumeColumnIndex)
