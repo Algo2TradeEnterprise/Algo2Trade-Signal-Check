@@ -386,6 +386,8 @@ Public Class frmMain
                     rule = New ReverseCandles(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 48
                     rule = New InsideWickCandles(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 49
+                    rule = New HighestOIOptions(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -560,6 +562,9 @@ Public Class frmMain
             Case 48
                 LoadSettings(Nothing)
                 lblDescription.Text = "Current candle body less than previous candle wick"
+            Case 49
+                LoadSettings(Nothing)
+                lblDescription.Text = "Top 5 OI Option Stocks"
             Case Else
                 Throw New NotImplementedException
         End Select

@@ -362,13 +362,14 @@ Public Class Common
     End Function
 
     Public Shared Function ConvertDataTableToPayload(ByVal dt As DataTable,
-                                              ByVal openColumnIndex As Integer,
-                                              ByVal lowColumnIndex As Integer,
-                                              ByVal highColumnIndex As Integer,
-                                              ByVal closeColumnIndex As Integer,
-                                              ByVal volumeColumnIndex As Integer,
-                                              ByVal dateColumnIndex As Integer,
-                                              ByVal tradingSymbolColumnIndex As Integer) As Dictionary(Of Date, Payload)
+                                                     ByVal openColumnIndex As Integer,
+                                                     ByVal lowColumnIndex As Integer,
+                                                     ByVal highColumnIndex As Integer,
+                                                     ByVal closeColumnIndex As Integer,
+                                                     ByVal volumeColumnIndex As Integer,
+                                                     ByVal dateColumnIndex As Integer,
+                                                     ByVal tradingSymbolColumnIndex As Integer,
+                                                     Optional ByVal oiColumnIndex As Integer = Integer.MinValue) As Dictionary(Of Date, Payload)
 
         Dim inputpayload As Dictionary(Of Date, Payload) = Nothing
 
@@ -388,6 +389,7 @@ Public Class Common
                 tempPayload.Close = dt.Rows(i).Item(closeColumnIndex)
                 tempPayload.PayloadDate = dt.Rows(i).Item(dateColumnIndex)
                 tempPayload.TradingSymbol = dt.Rows(i).Item(tradingSymbolColumnIndex)
+                If oiColumnIndex <> Integer.MinValue Then tempPayload.OI = dt.Rows(i).Item(oiColumnIndex)
                 If tempPayload.PreviousCandlePayload IsNot Nothing Then
                     If tempPayload.PayloadDate.Date = tempPayload.PreviousCandlePayload.PayloadDate.Date Then
                         tempPayload.CumulativeVolume = tempPayload.PreviousCandlePayload.CumulativeVolume + dt.Rows(i).Item(volumeColumnIndex)
@@ -510,6 +512,21 @@ Public Class Common
 #End Region
 
 #Region "Public Functions"
+    Public Async Function RunSelectAsync(ByVal query As String) As Task(Of DataTable)
+        Dim ret As DataTable = Nothing
+        If query IsNot Nothing Then
+            Dim conn As MySqlConnection = OpenDBConnection()
+            _cts.Token.ThrowIfCancellationRequested()
+            Dim cm As MySqlCommand = Nothing
+            cm = New MySqlCommand(query, conn)
+            _cts.Token.ThrowIfCancellationRequested()
+            Dim adapter As New MySqlDataAdapter(cm)
+            adapter.SelectCommand.CommandTimeout = 300
+            ret = New DataTable()
+            Await adapter.FillAsync(ret, _cts.Token).ConfigureAwait(False)
+        End If
+        Return ret
+    End Function
     Public Function GetRawPayload(ByVal tableName As DataBaseTable, ByVal rawInstrumentName As String, ByVal startDate As Date, ByVal endDate As Date) As Dictionary(Of Date, Payload)
         Dim ret As Dictionary(Of Date, Payload) = Nothing
         Dim dt As DataTable = Nothing
