@@ -143,6 +143,7 @@
     <Compile Include="StrategyRules\ReverseCandles.vb" />
     <Compile Include="StrategyRules\SmallBodyCandles.vb" />
     <Compile Include="StrategyRules\SpotFutureArbritrage.vb" />
+    <Compile Include="StrategyRules\SqueezeZone.vb" />
     <Compile Include="StrategyRules\StallPattern.vb" />
     <Compile Include="StrategyRules\SupertrendSMAOpenHighLow.vb" />
     <Compile Include="StrategyRules\SwingCandle.vb" />
