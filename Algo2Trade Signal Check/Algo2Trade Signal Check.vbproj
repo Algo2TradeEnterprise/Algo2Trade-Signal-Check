@@ -106,6 +106,7 @@
     <Compile Include="StrategyRules\ConstrictionAtBreakout.vb" />
     <Compile Include="StrategyRules\DailyStrongHKOppositeVolume.vb" />
     <Compile Include="StrategyRules\DayHighLow.vb" />
+    <Compile Include="StrategyRules\FibonacciTrendline.vb" />
     <Compile Include="StrategyRules\FirstCandleDifference.vb" />
     <Compile Include="StrategyRules\DonchianBreakoutShortTrend.vb" />
     <Compile Include="StrategyRules\DoubleInsideBar.vb" />
