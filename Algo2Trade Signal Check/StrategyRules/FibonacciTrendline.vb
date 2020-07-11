@@ -81,13 +81,13 @@ Public Class FibonacciTrendline
                             Dim x1 As Decimal = 0
                             Dim y1 As Decimal = firstCandleOfTheDay.High + rangePer
                             Dim x2 As Decimal = currentDayPayload.Count - 1
-                            Dim y2 As Decimal = firstCandleOfTheDay.High - rangePer
+                            Dim y2 As Decimal = firstCandleOfTheDay.Low + rangePer
                             Dim highTrendLine As TrendLineVeriables = Common.GetEquationOfTrendLine(x1, y1, x2, y2)
 
                             Dim p1 As Decimal = 0
                             Dim q1 As Decimal = firstCandleOfTheDay.Low - rangePer
                             Dim p2 As Decimal = currentDayPayload.Count - 1
-                            Dim q2 As Decimal = firstCandleOfTheDay.Low + rangePer
+                            Dim q2 As Decimal = firstCandleOfTheDay.High - rangePer
                             Dim lowTrendLine As TrendLineVeriables = Common.GetEquationOfTrendLine(p1, q1, p2, q2)
 
                             Dim counter As Integer = 0
