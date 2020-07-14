@@ -20,6 +20,8 @@ Public Class CandleRangeWithATR
         ret.Columns.Add("CR ATR %")
         ret.Columns.Add("Slab")
         ret.Columns.Add("CR Slab %")
+        ret.Columns.Add("Highest ATR")
+        ret.Columns.Add("CR Highest ATR %")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -97,16 +99,18 @@ Public Class CandleRangeWithATR
                                         Dim row As DataRow = ret.NewRow
                                         row("Date") = inputPayload(runningPayload).PayloadDate
                                         row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
-                                        row("Open") = inputPayload(runningPayload).Open
-                                        row("Low") = inputPayload(runningPayload).Low
-                                        row("High") = inputPayload(runningPayload).High
-                                        row("Close") = inputPayload(runningPayload).Close
+                                        row("Open") = Math.Round(inputPayload(runningPayload).Open, 4)
+                                        row("Low") = Math.Round(inputPayload(runningPayload).Low, 4)
+                                        row("High") = Math.Round(inputPayload(runningPayload).High, 4)
+                                        row("Close") = Math.Round(inputPayload(runningPayload).Close, 4)
                                         row("Volume") = inputPayload(runningPayload).Volume
-                                        row("Candle Range") = inputPayload(runningPayload).CandleRange
+                                        row("Candle Range") = Math.Round(inputPayload(runningPayload).CandleRange, 4)
                                         row("ATR") = Math.Round(atrPayload(runningPayload), 4)
                                         row("CR ATR %") = Math.Round((inputPayload(runningPayload).CandleRange / atrPayload(runningPayload)) * 100, 4)
                                         row("Slab") = slab
                                         row("CR Slab %") = Math.Round((inputPayload(runningPayload).CandleRange / slab) * 100, 4)
+                                        row("Highest ATR") = Math.Round(GetHighestATR(atrPayload, runningPayload), 4)
+                                        row("CR Highest ATR %") = Math.Round((inputPayload(runningPayload).CandleRange / GetHighestATR(atrPayload, runningPayload)) * 100, 4)
 
                                         ret.Rows.Add(row)
                                     Next
@@ -119,6 +123,16 @@ Public Class CandleRangeWithATR
             chkDate = chkDate.AddDays(1)
         End While
         Return ret
+    End Function
+
+    Private Function GetHighestATR(ByVal atrPayload As Dictionary(Of Date, Decimal), ByVal signalTime As Date) As Decimal
+        Return atrPayload.Max(Function(x)
+                                  If x.Key.Date = signalTime.Date AndAlso x.Key <= signalTime Then
+                                      Return x.Value
+                                  Else
+                                      Return Decimal.MinValue
+                                  End If
+                              End Function)
     End Function
 
     Private Function CalculateSlab(ByVal price As Decimal, ByVal atr As Decimal) As Decimal
