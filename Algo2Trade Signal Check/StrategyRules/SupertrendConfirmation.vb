@@ -85,40 +85,43 @@ Public Class SupertrendConfirmation
                                 _canceller.Token.ThrowIfCancellationRequested()
                                 If runningPayload.Value.PreviousCandlePayload IsNot Nothing AndAlso
                                     runningPayload.Value.PreviousCandlePayload.PayloadDate.Date = chkDate.Date Then
-                                    If supertrendColorPayload(runningPayload.Key) = Color.Green Then
-                                        If runningPayload.Value.CandleColor = Color.Green AndAlso
-                                            runningPayload.Value.PreviousCandlePayload.CandleColor = Color.Red Then
-                                            Dim low As Decimal = Math.Min(runningPayload.Value.Low, runningPayload.Value.PreviousCandlePayload.Low)
-                                            Dim high As Decimal = Math.Max(runningPayload.Value.High, runningPayload.Value.PreviousCandlePayload.High)
-                                            Dim range As Decimal = high - low
-                                            Dim rangePer As Decimal = Math.Round((range / low) * 100, 4)
-                                            If rangePer <= _maximumRangePer Then
-                                                Dim row As DataRow = ret.NewRow
-                                                row("Date") = runningPayload.Value.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
-                                                row("Trading Symbol") = runningPayload.Value.TradingSymbol
-                                                row("Range") = range
-                                                row("Range %") = rangePer
-                                                row("Direction") = "Buy"
+                                    If runningPayload.Value.High > runningPayload.Value.PreviousCandlePayload.High OrElse
+                                        runningPayload.Value.Low < runningPayload.Value.PreviousCandlePayload.Low Then
+                                        If supertrendColorPayload(runningPayload.Key) = Color.Green Then
+                                            If runningPayload.Value.CandleColor = Color.Green AndAlso
+                                                runningPayload.Value.PreviousCandlePayload.CandleColor = Color.Red Then
+                                                Dim low As Decimal = Math.Min(runningPayload.Value.Low, runningPayload.Value.PreviousCandlePayload.Low)
+                                                Dim high As Decimal = Math.Max(runningPayload.Value.High, runningPayload.Value.PreviousCandlePayload.High)
+                                                Dim range As Decimal = high - low
+                                                Dim rangePer As Decimal = Math.Round((range / low) * 100, 4)
+                                                If rangePer <= _maximumRangePer Then
+                                                    Dim row As DataRow = ret.NewRow
+                                                    row("Date") = runningPayload.Value.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
+                                                    row("Trading Symbol") = runningPayload.Value.TradingSymbol
+                                                    row("Range") = range
+                                                    row("Range %") = rangePer
+                                                    row("Direction") = "Buy"
 
-                                                ret.Rows.Add(row)
+                                                    ret.Rows.Add(row)
+                                                End If
                                             End If
-                                        End If
-                                    ElseIf supertrendColorPayload(runningPayload.Key) = Color.Red Then
-                                        If runningPayload.Value.CandleColor = Color.Red AndAlso
+                                        ElseIf supertrendColorPayload(runningPayload.Key) = Color.Red Then
+                                            If runningPayload.Value.CandleColor = Color.Red AndAlso
                                             runningPayload.Value.PreviousCandlePayload.CandleColor = Color.Green Then
-                                            Dim low As Decimal = Math.Min(runningPayload.Value.Low, runningPayload.Value.PreviousCandlePayload.Low)
-                                            Dim high As Decimal = Math.Max(runningPayload.Value.High, runningPayload.Value.PreviousCandlePayload.High)
-                                            Dim range As Decimal = high - low
-                                            Dim rangePer As Decimal = Math.Round((range / low) * 100, 4)
-                                            If rangePer <= _maximumRangePer Then
-                                                Dim row As DataRow = ret.NewRow
-                                                row("Date") = runningPayload.Value.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
-                                                row("Trading Symbol") = runningPayload.Value.TradingSymbol
-                                                row("Range") = range
-                                                row("Range %") = rangePer
-                                                row("Direction") = "Sell"
+                                                Dim low As Decimal = Math.Min(runningPayload.Value.Low, runningPayload.Value.PreviousCandlePayload.Low)
+                                                Dim high As Decimal = Math.Max(runningPayload.Value.High, runningPayload.Value.PreviousCandlePayload.High)
+                                                Dim range As Decimal = high - low
+                                                Dim rangePer As Decimal = Math.Round((range / low) * 100, 4)
+                                                If rangePer <= _maximumRangePer Then
+                                                    Dim row As DataRow = ret.NewRow
+                                                    row("Date") = runningPayload.Value.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
+                                                    row("Trading Symbol") = runningPayload.Value.TradingSymbol
+                                                    row("Range") = range
+                                                    row("Range %") = rangePer
+                                                    row("Direction") = "Sell"
 
-                                                ret.Rows.Add(row)
+                                                    ret.Rows.Add(row)
+                                                End If
                                             End If
                                         End If
                                     End If
