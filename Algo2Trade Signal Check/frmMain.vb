@@ -392,6 +392,8 @@ Public Class frmMain
                     rule = New SqueezeZone(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 51
                     rule = New FibonacciTrendline(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 52
+                    rule = New SupertrendConfirmation(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetTextBoxText_ThreadSafe(txtSupertrendConfirmationMaxRangePer))
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -575,6 +577,10 @@ Public Class frmMain
             Case 51
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
+            Case 52
+                LoadSettings(pnlSupertrendConfirmation)
+                txtSupertrendConfirmationMaxRangePer.Text = 0.25
+                lblDescription.Text = String.Format("When supertrend is green and a red candle followed by green candle and two candle range % <= x %")
             Case Else
                 Throw New NotImplementedException
         End Select
@@ -598,6 +604,7 @@ Public Class frmMain
         panelList.Add(pnlGraphAngle)
         panelList.Add(pnlMultiTFMultiMA)
         panelList.Add(pnlPriceVolumeImbalance)
+        panelList.Add(pnlSupertrendConfirmation)
 
         For Each runningPanel In panelList
             If panelName IsNot Nothing AndAlso runningPanel.Name = panelName.Name Then

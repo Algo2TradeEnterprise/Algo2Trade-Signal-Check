@@ -66,6 +66,9 @@ Partial Class frmMain
         Me.nmrcPriceVolumeImbalancePeriod = New System.Windows.Forms.NumericUpDown()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.Label6 = New System.Windows.Forms.Label()
+        Me.pnlSupertrendConfirmation = New System.Windows.Forms.Panel()
+        Me.txtSupertrendConfirmationMaxRangePer = New System.Windows.Forms.TextBox()
+        Me.lblSupertrendConfirmationMaxRangePer = New System.Windows.Forms.Label()
         CType(Me.nmrcTimeFrame, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         CType(Me.dgvSignal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -75,6 +78,7 @@ Partial Class frmMain
         CType(Me.nmrcMultiTFMultiMAHigherTF, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlPriceVolumeImbalance.SuspendLayout()
         CType(Me.nmrcPriceVolumeImbalancePeriod, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.pnlSupertrendConfirmation.SuspendLayout()
         Me.SuspendLayout()
         '
         'saveFile
@@ -218,7 +222,7 @@ Partial Class frmMain
         'cmbRule
         '
         Me.cmbRule.FormattingEnabled = True
-        Me.cmbRule.Items.AddRange(New Object() {"Stall Pattern", "Piercing And Dark Cloud", "One Sided Volume", "Constriction At Breakout", "HK Trend Opposing By Volume", "HK Temporary Pause", "HK Reversal", "Get Raw Candle", "Daily Strong HK Opposite Color Volume", "Fractal Cut 2 MA", "Volume Index", "EOD Signal", "Pin Bar Formation", "Bollinger With ATR Bands", "Low Loss High Gain VWAP", "Double Volume EOD", "Fractal Breakout Short Trend", "Donchian Breakout Short Trend", "Pinocchio Bar Formation", "Market Open HA Breakout Screener", "Volume With Candle Range", "DayHighLow", "Low SL Candle", "Inside Bar High Low", "Reversal HHLL Breakout", "Double Inside Bar", "High Low Support Resistance", "Open=High/Open=Low", "Spot Future Arbritrage", "Swing Candle", "Supertrend SMA Open High/Low", "Double Top Double Bottom", "Wick Beyond Slab Level", "Candle Range With ATR", "Fractal Dip", "Range Identifier", "Indicator Tester", "Bollinger Squeeze", "Inside Bar Breakout", "Low SL Fractal", "Graph Angle", "Multi EMA Line", "Multi Timeframe Multi MA", "X-Min VWAP", "Price Volume Imbalance", "First Candle Difference", "Small Body Candles", "Reverse Candles", "Inside Wick Candles", "Highest OI Options", "Squeeze Zone", "Fibonacci Trendline"})
+        Me.cmbRule.Items.AddRange(New Object() {"Stall Pattern", "Piercing And Dark Cloud", "One Sided Volume", "Constriction At Breakout", "HK Trend Opposing By Volume", "HK Temporary Pause", "HK Reversal", "Get Raw Candle", "Daily Strong HK Opposite Color Volume", "Fractal Cut 2 MA", "Volume Index", "EOD Signal", "Pin Bar Formation", "Bollinger With ATR Bands", "Low Loss High Gain VWAP", "Double Volume EOD", "Fractal Breakout Short Trend", "Donchian Breakout Short Trend", "Pinocchio Bar Formation", "Market Open HA Breakout Screener", "Volume With Candle Range", "DayHighLow", "Low SL Candle", "Inside Bar High Low", "Reversal HHLL Breakout", "Double Inside Bar", "High Low Support Resistance", "Open=High/Open=Low", "Spot Future Arbritrage", "Swing Candle", "Supertrend SMA Open High/Low", "Double Top Double Bottom", "Wick Beyond Slab Level", "Candle Range With ATR", "Fractal Dip", "Range Identifier", "Indicator Tester", "Bollinger Squeeze", "Inside Bar Breakout", "Low SL Fractal", "Graph Angle", "Multi EMA Line", "Multi Timeframe Multi MA", "X-Min VWAP", "Price Volume Imbalance", "First Candle Difference", "Small Body Candles", "Reverse Candles", "Inside Wick Candles", "Highest OI Options", "Squeeze Zone", "Fibonacci Trendline", "Supertrend Confirmation"})
         Me.cmbRule.Location = New System.Drawing.Point(108, 7)
         Me.cmbRule.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbRule.Name = "cmbRule"
@@ -484,11 +488,37 @@ Partial Class frmMain
         Me.Label6.TabIndex = 2
         Me.Label6.Text = "SD Multiplier:"
         '
+        'pnlSupertrendConfirmation
+        '
+        Me.pnlSupertrendConfirmation.Controls.Add(Me.txtSupertrendConfirmationMaxRangePer)
+        Me.pnlSupertrendConfirmation.Controls.Add(Me.lblSupertrendConfirmationMaxRangePer)
+        Me.pnlSupertrendConfirmation.Location = New System.Drawing.Point(748, 90)
+        Me.pnlSupertrendConfirmation.Name = "pnlSupertrendConfirmation"
+        Me.pnlSupertrendConfirmation.Size = New System.Drawing.Size(461, 50)
+        Me.pnlSupertrendConfirmation.TabIndex = 31
+        '
+        'txtSupertrendConfirmationMaxRangePer
+        '
+        Me.txtSupertrendConfirmationMaxRangePer.Location = New System.Drawing.Point(122, 14)
+        Me.txtSupertrendConfirmationMaxRangePer.Name = "txtSupertrendConfirmationMaxRangePer"
+        Me.txtSupertrendConfirmationMaxRangePer.Size = New System.Drawing.Size(77, 22)
+        Me.txtSupertrendConfirmationMaxRangePer.TabIndex = 6
+        '
+        'lblSupertrendConfirmationMaxRangePer
+        '
+        Me.lblSupertrendConfirmationMaxRangePer.AutoSize = True
+        Me.lblSupertrendConfirmationMaxRangePer.Location = New System.Drawing.Point(15, 16)
+        Me.lblSupertrendConfirmationMaxRangePer.Name = "lblSupertrendConfirmationMaxRangePer"
+        Me.lblSupertrendConfirmationMaxRangePer.Size = New System.Drawing.Size(103, 17)
+        Me.lblSupertrendConfirmationMaxRangePer.TabIndex = 2
+        Me.lblSupertrendConfirmationMaxRangePer.Text = "Max Range % :"
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1244, 690)
+        Me.Controls.Add(Me.pnlSupertrendConfirmation)
         Me.Controls.Add(Me.pnlPriceVolumeImbalance)
         Me.Controls.Add(Me.pnlMultiTFMultiMA)
         Me.Controls.Add(Me.pnlGraphAngle)
@@ -516,6 +546,8 @@ Partial Class frmMain
         Me.pnlPriceVolumeImbalance.ResumeLayout(False)
         Me.pnlPriceVolumeImbalance.PerformLayout()
         CType(Me.nmrcPriceVolumeImbalancePeriod, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.pnlSupertrendConfirmation.ResumeLayout(False)
+        Me.pnlSupertrendConfirmation.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -563,4 +595,7 @@ Partial Class frmMain
     Friend WithEvents Label8 As Label
     Friend WithEvents Label6 As Label
     Friend WithEvents txtPriceVolumeImbalanceSDMul As TextBox
+    Friend WithEvents pnlSupertrendConfirmation As Panel
+    Friend WithEvents txtSupertrendConfirmationMaxRangePer As TextBox
+    Friend WithEvents lblSupertrendConfirmationMaxRangePer As Label
 End Class
