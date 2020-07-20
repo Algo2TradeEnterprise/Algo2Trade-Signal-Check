@@ -394,6 +394,8 @@ Public Class frmMain
                     rule = New FibonacciTrendline(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 52
                     rule = New SupertrendConfirmation(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetTextBoxText_ThreadSafe(txtSupertrendConfirmationMaxRangePer))
+                Case 53
+                    rule = New DayHLSwingTrendline(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -581,6 +583,9 @@ Public Class frmMain
                 LoadSettings(pnlSupertrendConfirmation)
                 txtSupertrendConfirmationMaxRangePer.Text = 0.25
                 lblDescription.Text = String.Format("When supertrend is green and a red candle followed by green candle and two candle range % <= x %")
+            Case 53
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("Description ...")
             Case Else
                 Throw New NotImplementedException
         End Select

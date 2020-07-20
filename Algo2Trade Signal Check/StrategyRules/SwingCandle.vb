@@ -69,24 +69,24 @@ Public Class SwingCandle
                                 currentDayPayload.Add(runningPayload, inputPayload(runningPayload))
                             End If
                         Next
-                        'Main logic
-                        Dim swingHighPayload As Dictionary(Of Date, Decimal) = Nothing
-                        Dim swingLowPayload As Dictionary(Of Date, Decimal) = Nothing
-                        Indicator.SwingHighLow.CalculateSwingHighLow(inputPayload, True, swingHighPayload, swingLowPayload)
-                        If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            For Each runningPayload In currentDayPayload
-                                _canceller.Token.ThrowIfCancellationRequested()
-                                If swingHighPayload(runningPayload.Value.PayloadDate) <> swingHighPayload(runningPayload.Value.PreviousCandlePayload.PayloadDate) AndAlso
-                                    swingLowPayload(runningPayload.Value.PayloadDate) <> swingLowPayload(runningPayload.Value.PreviousCandlePayload.PayloadDate) AndAlso
-                                    swingHighPayload(runningPayload.Value.PayloadDate) = runningPayload.Value.PreviousCandlePayload.High AndAlso
-                                    swingLowPayload(runningPayload.Value.PayloadDate) = runningPayload.Value.PreviousCandlePayload.Low Then
-                                    Dim row As DataRow = ret.NewRow
-                                    row("Date") = runningPayload.Value.PreviousCandlePayload.PayloadDate.ToString("dd-MM-yyyy HH:mm:ss")
-                                    row("Instrument") = runningPayload.Value.PreviousCandlePayload.TradingSymbol
-                                    ret.Rows.Add(row)
-                                End If
-                            Next
-                        End If
+                        ''Main logic
+                        'Dim swingHighPayload As Dictionary(Of Date, Decimal) = Nothing
+                        'Dim swingLowPayload As Dictionary(Of Date, Decimal) = Nothing
+                        'Indicator.SwingHighLow.CalculateSwingHighLow(inputPayload, True, swingHighPayload, swingLowPayload)
+                        'If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
+                        '    For Each runningPayload In currentDayPayload
+                        '        _canceller.Token.ThrowIfCancellationRequested()
+                        '        If swingHighPayload(runningPayload.Value.PayloadDate) <> swingHighPayload(runningPayload.Value.PreviousCandlePayload.PayloadDate) AndAlso
+                        '            swingLowPayload(runningPayload.Value.PayloadDate) <> swingLowPayload(runningPayload.Value.PreviousCandlePayload.PayloadDate) AndAlso
+                        '            swingHighPayload(runningPayload.Value.PayloadDate) = runningPayload.Value.PreviousCandlePayload.High AndAlso
+                        '            swingLowPayload(runningPayload.Value.PayloadDate) = runningPayload.Value.PreviousCandlePayload.Low Then
+                        '            Dim row As DataRow = ret.NewRow
+                        '            row("Date") = runningPayload.Value.PreviousCandlePayload.PayloadDate.ToString("dd-MM-yyyy HH:mm:ss")
+                        '            row("Instrument") = runningPayload.Value.PreviousCandlePayload.TradingSymbol
+                        '            ret.Rows.Add(row)
+                        '        End If
+                        '    Next
+                        'End If
                     End If
                 Next
             End If
