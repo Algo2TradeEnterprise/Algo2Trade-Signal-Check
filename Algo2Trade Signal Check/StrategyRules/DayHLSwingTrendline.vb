@@ -13,7 +13,7 @@ Public Class DayHLSwingTrendline
         ret.Columns.Add("Date")
         ret.Columns.Add("Trading Symbol")
         ret.Columns.Add("Highest Candle")
-        ret.Columns.Add("Swing High")
+        ret.Columns.Add("Swing")
         ret.Columns.Add("Signal")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
@@ -81,6 +81,8 @@ Public Class DayHLSwingTrendline
                             Indicator.SwingHighLow.CalculateSwingHighLow(inputPayload, False, swingPayload)
 
                             Dim lastSignal As Integer = 0
+                            Dim lastHighTrendLine As TrendLineVeriables = Nothing
+                            Dim lastLowTrendLine As TrendLineVeriables = Nothing
                             For Each runningCandle In currentDayPayload
                                 _canceller.Token.ThrowIfCancellationRequested()
                                 If runningCandle.Value.PreviousCandlePayload.PreviousCandlePayload.PayloadDate.Date = chkDate.Date Then
@@ -100,20 +102,31 @@ Public Class DayHLSwingTrendline
                                                                                             End Function).Count
                                                 Dim y2 As Decimal = swing.SwingHigh
                                                 Dim highTrendLine As TrendLineVeriables = Common.GetEquationOfTrendLine(x1, y1, x2, y2)
-                                                Dim counter As Integer = currentDayPayload.Where(Function(x)
-                                                                                                     Return x.Key > highestCandle.PayloadDate AndAlso x.Key <= runningCandle.Key
-                                                                                                 End Function).Count
-                                                Dim highPoint As Decimal = Math.Round(highTrendLine.M * counter + highTrendLine.C, 2)
-                                                If runningCandle.Value.Low > highPoint Then
-                                                    Dim row As DataRow = ret.NewRow
-                                                    row("Date") = runningCandle.Value.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
-                                                    row("Trading Symbol") = runningCandle.Value.TradingSymbol
-                                                    row("Highest Candle") = highestCandle.PayloadDate.ToString("HH:mm:ss")
-                                                    row("Swing High") = swingTime.ToString("HH:mm:ss")
-                                                    row("Signal") = "Buy"
+                                                highTrendLine.Point1 = highestCandle.PayloadDate
+                                                highTrendLine.Point2 = swingTime
+                                                If Not IsValidTrendLine(highTrendLine, currentDayPayload) Then
+                                                    If lastHighTrendLine IsNot Nothing AndAlso lastHighTrendLine.Point1 <> highTrendLine.Point1 Then
+                                                        lastHighTrendLine = Nothing
+                                                    End If
+                                                    highTrendLine = lastHighTrendLine
+                                                End If
+                                                If highTrendLine IsNot Nothing Then
+                                                    lastHighTrendLine = highTrendLine
+                                                    Dim counter As Integer = currentDayPayload.Where(Function(x)
+                                                                                                         Return x.Key > highTrendLine.Point1 AndAlso x.Key <= runningCandle.Key
+                                                                                                     End Function).Count
+                                                    Dim highPoint As Decimal = Math.Round(highTrendLine.M * counter + highTrendLine.C, 2)
+                                                    If runningCandle.Value.Low > highPoint Then
+                                                        Dim row As DataRow = ret.NewRow
+                                                        row("Date") = runningCandle.Value.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
+                                                        row("Trading Symbol") = runningCandle.Value.TradingSymbol
+                                                        row("Highest Candle") = highTrendLine.Point1.ToString("HH:mm:ss")
+                                                        row("Swing") = highTrendLine.Point2.ToString("HH:mm:ss")
+                                                        row("Signal") = "Buy"
 
-                                                    ret.Rows.Add(row)
-                                                    lastSignal = 1
+                                                        ret.Rows.Add(row)
+                                                        lastSignal = 1
+                                                    End If
                                                 End If
                                             End If
                                         End If
@@ -133,20 +146,31 @@ Public Class DayHLSwingTrendline
                                                                                             End Function).Count
                                                 Dim y2 As Decimal = swing.SwingLow
                                                 Dim lowTrendLine As TrendLineVeriables = Common.GetEquationOfTrendLine(x1, y1, x2, y2)
-                                                Dim counter As Integer = currentDayPayload.Where(Function(x)
-                                                                                                     Return x.Key > lowestCandle.PayloadDate AndAlso x.Key <= runningCandle.Key
-                                                                                                 End Function).Count
-                                                Dim lowPoint As Decimal = Math.Round(lowTrendLine.M * counter + lowTrendLine.C, 2)
-                                                If runningCandle.Value.High < lowPoint Then
-                                                    Dim row As DataRow = ret.NewRow
-                                                    row("Date") = runningCandle.Value.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
-                                                    row("Trading Symbol") = runningCandle.Value.TradingSymbol
-                                                    row("Highest Candle") = lowestCandle.PayloadDate.ToString("HH:mm:ss")
-                                                    row("Swing High") = swingTime.ToString("HH:mm:ss")
-                                                    row("Signal") = "Sell"
+                                                lowTrendLine.Point1 = lowestCandle.PayloadDate
+                                                lowTrendLine.Point2 = swingTime
+                                                If Not IsValidTrendLine(lowTrendLine, currentDayPayload) Then
+                                                    If lastLowTrendLine IsNot Nothing AndAlso lastLowTrendLine.Point1 <> lowTrendLine.Point1 Then
+                                                        lastLowTrendLine = Nothing
+                                                    End If
+                                                    lowTrendLine = lastLowTrendLine
+                                                End If
+                                                If lowTrendLine IsNot Nothing Then
+                                                    lastLowTrendLine = lowTrendLine
+                                                    Dim counter As Integer = currentDayPayload.Where(Function(x)
+                                                                                                         Return x.Key > lowTrendLine.Point1 AndAlso x.Key <= runningCandle.Key
+                                                                                                     End Function).Count
+                                                    Dim lowPoint As Decimal = Math.Round(lowTrendLine.M * counter + lowTrendLine.C, 2)
+                                                    If runningCandle.Value.High < lowPoint Then
+                                                        Dim row As DataRow = ret.NewRow
+                                                        row("Date") = runningCandle.Value.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
+                                                        row("Trading Symbol") = runningCandle.Value.TradingSymbol
+                                                        row("Highest Candle") = lowTrendLine.Point1.ToString("HH:mm:ss")
+                                                        row("Swing") = lowTrendLine.Point2.ToString("HH:mm:ss")
+                                                        row("Signal") = "Sell"
 
-                                                    ret.Rows.Add(row)
-                                                    lastSignal = -1
+                                                        ret.Rows.Add(row)
+                                                        lastSignal = -1
+                                                    End If
                                                 End If
                                             End If
                                         End If
@@ -159,6 +183,23 @@ Public Class DayHLSwingTrendline
             End If
             chkDate = chkDate.AddDays(1)
         End While
+        Return ret
+    End Function
+
+    Private Function IsValidTrendLine(ByVal trendline As TrendLineVeriables, ByVal inputPayload As Dictionary(Of Date, Payload)) As Boolean
+        Dim ret As Boolean = True
+        For Each runningPayload In inputPayload
+            If runningPayload.Key > trendline.Point1 AndAlso runningPayload.Key < trendline.Point2 Then
+                Dim counter As Integer = inputPayload.Where(Function(x)
+                                                                Return x.Key > trendline.Point1 AndAlso x.Key <= runningPayload.Key
+                                                            End Function).Count
+                Dim point As Decimal = Math.Round(trendline.M * counter + trendline.C, 2)
+                If runningPayload.Value.High > point AndAlso runningPayload.Value.Low < point Then
+                    ret = False
+                    Exit For
+                End If
+            End If
+        Next
         Return ret
     End Function
 
