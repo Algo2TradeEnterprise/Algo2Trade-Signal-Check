@@ -109,16 +109,16 @@ Public Class DayHLSwingTrendline
                                             If swing.SwingHigh < emaPayload(swing.SwingHighTime) Then
                                                 highTrendLine = lastHighTrendLine
                                             End If
-                                            If highTrendLine IsNot Nothing Then
-                                                Dim firstCandle As Payload = currentDayPayload(highTrendLine.Point2.AddMinutes(_timeFrame * -1))
-                                                Dim middleCandle As Payload = currentDayPayload(highTrendLine.Point2)
-                                                Dim lastCandle As Payload = currentDayPayload(highTrendLine.Point2.AddMinutes(_timeFrame))
-                                                If firstCandle.Close > emaPayload(firstCandle.PayloadDate) AndAlso
-                                                    middleCandle.Close > emaPayload(middleCandle.PayloadDate) AndAlso
-                                                    lastCandle.Close > emaPayload(lastCandle.PayloadDate) Then
-                                                    highTrendLine = lastHighTrendLine
-                                                End If
-                                            End If
+                                            'If highTrendLine IsNot Nothing Then
+                                            '    Dim firstCandle As Payload = currentDayPayload(highTrendLine.Point2.AddMinutes(_timeFrame * -1))
+                                            '    Dim middleCandle As Payload = currentDayPayload(highTrendLine.Point2)
+                                            '    Dim lastCandle As Payload = currentDayPayload(highTrendLine.Point2.AddMinutes(_timeFrame))
+                                            '    If firstCandle.Close > emaPayload(firstCandle.PayloadDate) AndAlso
+                                            '        middleCandle.Close > emaPayload(middleCandle.PayloadDate) AndAlso
+                                            '        lastCandle.Close > emaPayload(lastCandle.PayloadDate) Then
+                                            '        highTrendLine = lastHighTrendLine
+                                            '    End If
+                                            'End If
                                             If highTrendLine IsNot Nothing AndAlso Not IsValidTrendLine(highTrendLine, currentDayPayload) Then
                                                 If lastHighTrendLine IsNot Nothing AndAlso lastHighTrendLine.Point1 <> highTrendLine.Point1 Then
                                                     lastHighTrendLine = Nothing
@@ -164,16 +164,16 @@ Public Class DayHLSwingTrendline
                                             If swing.SwingLow > emaPayload(swing.SwingLowTime) Then
                                                 lowTrendLine = lastLowTrendLine
                                             End If
-                                            If lowTrendLine IsNot Nothing Then
-                                                Dim firstCandle As Payload = currentDayPayload(lowTrendLine.Point2.AddMinutes(_timeFrame * -1))
-                                                Dim middleCandle As Payload = currentDayPayload(lowTrendLine.Point2)
-                                                Dim lastCandle As Payload = currentDayPayload(lowTrendLine.Point2.AddMinutes(_timeFrame))
-                                                If firstCandle.Close < emaPayload(firstCandle.PayloadDate) AndAlso
-                                                    middleCandle.Close < emaPayload(middleCandle.PayloadDate) AndAlso
-                                                    lastCandle.Close < emaPayload(lastCandle.PayloadDate) Then
-                                                    lowTrendLine = lastLowTrendLine
-                                                End If
-                                            End If
+                                            'If lowTrendLine IsNot Nothing Then
+                                            '    Dim firstCandle As Payload = currentDayPayload(lowTrendLine.Point2.AddMinutes(_timeFrame * -1))
+                                            '    Dim middleCandle As Payload = currentDayPayload(lowTrendLine.Point2)
+                                            '    Dim lastCandle As Payload = currentDayPayload(lowTrendLine.Point2.AddMinutes(_timeFrame))
+                                            '    If firstCandle.Close < emaPayload(firstCandle.PayloadDate) AndAlso
+                                            '        middleCandle.Close < emaPayload(middleCandle.PayloadDate) AndAlso
+                                            '        lastCandle.Close < emaPayload(lastCandle.PayloadDate) Then
+                                            '        lowTrendLine = lastLowTrendLine
+                                            '    End If
+                                            'End If
                                             If lowTrendLine IsNot Nothing AndAlso Not IsValidTrendLine(lowTrendLine, currentDayPayload) Then
                                                 If lastLowTrendLine IsNot Nothing AndAlso lastLowTrendLine.Point1 <> lowTrendLine.Point1 Then
                                                     lastLowTrendLine = Nothing
