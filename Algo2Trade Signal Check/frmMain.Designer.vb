@@ -316,7 +316,7 @@ Partial Class frmMain
         Me.dgvSignal.Name = "dgvSignal"
         Me.dgvSignal.ReadOnly = True
         Me.dgvSignal.RowTemplate.Height = 24
-        Me.dgvSignal.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvSignal.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
         Me.dgvSignal.Size = New System.Drawing.Size(1237, 508)
         Me.dgvSignal.TabIndex = 21
         '
