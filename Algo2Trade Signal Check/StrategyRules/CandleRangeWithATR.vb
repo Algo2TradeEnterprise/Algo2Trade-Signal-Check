@@ -18,11 +18,11 @@ Public Class CandleRangeWithATR
         ret.Columns.Add("Candle Range")
         ret.Columns.Add("ATR")
         ret.Columns.Add("CR ATR %")
+        ret.Columns.Add("At Day HL")
         ret.Columns.Add("Slab")
         ret.Columns.Add("CR Slab %")
         ret.Columns.Add("Highest ATR")
         ret.Columns.Add("CR Highest ATR %")
-        ret.Columns.Add("At Day HL")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -119,11 +119,11 @@ Public Class CandleRangeWithATR
                                         row("Candle Range") = Math.Round(inputPayload(runningPayload).CandleRange, 4)
                                         row("ATR") = Math.Round(atrPayload(runningPayload), 4)
                                         row("CR ATR %") = Math.Round((inputPayload(runningPayload).CandleRange / atrPayload(runningPayload)) * 100, 4)
+                                        row("At Day HL") = atHL
                                         row("Slab") = slab
                                         row("CR Slab %") = Math.Round((inputPayload(runningPayload).CandleRange / slab) * 100, 4)
                                         row("Highest ATR") = Math.Round(GetHighestATR(atrPayload, runningPayload), 4)
                                         row("CR Highest ATR %") = Math.Round((inputPayload(runningPayload).CandleRange / GetHighestATR(atrPayload, runningPayload)) * 100, 4)
-                                        row("At Day HL") = atHL
 
                                         ret.Rows.Add(row)
                                     Next
