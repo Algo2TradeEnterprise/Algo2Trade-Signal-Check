@@ -396,6 +396,8 @@ Public Class frmMain
                     rule = New SupertrendConfirmation(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetTextBoxText_ThreadSafe(txtSupertrendConfirmationMaxRangePer))
                 Case 53
                     rule = New DayHLSwingTrendline(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 54
+                    rule = New SectoralStockTrendOfEveryMinute(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -586,6 +588,9 @@ Public Class frmMain
             Case 53
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
+            Case 54
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("Give sector name in `Instrument Name`")
             Case Else
                 Throw New NotImplementedException
         End Select
