@@ -15,7 +15,8 @@ Public Class GetStockTrend
         ret.Columns.Add("High")
         ret.Columns.Add("Close")
         ret.Columns.Add("Previous Day Close")
-        ret.Columns.Add("Trend %")
+        ret.Columns.Add("Previous Day Close Trend %")
+        ret.Columns.Add("Current Day Open Trend %")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -78,6 +79,7 @@ Public Class GetStockTrend
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
                             Dim previousDayClose As Decimal = currentDayPayload.FirstOrDefault.Value.PreviousCandlePayload.Close
+                            Dim currentDayOpen As Decimal = currentDayPayload.FirstOrDefault.Value.Open
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
                                 Dim row As DataRow = ret.NewRow
@@ -88,7 +90,8 @@ Public Class GetStockTrend
                                 row("High") = inputPayload(runningPayload).High
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Previous Day Close") = previousDayClose
-                                row("Trend %") = Math.Round(((inputPayload(runningPayload).Close / previousDayClose) - 1) * 100, 3)
+                                row("Previous Day Close Trend %") = Math.Round(((inputPayload(runningPayload).Close / previousDayClose) - 1) * 100, 3)
+                                row("Current Day Open Trend %") = Math.Round(((inputPayload(runningPayload).Close / currentDayOpen) - 1) * 100, 3)
 
                                 ret.Rows.Add(row)
                             Next
