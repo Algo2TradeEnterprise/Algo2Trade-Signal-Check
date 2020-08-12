@@ -311,13 +311,13 @@ Partial Class frmMain
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgvSignal.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvSignal.Location = New System.Drawing.Point(4, 145)
+        Me.dgvSignal.Location = New System.Drawing.Point(4, 161)
         Me.dgvSignal.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.dgvSignal.Name = "dgvSignal"
         Me.dgvSignal.ReadOnly = True
         Me.dgvSignal.RowTemplate.Height = 24
         Me.dgvSignal.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
-        Me.dgvSignal.Size = New System.Drawing.Size(1237, 508)
+        Me.dgvSignal.Size = New System.Drawing.Size(1237, 492)
         Me.dgvSignal.TabIndex = 21
         '
         'opnFile
@@ -328,7 +328,7 @@ Partial Class frmMain
         Me.lblDescription.Location = New System.Drawing.Point(5, 90)
         Me.lblDescription.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblDescription.Name = "lblDescription"
-        Me.lblDescription.Size = New System.Drawing.Size(706, 53)
+        Me.lblDescription.Size = New System.Drawing.Size(706, 69)
         Me.lblDescription.TabIndex = 25
         Me.lblDescription.Text = "Description ....."
         '

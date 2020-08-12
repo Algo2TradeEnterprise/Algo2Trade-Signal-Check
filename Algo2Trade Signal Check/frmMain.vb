@@ -548,7 +548,7 @@ Public Class frmMain
                 txtGraphAngleSDMul.Text = 1
                 txtGraphAngleCandlePer.Text = 90
                 LoadSettings(pnlGraphAngle)
-                lblDescription.Text = String.Format("X% candle(OHLC) of total candles passes through X-SD of 45° line(diagonal line of a square which x-axis is defined by total number of candles and y-axis is defined by difference between highest high and lowest low[coverted to total number of candles]) with in specified time.")
+                lblDescription.Text = String.Format("X% candle(Average of OHLC) of total candles passes through N-SD(SDPA of points of 45° line) of 45° line(diagonal line of a square which x-axis is defined by total number of candles and y-axis is defined by difference between highest high and lowest low[coverted to total number of candles]) with in specified time (plus 15 minutes buffer).")
             Case 41
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("For buy candle close>50 EMA>100 EMA>150 EMA, then close<50 EMA or close<100 EMA and again candle close>50 EMA>100 EMA>150 EMA")
