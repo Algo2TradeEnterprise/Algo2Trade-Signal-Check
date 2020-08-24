@@ -119,6 +119,7 @@
     <Compile Include="StrategyRules\FractalDip.vb" />
     <Compile Include="StrategyRules\GetRawCandle.vb" />
     <Compile Include="StrategyRules\GetStockTrend.vb" />
+    <Compile Include="StrategyRules\GetStockTrendDirection.vb" />
     <Compile Include="StrategyRules\GraphAngle.vb" />
     <Compile Include="StrategyRules\HighestOIOptions.vb" />
     <Compile Include="StrategyRules\HighLowSupportResistance.vb" />
