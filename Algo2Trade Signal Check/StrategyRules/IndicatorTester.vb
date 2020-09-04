@@ -9,13 +9,15 @@ Public Class IndicatorTester
         Await Task.Delay(0).ConfigureAwait(False)
         Dim ret As New DataTable
         ret.Columns.Add("Date")
+        ret.Columns.Add("Time")
         ret.Columns.Add("Trading Symbol")
         ret.Columns.Add("Open")
         ret.Columns.Add("Low")
         ret.Columns.Add("High")
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
-        ret.Columns.Add("CMF")
+        ret.Columns.Add("Fractal High")
+        ret.Columns.Add("Fractal Low")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -38,10 +40,10 @@ Public Class IndicatorTester
                     _canceller.Token.ThrowIfCancellationRequested()
                     Dim stockPayload As Dictionary(Of Date, Payload) = Nothing
                     Select Case _category
-                        Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency, Common.DataBaseTable.Intraday_Futures
-                            stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-8), chkDate)
-                        Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL
-                            stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-200), chkDate)
+                        Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency, Common.DataBaseTable.Intraday_Futures, Common.DataBaseTable.Intraday_Futures_Options
+                            stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-8), chkDate)
+                        Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL, Common.DataBaseTable.EOD_Futures_Options
+                            stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-200), chkDate)
                     End Select
                     _canceller.Token.ThrowIfCancellationRequested()
                     If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
@@ -77,20 +79,23 @@ Public Class IndicatorTester
 
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            Dim chaikinPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Indicator.ChaikinMoneyFlow.CalculateCMF(20, inputPayload, chaikinPayload)
+                            Dim fractalHighPayload As Dictionary(Of Date, Decimal) = Nothing
+                            Dim fractalLowPayload As Dictionary(Of Date, Decimal) = Nothing
+                            Indicator.FractalBands.CalculateFractal(inputPayload, fractalHighPayload, fractalLowPayload)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
                                 Dim row As DataRow = ret.NewRow
-                                row("Date") = inputPayload(runningPayload).PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
+                                row("Date") = inputPayload(runningPayload).PayloadDate.ToString("dd-MMM-yyyy")
+                                row("Time") = inputPayload(runningPayload).PayloadDate.ToString("HH:mm:ss")
                                 row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
                                 row("Open") = inputPayload(runningPayload).Open
                                 row("Low") = inputPayload(runningPayload).Low
                                 row("High") = inputPayload(runningPayload).High
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
-                                row("CMF") = Math.Round(chaikinPayload(runningPayload), 4)
+                                row("Fractal High") = fractalHighPayload(runningPayload)
+                                row("Fractal Low") = fractalLowPayload(runningPayload)
 
                                 ret.Rows.Add(row)
                             Next
