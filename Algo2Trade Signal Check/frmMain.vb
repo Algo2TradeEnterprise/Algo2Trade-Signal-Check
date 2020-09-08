@@ -614,12 +614,14 @@ Public Class frmMain
     Private Sub cmbCategory_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbCategory.SelectedIndexChanged
         Dim index As Integer = GetComboBoxIndex_ThreadSafe(cmbCategory)
         Select Case index
-            Case 0, 1, 2, 3
+            Case 0, 1, 2, 3, 9
                 nmrcTimeFrame.Value = My.Settings.TimeFrame
                 nmrcTimeFrame.Enabled = True
-            Case Else
+            Case 4, 5, 6, 7, 8, 10
                 nmrcTimeFrame.Value = 1
                 nmrcTimeFrame.Enabled = False
+            Case Else
+                Throw New NotImplementedException
         End Select
     End Sub
 

@@ -16,8 +16,8 @@ Public Class IndicatorTester
         ret.Columns.Add("High")
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
-        ret.Columns.Add("Fractal High")
-        ret.Columns.Add("Fractal Low")
+        'ret.Columns.Add("Fractal High")
+        'ret.Columns.Add("Fractal Low")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -94,8 +94,8 @@ Public Class IndicatorTester
                                 row("High") = inputPayload(runningPayload).High
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
-                                row("Fractal High") = fractalHighPayload(runningPayload)
-                                row("Fractal Low") = fractalLowPayload(runningPayload)
+                                'row("Fractal High") = fractalHighPayload(runningPayload)
+                                'row("Fractal Low") = fractalLowPayload(runningPayload)
 
                                 ret.Rows.Add(row)
                             Next
