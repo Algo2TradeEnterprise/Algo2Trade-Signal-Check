@@ -105,6 +105,7 @@
     <Compile Include="StrategyRules\CandleRangeWithATR.vb" />
     <Compile Include="StrategyRules\ConstrictionAtBreakout.vb" />
     <Compile Include="StrategyRules\DailyStrongHKOppositeVolume.vb" />
+    <Compile Include="StrategyRules\DataTester.vb" />
     <Compile Include="StrategyRules\DayHighLow.vb" />
     <Compile Include="StrategyRules\DayHLSwingTrendline.vb" />
     <Compile Include="StrategyRules\FibonacciTrendline.vb" />

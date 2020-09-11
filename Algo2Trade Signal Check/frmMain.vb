@@ -404,6 +404,8 @@ Public Class frmMain
                     rule = New GetStockTrend(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 57
                     rule = New GetStockTrendDirection(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 58
+                    rule = New DataTester(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -606,6 +608,9 @@ Public Class frmMain
             Case 57
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Get stock trend direction by time range with respect to current day open")
+            Case 58
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("Do not use it without checking code. It is only for testing purpose")
             Case Else
                 Throw New NotImplementedException
         End Select
