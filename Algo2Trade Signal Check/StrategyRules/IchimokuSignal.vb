@@ -2,9 +2,13 @@
 Imports System.Threading
 Public Class IchimokuSignal
     Inherits Rule
-    Public Sub New(ByVal canceller As CancellationTokenSource, ByVal stockCategory As Integer, ByVal timeFrame As Integer, ByVal useHA As Boolean, ByVal stockName As String, ByVal fileName As String)
+
+    Private ReadOnly _checkSignalForAll As Boolean
+    Public Sub New(ByVal canceller As CancellationTokenSource, ByVal stockCategory As Integer, ByVal timeFrame As Integer, ByVal useHA As Boolean, ByVal stockName As String, ByVal fileName As String, ByVal checkSignalForAll As Boolean)
         MyBase.New(canceller, stockCategory, timeFrame, useHA, stockName, fileName)
+        _checkSignalForAll = checkSignalForAll
     End Sub
+
     Public Overrides Async Function RunAsync(ByVal startDate As Date, ByVal endDate As Date) As Task(Of DataTable)
         Await Task.Delay(0).ConfigureAwait(False)
         Dim ret As New DataTable
@@ -96,12 +100,12 @@ Public Class IchimokuSignal
                                 Dim previousNInputPayload As List(Of KeyValuePair(Of Date, Payload)) = Common.GetSubPayload(inputPayload, runningPayload, 26, False)
                                 Dim candleToCheck As Payload = previousNInputPayload.FirstOrDefault.Value
                                 If currentDayPayload(runningPayload).Close < candleToCheck.Close AndAlso
-                                    conversionLinePayload(runningPayload) < baseLinePayload(runningPayload) Then
+                                    (Not _checkSignalForAll OrElse conversionLinePayload(runningPayload) < baseLinePayload(runningPayload)) Then
                                     Dim reason As String = Nothing
                                     If currentDayPayload(runningPayload).Close < candleToCheck.Close AndAlso
                                         currentDayPayload(runningPayload).PreviousCandlePayload.Close >= candleToCheck.PreviousCandlePayload.Close Then
                                         reason = "Close Changed"
-                                    ElseIf conversionLinePayload(runningPayload) < baseLinePayload(runningPayload) AndAlso
+                                    ElseIf _checkSignalForAll AndAlso conversionLinePayload(runningPayload) < baseLinePayload(runningPayload) AndAlso
                                         conversionLinePayload(currentDayPayload(runningPayload).PreviousCandlePayload.PayloadDate) >= baseLinePayload(currentDayPayload(runningPayload).PreviousCandlePayload.PayloadDate) Then
                                         reason = "Conversion,Base Line Change"
                                     End If
@@ -125,12 +129,12 @@ Public Class IchimokuSignal
                                         ret.Rows.Add(row)
                                     End If
                                 ElseIf currentDayPayload(runningPayload).Close > candleToCheck.Close AndAlso
-                                    conversionLinePayload(runningPayload) > baseLinePayload(runningPayload) Then
+                                    (Not _checkSignalForAll OrElse conversionLinePayload(runningPayload) > baseLinePayload(runningPayload)) Then
                                     Dim reason As String = Nothing
                                     If currentDayPayload(runningPayload).Close > candleToCheck.Close AndAlso
                                         currentDayPayload(runningPayload).PreviousCandlePayload.Close <= candleToCheck.PreviousCandlePayload.Close Then
                                         reason = "Close Changed"
-                                    ElseIf conversionLinePayload(runningPayload) > baseLinePayload(runningPayload) AndAlso
+                                    ElseIf _checkSignalForAll AndAlso conversionLinePayload(runningPayload) > baseLinePayload(runningPayload) AndAlso
                                         conversionLinePayload(currentDayPayload(runningPayload).PreviousCandlePayload.PayloadDate) <= baseLinePayload(currentDayPayload(runningPayload).PreviousCandlePayload.PayloadDate) Then
                                         reason = "Conversion,Base Line Change"
                                     End If

@@ -172,6 +172,18 @@ Public Class frmMain
         End If
     End Function
 
+    Delegate Function GetRadioButtonChecked_Delegate(ByVal [radioButton] As RadioButton) As Boolean
+    Public Function GetRadioButtonChecked_ThreadSafe(ByVal [radioButton] As RadioButton) As Boolean
+        ' InvokeRequired required compares the thread ID of the calling thread to the thread ID of the creating thread.  
+        ' If these threads are different, it returns true.  
+        If [radioButton].InvokeRequired Then
+            Dim MyDelegate As New GetRadioButtonChecked_Delegate(AddressOf GetRadioButtonChecked_ThreadSafe)
+            Return Me.Invoke(MyDelegate, New Object() {[radioButton]})
+        Else
+            Return [radioButton].Checked
+        End If
+    End Function
+
     Delegate Sub SetDatagridBindDatatable_Delegate(ByVal [datagrid] As DataGridView, ByVal [table] As DataTable)
     Public Sub SetDatagridBindDatatable_ThreadSafe(ByVal [datagrid] As DataGridView, ByVal [table] As DataTable)
         ' InvokeRequired required compares the thread ID of the calling thread to the thread ID of the creating thread.  
@@ -407,7 +419,7 @@ Public Class frmMain
                 Case 58
                     rule = New DataTester(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 59
-                    rule = New IchimokuSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                    rule = New IchimokuSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetRadioButtonChecked_ThreadSafe(rdbIchimokuSignalLaggingSpanConversionBaseLine))
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -614,7 +626,8 @@ Public Class frmMain
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Do not use it without checking code. It is only for testing purpose")
             Case 59
-                LoadSettings(Nothing)
+                LoadSettings(pnlIchimokuSignal)
+                rdbIchimokuSignalLaggingSpanConversionBaseLine.Checked = True
                 lblDescription.Text = String.Format("")
             Case Else
                 Throw New NotImplementedException
@@ -642,6 +655,7 @@ Public Class frmMain
         panelList.Add(pnlMultiTFMultiMA)
         panelList.Add(pnlPriceVolumeImbalance)
         panelList.Add(pnlSupertrendConfirmation)
+        panelList.Add(pnlIchimokuSignal)
 
         For Each runningPanel In panelList
             If panelName IsNot Nothing AndAlso runningPanel.Name = panelName.Name Then

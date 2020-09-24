@@ -69,6 +69,10 @@ Partial Class frmMain
         Me.pnlSupertrendConfirmation = New System.Windows.Forms.Panel()
         Me.txtSupertrendConfirmationMaxRangePer = New System.Windows.Forms.TextBox()
         Me.lblSupertrendConfirmationMaxRangePer = New System.Windows.Forms.Label()
+        Me.pnlIchimokuSignal = New System.Windows.Forms.Panel()
+        Me.grpbxIchimokuSignalType = New System.Windows.Forms.GroupBox()
+        Me.rdbIchimokuSignalLaggingSpan = New System.Windows.Forms.RadioButton()
+        Me.rdbIchimokuSignalLaggingSpanConversionBaseLine = New System.Windows.Forms.RadioButton()
         CType(Me.nmrcTimeFrame, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         CType(Me.dgvSignal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -79,6 +83,8 @@ Partial Class frmMain
         Me.pnlPriceVolumeImbalance.SuspendLayout()
         CType(Me.nmrcPriceVolumeImbalancePeriod, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlSupertrendConfirmation.SuspendLayout()
+        Me.pnlIchimokuSignal.SuspendLayout()
+        Me.grpbxIchimokuSignalType.SuspendLayout()
         Me.SuspendLayout()
         '
         'saveFile
@@ -513,11 +519,53 @@ Partial Class frmMain
         Me.lblSupertrendConfirmationMaxRangePer.TabIndex = 2
         Me.lblSupertrendConfirmationMaxRangePer.Text = "Max Range % :"
         '
+        'pnlIchimokuSignal
+        '
+        Me.pnlIchimokuSignal.Controls.Add(Me.grpbxIchimokuSignalType)
+        Me.pnlIchimokuSignal.Location = New System.Drawing.Point(748, 90)
+        Me.pnlIchimokuSignal.Name = "pnlIchimokuSignal"
+        Me.pnlIchimokuSignal.Size = New System.Drawing.Size(461, 51)
+        Me.pnlIchimokuSignal.TabIndex = 32
+        '
+        'grpbxIchimokuSignalType
+        '
+        Me.grpbxIchimokuSignalType.Controls.Add(Me.rdbIchimokuSignalLaggingSpanConversionBaseLine)
+        Me.grpbxIchimokuSignalType.Controls.Add(Me.rdbIchimokuSignalLaggingSpan)
+        Me.grpbxIchimokuSignalType.Location = New System.Drawing.Point(11, 2)
+        Me.grpbxIchimokuSignalType.Name = "grpbxIchimokuSignalType"
+        Me.grpbxIchimokuSignalType.Size = New System.Drawing.Size(434, 43)
+        Me.grpbxIchimokuSignalType.TabIndex = 0
+        Me.grpbxIchimokuSignalType.TabStop = False
+        Me.grpbxIchimokuSignalType.Text = "Signal Type"
+        '
+        'rdbIchimokuSignalLaggingSpan
+        '
+        Me.rdbIchimokuSignalLaggingSpan.AutoSize = True
+        Me.rdbIchimokuSignalLaggingSpan.Location = New System.Drawing.Point(7, 18)
+        Me.rdbIchimokuSignalLaggingSpan.Name = "rdbIchimokuSignalLaggingSpan"
+        Me.rdbIchimokuSignalLaggingSpan.Size = New System.Drawing.Size(117, 21)
+        Me.rdbIchimokuSignalLaggingSpan.TabIndex = 0
+        Me.rdbIchimokuSignalLaggingSpan.TabStop = True
+        Me.rdbIchimokuSignalLaggingSpan.Text = "Lagging Span"
+        Me.rdbIchimokuSignalLaggingSpan.UseVisualStyleBackColor = True
+        '
+        'rdbIchimokuSignalLaggingSpanConversionBaseLine
+        '
+        Me.rdbIchimokuSignalLaggingSpanConversionBaseLine.AutoSize = True
+        Me.rdbIchimokuSignalLaggingSpanConversionBaseLine.Location = New System.Drawing.Point(130, 18)
+        Me.rdbIchimokuSignalLaggingSpanConversionBaseLine.Name = "rdbIchimokuSignalLaggingSpanConversionBaseLine"
+        Me.rdbIchimokuSignalLaggingSpanConversionBaseLine.Size = New System.Drawing.Size(291, 21)
+        Me.rdbIchimokuSignalLaggingSpanConversionBaseLine.TabIndex = 1
+        Me.rdbIchimokuSignalLaggingSpanConversionBaseLine.TabStop = True
+        Me.rdbIchimokuSignalLaggingSpanConversionBaseLine.Text = "Lagging Span, Conversion and Base Line"
+        Me.rdbIchimokuSignalLaggingSpanConversionBaseLine.UseVisualStyleBackColor = True
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1244, 690)
+        Me.Controls.Add(Me.pnlIchimokuSignal)
         Me.Controls.Add(Me.pnlSupertrendConfirmation)
         Me.Controls.Add(Me.pnlPriceVolumeImbalance)
         Me.Controls.Add(Me.pnlMultiTFMultiMA)
@@ -548,6 +596,9 @@ Partial Class frmMain
         CType(Me.nmrcPriceVolumeImbalancePeriod, System.ComponentModel.ISupportInitialize).EndInit()
         Me.pnlSupertrendConfirmation.ResumeLayout(False)
         Me.pnlSupertrendConfirmation.PerformLayout()
+        Me.pnlIchimokuSignal.ResumeLayout(False)
+        Me.grpbxIchimokuSignalType.ResumeLayout(False)
+        Me.grpbxIchimokuSignalType.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -598,4 +649,8 @@ Partial Class frmMain
     Friend WithEvents pnlSupertrendConfirmation As Panel
     Friend WithEvents txtSupertrendConfirmationMaxRangePer As TextBox
     Friend WithEvents lblSupertrendConfirmationMaxRangePer As Label
+    Friend WithEvents pnlIchimokuSignal As Panel
+    Friend WithEvents grpbxIchimokuSignalType As GroupBox
+    Friend WithEvents rdbIchimokuSignalLaggingSpanConversionBaseLine As RadioButton
+    Friend WithEvents rdbIchimokuSignalLaggingSpan As RadioButton
 End Class
