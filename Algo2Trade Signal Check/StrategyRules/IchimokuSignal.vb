@@ -1,6 +1,6 @@
 ﻿Imports Algo2TradeBLL
 Imports System.Threading
-Public Class IndicatorTester
+Public Class IchimokuSignal
     Inherits Rule
     Public Sub New(ByVal canceller As CancellationTokenSource, ByVal stockCategory As Integer, ByVal timeFrame As Integer, ByVal useHA As Boolean, ByVal stockName As String, ByVal fileName As String)
         MyBase.New(canceller, stockCategory, timeFrame, useHA, stockName, fileName)
@@ -18,7 +18,8 @@ Public Class IndicatorTester
         ret.Columns.Add("Volume")
         ret.Columns.Add("Conversion Line")
         ret.Columns.Add("Base Line")
-        ret.Columns.Add("Lagging Span")
+        ret.Columns.Add("Lagging Time")
+        ret.Columns.Add("Lagging Close")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -90,20 +91,32 @@ Public Class IndicatorTester
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
-                                Dim row As DataRow = ret.NewRow
-                                row("Date") = inputPayload(runningPayload).PayloadDate.ToString("dd-MMM-yyyy")
-                                row("Time") = inputPayload(runningPayload).PayloadDate.ToString("HH:mm:ss")
-                                row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
-                                row("Open") = inputPayload(runningPayload).Open
-                                row("Low") = inputPayload(runningPayload).Low
-                                row("High") = inputPayload(runningPayload).High
-                                row("Close") = inputPayload(runningPayload).Close
-                                row("Volume") = inputPayload(runningPayload).Volume
-                                row("Conversion Line") = conversionLinePayload(runningPayload)
-                                row("Base Line") = baseLinePayload(runningPayload)
-                                row("Lagging Span") = laggingSpanPayload(runningPayload)
+                                Dim previousNInputPayload As List(Of KeyValuePair(Of Date, Payload)) = Common.GetSubPayload(inputPayload, runningPayload, 26, False)
+                                Dim candleToCheck As Payload = previousNInputPayload.FirstOrDefault.Value
 
-                                ret.Rows.Add(row)
+                                If (currentDayPayload(runningPayload).Close < candleToCheck.Close AndAlso
+                                    currentDayPayload(runningPayload).PreviousCandlePayload.Close > candleToCheck.PreviousCandlePayload.Close) OrElse
+                                    (conversionLinePayload(runningPayload) < baseLinePayload(runningPayload) AndAlso
+                                     conversionLinePayload(currentDayPayload(runningPayload).PreviousCandlePayload.PayloadDate) > baseLinePayload(currentDayPayload(runningPayload).PreviousCandlePayload.PayloadDate)) Then
+                                    If currentDayPayload(runningPayload).Close < candleToCheck.Close AndAlso
+                                        conversionLinePayload(runningPayload) < baseLinePayload(runningPayload) Then
+                                        Dim row As DataRow = ret.NewRow
+                                        row("Date") = inputPayload(runningPayload).PayloadDate.ToString("dd-MMM-yyyy")
+                                        row("Time") = inputPayload(runningPayload).PayloadDate.ToString("HH:mm:ss")
+                                        row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
+                                        row("Open") = inputPayload(runningPayload).Open
+                                        row("Low") = inputPayload(runningPayload).Low
+                                        row("High") = inputPayload(runningPayload).High
+                                        row("Close") = inputPayload(runningPayload).Close
+                                        row("Volume") = inputPayload(runningPayload).Volume
+                                        row("Conversion Line") = conversionLinePayload(runningPayload)
+                                        row("Base Line") = baseLinePayload(runningPayload)
+                                        row("Lagging Time") = candleToCheck.PayloadDate.ToString("yyyy-MM-dd HH:mm:ss")
+                                        row("Lagging Close") = candleToCheck.Close
+
+                                        ret.Rows.Add(row)
+                                    End If
+                                End If
                             Next
                         End If
                     End If

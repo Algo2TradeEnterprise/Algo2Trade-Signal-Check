@@ -127,6 +127,7 @@
     <Compile Include="StrategyRules\HKReversal.vb" />
     <Compile Include="StrategyRules\HKTemporaryPause.vb" />
     <Compile Include="StrategyRules\HKTrendOpposingByVolume.vb" />
+    <Compile Include="StrategyRules\IchimokuSignal.vb" />
     <Compile Include="StrategyRules\IndicatorTester.vb" />
     <Compile Include="StrategyRules\InsideBarBreakout.vb" />
     <Compile Include="StrategyRules\InsideBarHighLow.vb" />

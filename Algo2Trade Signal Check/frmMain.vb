@@ -406,6 +406,8 @@ Public Class frmMain
                     rule = New GetStockTrendDirection(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 58
                     rule = New DataTester(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 59
+                    rule = New IchimokuSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -611,6 +613,9 @@ Public Class frmMain
             Case 58
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Do not use it without checking code. It is only for testing purpose")
+            Case 59
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("")
             Case Else
                 Throw New NotImplementedException
         End Select
