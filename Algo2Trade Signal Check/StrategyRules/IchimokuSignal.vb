@@ -11,6 +11,8 @@ Public Class IchimokuSignal
         ret.Columns.Add("Date")
         ret.Columns.Add("Time")
         ret.Columns.Add("Trading Symbol")
+        ret.Columns.Add("Reason")
+        ret.Columns.Add("Direction")
         ret.Columns.Add("Open")
         ret.Columns.Add("Low")
         ret.Columns.Add("High")
@@ -93,17 +95,52 @@ Public Class IchimokuSignal
                                 _canceller.Token.ThrowIfCancellationRequested()
                                 Dim previousNInputPayload As List(Of KeyValuePair(Of Date, Payload)) = Common.GetSubPayload(inputPayload, runningPayload, 26, False)
                                 Dim candleToCheck As Payload = previousNInputPayload.FirstOrDefault.Value
-
-                                If (currentDayPayload(runningPayload).Close < candleToCheck.Close AndAlso
-                                    currentDayPayload(runningPayload).PreviousCandlePayload.Close > candleToCheck.PreviousCandlePayload.Close) OrElse
-                                    (conversionLinePayload(runningPayload) < baseLinePayload(runningPayload) AndAlso
-                                     conversionLinePayload(currentDayPayload(runningPayload).PreviousCandlePayload.PayloadDate) > baseLinePayload(currentDayPayload(runningPayload).PreviousCandlePayload.PayloadDate)) Then
+                                If currentDayPayload(runningPayload).Close < candleToCheck.Close AndAlso
+                                    conversionLinePayload(runningPayload) < baseLinePayload(runningPayload) Then
+                                    Dim reason As String = Nothing
                                     If currentDayPayload(runningPayload).Close < candleToCheck.Close AndAlso
-                                        conversionLinePayload(runningPayload) < baseLinePayload(runningPayload) Then
+                                        currentDayPayload(runningPayload).PreviousCandlePayload.Close >= candleToCheck.PreviousCandlePayload.Close Then
+                                        reason = "Close Changed"
+                                    ElseIf conversionLinePayload(runningPayload) < baseLinePayload(runningPayload) AndAlso
+                                        conversionLinePayload(currentDayPayload(runningPayload).PreviousCandlePayload.PayloadDate) >= baseLinePayload(currentDayPayload(runningPayload).PreviousCandlePayload.PayloadDate) Then
+                                        reason = "Conversion,Base Line Change"
+                                    End If
+                                    If reason IsNot Nothing Then
                                         Dim row As DataRow = ret.NewRow
                                         row("Date") = inputPayload(runningPayload).PayloadDate.ToString("dd-MMM-yyyy")
                                         row("Time") = inputPayload(runningPayload).PayloadDate.ToString("HH:mm:ss")
                                         row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
+                                        row("Reason") = reason
+                                        row("Direction") = "SELL"
+                                        row("Open") = inputPayload(runningPayload).Open
+                                        row("Low") = inputPayload(runningPayload).Low
+                                        row("High") = inputPayload(runningPayload).High
+                                        row("Close") = inputPayload(runningPayload).Close
+                                        row("Volume") = inputPayload(runningPayload).Volume
+                                        row("Conversion Line") = conversionLinePayload(runningPayload)
+                                        row("Base Line") = baseLinePayload(runningPayload)
+                                        row("Lagging Time") = candleToCheck.PayloadDate.ToString("yyyy-MM-dd HH:mm:ss")
+                                        row("Lagging Close") = candleToCheck.Close
+
+                                        ret.Rows.Add(row)
+                                    End If
+                                ElseIf currentDayPayload(runningPayload).Close > candleToCheck.Close AndAlso
+                                    conversionLinePayload(runningPayload) > baseLinePayload(runningPayload) Then
+                                    Dim reason As String = Nothing
+                                    If currentDayPayload(runningPayload).Close > candleToCheck.Close AndAlso
+                                        currentDayPayload(runningPayload).PreviousCandlePayload.Close <= candleToCheck.PreviousCandlePayload.Close Then
+                                        reason = "Close Changed"
+                                    ElseIf conversionLinePayload(runningPayload) > baseLinePayload(runningPayload) AndAlso
+                                        conversionLinePayload(currentDayPayload(runningPayload).PreviousCandlePayload.PayloadDate) <= baseLinePayload(currentDayPayload(runningPayload).PreviousCandlePayload.PayloadDate) Then
+                                        reason = "Conversion,Base Line Change"
+                                    End If
+                                    If reason IsNot Nothing Then
+                                        Dim row As DataRow = ret.NewRow
+                                        row("Date") = inputPayload(runningPayload).PayloadDate.ToString("dd-MMM-yyyy")
+                                        row("Time") = inputPayload(runningPayload).PayloadDate.ToString("HH:mm:ss")
+                                        row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
+                                        row("Reason") = reason
+                                        row("Direction") = "BUY"
                                         row("Open") = inputPayload(runningPayload).Open
                                         row("Low") = inputPayload(runningPayload).Low
                                         row("High") = inputPayload(runningPayload).High
