@@ -3,6 +3,8 @@ Imports System.Threading
 Public Class MACDCrossoverSwing
     Inherits Rule
 
+    Private _doNotCheckMA As Boolean = False
+
     Public Sub New(ByVal canceller As CancellationTokenSource, ByVal stockCategory As Integer, ByVal timeFrame As Integer, ByVal useHA As Boolean, ByVal stockName As String, ByVal fileName As String)
         MyBase.New(canceller, stockCategory, timeFrame, useHA, stockName, fileName)
     End Sub
@@ -37,7 +39,7 @@ Public Class MACDCrossoverSwing
                     Dim stockPayload As Dictionary(Of Date, Payload) = Nothing
                     Select Case _category
                         Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency, Common.DataBaseTable.Intraday_Futures, Common.DataBaseTable.Intraday_Futures_Options
-                            stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-20), chkDate)
+                            stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-60), chkDate)
                         Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL, Common.DataBaseTable.EOD_Futures_Options
                             stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-200), chkDate)
                     End Select
@@ -87,8 +89,8 @@ Public Class MACDCrossoverSwing
 
                             For Each runningPayload In currentDayPayload
                                 _canceller.Token.ThrowIfCancellationRequested()
-                                If runningPayload.Value.Close > smaPayload(runningPayload.Key) Then
-                                    If macdPayload(runningPayload.Key) < 0 Then
+                                If macdPayload(runningPayload.Key) < 0 Then
+                                    If runningPayload.Value.Close > smaPayload(runningPayload.Key) OrElse _doNotCheckMA Then
                                         If macdPayload(runningPayload.Key) > signalLinePayload(runningPayload.Key) AndAlso
                                             macdPayload(runningPayload.Value.PreviousCandlePayload.PayloadDate) < signalLinePayload(runningPayload.Value.PreviousCandlePayload.PayloadDate) Then
                                             Dim row As DataRow = ret.NewRow
@@ -100,8 +102,8 @@ Public Class MACDCrossoverSwing
                                             ret.Rows.Add(row)
                                         End If
                                     End If
-                                ElseIf runningPayload.Value.Close < smaPayload(runningPayload.Key) Then
-                                    If macdPayload(runningPayload.Key) > 0 Then
+                                ElseIf macdPayload(runningPayload.Key) > 0 Then
+                                    If runningPayload.Value.Close < smaPayload(runningPayload.Key) OrElse _doNotCheckMA Then
                                         If macdPayload(runningPayload.Key) < signalLinePayload(runningPayload.Key) AndAlso
                                             macdPayload(runningPayload.Value.PreviousCandlePayload.PayloadDate) > signalLinePayload(runningPayload.Value.PreviousCandlePayload.PayloadDate) Then
                                             Dim row As DataRow = ret.NewRow
