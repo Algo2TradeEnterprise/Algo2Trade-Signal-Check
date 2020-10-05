@@ -420,6 +420,8 @@ Public Class frmMain
                     rule = New DataTester(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 59
                     rule = New IchimokuSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetRadioButtonChecked_ThreadSafe(rdbIchimokuSignalLaggingSpanConversionBaseLine))
+                Case 60
+                    rule = New MACDCrossoverSwing(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -629,6 +631,9 @@ Public Class frmMain
                 LoadSettings(pnlIchimokuSignal)
                 rdbIchimokuSignalLaggingSpanConversionBaseLine.Checked = True
                 lblDescription.Text = String.Format("")
+            Case 60
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("Description ...")
             Case Else
                 Throw New NotImplementedException
         End Select
