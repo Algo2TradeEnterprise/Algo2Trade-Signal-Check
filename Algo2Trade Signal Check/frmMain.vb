@@ -422,6 +422,8 @@ Public Class frmMain
                     rule = New IchimokuSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetRadioButtonChecked_ThreadSafe(rdbIchimokuSignalLaggingSpanConversionBaseLine))
                 Case 60
                     rule = New MACDCrossoverSwing(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 61
+                    rule = New PreviousDayHighLowBreak(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -634,6 +636,9 @@ Public Class frmMain
             Case 60
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
+            Case 61
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("Time when candle breaks previous day high/low")
             Case Else
                 Throw New NotImplementedException
         End Select
