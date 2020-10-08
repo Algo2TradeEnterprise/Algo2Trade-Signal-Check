@@ -16,9 +16,7 @@ Public Class IndicatorTester
         ret.Columns.Add("High")
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
-        ret.Columns.Add("Conversion Line")
-        ret.Columns.Add("Base Line")
-        ret.Columns.Add("Lagging Span")
+        ret.Columns.Add("Anchored VWAP")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -80,13 +78,8 @@ Public Class IndicatorTester
 
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            Dim conversionLinePayload As Dictionary(Of Date, Decimal) = Nothing
-                            Dim baseLinePayload As Dictionary(Of Date, Decimal) = Nothing
-                            Dim leadingSpanAPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Dim leadingSpanBPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Dim laggingSpanPayload As Dictionary(Of Date, Decimal) = Nothing
-
-                            Indicator.IchimokuClouds.CalculateIchimokuClouds(9, 26, 52, 26, inputPayload, conversionLinePayload, baseLinePayload, leadingSpanAPayload, leadingSpanBPayload, laggingSpanPayload)
+                            Dim anchoredVWAPPayload As Dictionary(Of Date, Decimal) = Nothing
+                            Indicator.AnchoredVWAP.CalculateAnchoredVWAP(New Date(2020, 10, 6, 9, 15, 0), inputPayload, anchoredVWAPPayload)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
@@ -99,9 +92,7 @@ Public Class IndicatorTester
                                 row("High") = inputPayload(runningPayload).High
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
-                                row("Conversion Line") = conversionLinePayload(runningPayload)
-                                row("Base Line") = baseLinePayload(runningPayload)
-                                row("Lagging Span") = laggingSpanPayload(runningPayload)
+                                row("Anchored VWAP") = Math.Round(anchoredVWAPPayload(runningPayload), 2)
 
                                 ret.Rows.Add(row)
                             Next
