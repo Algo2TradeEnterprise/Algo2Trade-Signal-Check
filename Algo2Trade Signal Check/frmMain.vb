@@ -426,6 +426,8 @@ Public Class frmMain
                     rule = New PreviousDayHighLowBreak(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 62
                     rule = New HighVolumeOppositeColor(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 63
+                    rule = New HammerCandleStickPattern(_canceller, category, timeFrame, useHA, instrumentName, filePath)
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -644,6 +646,9 @@ Public Class frmMain
             Case 62
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Candle Volume Greater than Previous Candle Volume ")
+            Case 63
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("Candle which looks like hammers")
             Case Else
                 Throw New NotImplementedException
         End Select
