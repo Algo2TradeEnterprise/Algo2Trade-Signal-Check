@@ -16,7 +16,7 @@ Public Class IndicatorTester
         ret.Columns.Add("High")
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
-        ret.Columns.Add("Anchored VWAP")
+        ret.Columns.Add("ATR")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -78,8 +78,8 @@ Public Class IndicatorTester
 
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            Dim anchoredVWAPPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Indicator.AnchoredVWAP.CalculateAnchoredVWAP(New Date(2020, 10, 6, 9, 15, 0), inputPayload, anchoredVWAPPayload)
+                            Dim atrPayload As Dictionary(Of Date, Decimal) = Nothing
+                            Indicator.ATR.CalculateATR(14, inputPayload, atrPayload, True)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
@@ -92,7 +92,7 @@ Public Class IndicatorTester
                                 row("High") = inputPayload(runningPayload).High
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
-                                row("Anchored VWAP") = Math.Round(anchoredVWAPPayload(runningPayload), 2)
+                                row("ATR") = Math.Round(atrPayload(runningPayload), 2)
 
                                 ret.Rows.Add(row)
                             Next
