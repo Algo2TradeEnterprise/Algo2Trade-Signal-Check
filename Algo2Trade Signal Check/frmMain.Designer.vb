@@ -537,6 +537,7 @@ Partial Class frmMain
         Me.grpbxIchimokuSignalType.TabIndex = 0
         Me.grpbxIchimokuSignalType.TabStop = False
         Me.grpbxIchimokuSignalType.Text = "Signal Type"
+        Me.grpbxIchimokuSignalType.Visible = False
         '
         'rdbIchimokuSignalLaggingSpanConversionBaseLine
         '
