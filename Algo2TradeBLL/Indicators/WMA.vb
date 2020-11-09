@@ -20,7 +20,7 @@
                                 Case Payload.PayloadFields.Low
                                     wmaValue += runningSubPayload.Value.Low * ctr
                                 Case Payload.PayloadFields.Open
-                                    wmaValue += runningSubPayload.Value.OHLC * ctr
+                                    wmaValue += runningSubPayload.Value.Open * ctr
                                 Case Payload.PayloadFields.Volume
                                     wmaValue += runningSubPayload.Value.Volume * ctr
                                 Case Payload.PayloadFields.Additional_Field
