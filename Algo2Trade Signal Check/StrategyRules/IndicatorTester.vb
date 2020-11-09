@@ -16,7 +16,7 @@ Public Class IndicatorTester
         ret.Columns.Add("High")
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
-        ret.Columns.Add("ATR")
+        ret.Columns.Add("HMA")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -78,8 +78,8 @@ Public Class IndicatorTester
 
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            Dim atrPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Indicator.ATR.CalculateATR(14, inputPayload, atrPayload, True)
+                            Dim hmaPayload As Dictionary(Of Date, Decimal) = Nothing
+                            Indicator.HMA.CalculateHMA(50, Payload.PayloadFields.Close, inputPayload, hmaPayload)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
@@ -92,7 +92,7 @@ Public Class IndicatorTester
                                 row("High") = inputPayload(runningPayload).High
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
-                                row("ATR") = Math.Round(atrPayload(runningPayload), 2)
+                                row("HMA") = Math.Round(hmaPayload(runningPayload), 2)
 
                                 ret.Rows.Add(row)
                             Next
