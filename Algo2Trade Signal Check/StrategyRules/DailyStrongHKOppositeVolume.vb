@@ -70,17 +70,20 @@ Public Class DailyStrongHKOppositeVolume
                         Next
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
+                            Dim hkPayload As Dictionary(Of Date, Payload) = Nothing
+                            Indicator.HeikenAshi.ConvertToHeikenAshi(inputPayload, hkPayload)
+
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
-                                If inputPayload(runningPayload).CandleStrengthHeikenAshi = Payload.StrongCandle.Bullish AndAlso
-                                    inputPayload(runningPayload).VolumeColor = Color.Red Then
+                                If hkPayload(runningPayload).CandleStrengthHeikenAshi = Payload.StrongCandle.Bullish AndAlso
+                                    inputPayload(runningPayload).CandleColor = Color.Red Then
                                     Dim row As DataRow = ret.NewRow
                                     row("Date") = runningPayload
                                     row("Instrument") = currentDayPayload(runningPayload).TradingSymbol
                                     row("Signal") = 1
                                     ret.Rows.Add(row)
-                                ElseIf inputPayload(runningPayload).CandleStrengthHeikenAshi = Payload.StrongCandle.Bearish AndAlso
-                                    inputPayload(runningPayload).VolumeColor = Color.Green Then
+                                ElseIf hkPayload(runningPayload).CandleStrengthHeikenAshi = Payload.StrongCandle.Bearish AndAlso
+                                    inputPayload(runningPayload).CandleColor = Color.Green Then
                                     Dim row As DataRow = ret.NewRow
                                     row("Date") = runningPayload
                                     row("Instrument") = currentDayPayload(runningPayload).TradingSymbol
