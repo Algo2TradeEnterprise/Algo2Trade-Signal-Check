@@ -76,14 +76,14 @@ Public Class DailyStrongHKOppositeVolume
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
                                 If hkPayload(runningPayload).CandleStrengthHeikenAshi = Payload.StrongCandle.Bullish AndAlso
-                                    inputPayload(runningPayload).CandleColor = Color.Red Then
+                                    inputPayload(runningPayload).VolumeColor = Color.Red Then
                                     Dim row As DataRow = ret.NewRow
                                     row("Date") = runningPayload
                                     row("Instrument") = currentDayPayload(runningPayload).TradingSymbol
                                     row("Signal") = 1
                                     ret.Rows.Add(row)
                                 ElseIf hkPayload(runningPayload).CandleStrengthHeikenAshi = Payload.StrongCandle.Bearish AndAlso
-                                    inputPayload(runningPayload).CandleColor = Color.Green Then
+                                    inputPayload(runningPayload).VolumeColor = Color.Green Then
                                     Dim row As DataRow = ret.NewRow
                                     row("Date") = runningPayload
                                     row("Instrument") = currentDayPayload(runningPayload).TradingSymbol
