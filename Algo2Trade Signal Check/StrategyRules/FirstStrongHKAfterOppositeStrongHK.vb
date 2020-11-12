@@ -71,11 +71,11 @@ Public Class FirstStrongHKAfterOppositeStrongHK
                         End If
                         _canceller.Token.ThrowIfCancellationRequested()
                         Dim inputPayload As Dictionary(Of Date, Payload) = Nothing
-                        If _useHA Then
-                            Indicator.HeikenAshi.ConvertToHeikenAshi(XMinutePayload, inputPayload)
-                        Else
-                            inputPayload = XMinutePayload
-                        End If
+                        'If _useHA Then
+                        Indicator.HeikenAshi.ConvertToHeikenAshi(XMinutePayload, inputPayload)
+                        'Else
+                        '    inputPayload = XMinutePayload
+                        'End If
                         _canceller.Token.ThrowIfCancellationRequested()
                         Dim currentDayPayload As Dictionary(Of Date, Payload) = Nothing
                         For Each runningPayload In inputPayload.Keys
@@ -87,8 +87,8 @@ Public Class FirstStrongHKAfterOppositeStrongHK
                         Next
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            Dim hkIntradayPayload As Dictionary(Of Date, Payload) = Nothing
-                            Indicator.HeikenAshi.ConvertToHeikenAshi(inputPayload, hkIntradayPayload)
+                            'Dim hkIntradayPayload As Dictionary(Of Date, Payload) = Nothing
+                            'Indicator.HeikenAshi.ConvertToHeikenAshi(inputPayload, hkIntradayPayload)
                             Dim hkEODPayload As Dictionary(Of Date, Payload) = Nothing
                             Indicator.HeikenAshi.ConvertToHeikenAshi(stockEODPayload, hkEODPayload)
 
@@ -138,49 +138,46 @@ Public Class FirstStrongHKAfterOppositeStrongHK
 
                             For Each runningCurrentPayload In currentDayPayload
                                 _canceller.Token.ThrowIfCancellationRequested()
-                                If runningCurrentPayload.Value.PreviousCandlePayload IsNot Nothing AndAlso
-                                    runningCurrentPayload.Value.PreviousCandlePayload.PayloadDate.Date = chkDate.Date Then
-                                    If Math.Round(runningCurrentPayload.Value.PreviousCandlePayload.Open, 2) = Math.Round(runningCurrentPayload.Value.PreviousCandlePayload.Low, 2) Then
-                                        For Each runningPayload In inputPayload.OrderByDescending(Function(x)
-                                                                                                      Return x.Key
-                                                                                                  End Function)
-                                            _canceller.Token.ThrowIfCancellationRequested()
-                                            If runningPayload.Key < runningCurrentPayload.Value.PreviousCandlePayload.PayloadDate Then
-                                                If Math.Round(runningPayload.Value.Open, 2) = Math.Round(runningPayload.Value.Low, 2) Then
-                                                    Exit For
-                                                ElseIf Math.Round(runningPayload.Value.Open, 2) = Math.Round(runningPayload.Value.High, 2) Then
-                                                    Dim row As DataRow = ret.NewRow
-                                                    row("Date") = runningCurrentPayload.Key.ToString("dd-MMM-yyyy")
-                                                    row("Instrument") = runningPayload.Value.TradingSymbol
-                                                    row("Time") = runningCurrentPayload.Key.ToString("HH:mm:ss")
-                                                    row("Signal") = "Buy"
-                                                    row("Signal Type") = "Intraday"
-                                                    ret.Rows.Add(row)
-                                                    Exit For
-                                                End If
+                                If Math.Round(runningCurrentPayload.Value.PreviousCandlePayload.Open, 2) = Math.Round(runningCurrentPayload.Value.PreviousCandlePayload.Low, 2) Then
+                                    For Each runningPayload In inputPayload.OrderByDescending(Function(x)
+                                                                                                  Return x.Key
+                                                                                              End Function)
+                                        _canceller.Token.ThrowIfCancellationRequested()
+                                        If runningPayload.Key < runningCurrentPayload.Value.PreviousCandlePayload.PayloadDate Then
+                                            If Math.Round(runningPayload.Value.Open, 2) = Math.Round(runningPayload.Value.Low, 2) Then
+                                                Exit For
+                                            ElseIf Math.Round(runningPayload.Value.Open, 2) = Math.Round(runningPayload.Value.High, 2) Then
+                                                Dim row As DataRow = ret.NewRow
+                                                row("Date") = runningCurrentPayload.Key.ToString("dd-MMM-yyyy")
+                                                row("Instrument") = runningPayload.Value.TradingSymbol
+                                                row("Time") = runningCurrentPayload.Key.ToString("HH:mm:ss")
+                                                row("Signal") = "Buy"
+                                                row("Signal Type") = "Intraday"
+                                                ret.Rows.Add(row)
+                                                Exit For
                                             End If
-                                        Next
-                                    ElseIf Math.Round(runningCurrentPayload.Value.PreviousCandlePayload.Open, 2) = Math.Round(runningCurrentPayload.Value.PreviousCandlePayload.High, 2) Then
-                                        For Each runningPayload In inputPayload.OrderByDescending(Function(x)
-                                                                                                      Return x.Key
-                                                                                                  End Function)
-                                            _canceller.Token.ThrowIfCancellationRequested()
-                                            If runningPayload.Key < runningCurrentPayload.Value.PreviousCandlePayload.PayloadDate Then
-                                                If Math.Round(runningPayload.Value.Open, 2) = Math.Round(runningPayload.Value.High, 2) Then
-                                                    Exit For
-                                                ElseIf Math.Round(runningPayload.Value.Open, 2) = Math.Round(runningPayload.Value.Low, 2) Then
-                                                    Dim row As DataRow = ret.NewRow
-                                                    row("Date") = runningCurrentPayload.Key.ToString("dd-MMM-yyyy")
-                                                    row("Instrument") = runningPayload.Value.TradingSymbol
-                                                    row("Time") = runningCurrentPayload.Key.ToString("HH:mm:ss")
-                                                    row("Signal") = "Sell"
-                                                    row("Signal Type") = "Intraday"
-                                                    ret.Rows.Add(row)
-                                                    Exit For
-                                                End If
+                                        End If
+                                    Next
+                                ElseIf Math.Round(runningCurrentPayload.Value.PreviousCandlePayload.Open, 2) = Math.Round(runningCurrentPayload.Value.PreviousCandlePayload.High, 2) Then
+                                    For Each runningPayload In inputPayload.OrderByDescending(Function(x)
+                                                                                                  Return x.Key
+                                                                                              End Function)
+                                        _canceller.Token.ThrowIfCancellationRequested()
+                                        If runningPayload.Key < runningCurrentPayload.Value.PreviousCandlePayload.PayloadDate Then
+                                            If Math.Round(runningPayload.Value.Open, 2) = Math.Round(runningPayload.Value.High, 2) Then
+                                                Exit For
+                                            ElseIf Math.Round(runningPayload.Value.Open, 2) = Math.Round(runningPayload.Value.Low, 2) Then
+                                                Dim row As DataRow = ret.NewRow
+                                                row("Date") = runningCurrentPayload.Key.ToString("dd-MMM-yyyy")
+                                                row("Instrument") = runningPayload.Value.TradingSymbol
+                                                row("Time") = runningCurrentPayload.Key.ToString("HH:mm:ss")
+                                                row("Signal") = "Sell"
+                                                row("Signal Type") = "Intraday"
+                                                ret.Rows.Add(row)
+                                                Exit For
                                             End If
-                                        Next
-                                    End If
+                                        End If
+                                    Next
                                 End If
                             Next
                         End If

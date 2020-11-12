@@ -127,6 +127,7 @@ Partial Class frmMain
         '
         Me.nmrcTimeFrame.Location = New System.Drawing.Point(883, 12)
         Me.nmrcTimeFrame.Margin = New System.Windows.Forms.Padding(4)
+        Me.nmrcTimeFrame.Maximum = New Decimal(New Integer() {10000000, 0, 0, 0})
         Me.nmrcTimeFrame.Name = "nmrcTimeFrame"
         Me.nmrcTimeFrame.Size = New System.Drawing.Size(58, 22)
         Me.nmrcTimeFrame.TabIndex = 28
