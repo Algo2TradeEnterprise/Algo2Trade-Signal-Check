@@ -13,6 +13,7 @@ Public Class FirstStrongHKAfterOppositeStrongHK
         ret.Columns.Add("Time")
         ret.Columns.Add("Signal")
         ret.Columns.Add("Signal Type")
+        ret.Columns.Add("Nifty %")
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
         AddHandler stockData.WaitingFor, AddressOf OnWaitingFor
@@ -34,6 +35,10 @@ Public Class FirstStrongHKAfterOppositeStrongHK
                     _canceller.Token.ThrowIfCancellationRequested()
                     Dim stockIntradayPayload As Dictionary(Of Date, Payload) = Nothing
                     Dim stockEODPayload As Dictionary(Of Date, Payload) = Nothing
+
+                    Dim niftyIntradayPayload As Dictionary(Of Date, Payload) = _cmn.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.Intraday_Cash, "NIFTY 50", chkDate.AddDays(-50), chkDate)
+                    Dim niftyEODPayload As Dictionary(Of Date, Payload) = _cmn.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.EOD_Cash, "NIFTY 50", chkDate.AddDays(-50), chkDate)
+
                     Dim eodTable As Common.DataBaseTable = Common.DataBaseTable.EOD_Cash
                     Select Case _category
                         Case Common.DataBaseTable.Intraday_Cash
@@ -86,13 +91,18 @@ Public Class FirstStrongHKAfterOppositeStrongHK
                             End If
                         Next
                         'Main Logic
-                        If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
+                        If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 AndAlso
+                            niftyIntradayPayload IsNot Nothing AndAlso niftyIntradayPayload.Count > 0 AndAlso
+                            niftyEODPayload IsNot Nothing AndAlso niftyEODPayload.ContainsKey(chkDate.Date) Then
                             'Dim hkIntradayPayload As Dictionary(Of Date, Payload) = Nothing
                             'Indicator.HeikenAshi.ConvertToHeikenAshi(inputPayload, hkIntradayPayload)
                             Dim hkEODPayload As Dictionary(Of Date, Payload) = Nothing
                             Indicator.HeikenAshi.ConvertToHeikenAshi(stockEODPayload, hkEODPayload)
 
+                            Dim niftyClose As Decimal = niftyEODPayload(chkDate.Date).PreviousCandlePayload.Close
+
                             If hkEODPayload IsNot Nothing AndAlso hkEODPayload.ContainsKey(chkDate.Date) Then
+                                Dim niftyChngPer As Decimal = ((niftyEODPayload(chkDate.Date).Open - niftyClose) / niftyClose) * 100
                                 If Math.Round(hkEODPayload(chkDate.Date).PreviousCandlePayload.Open, 2) = Math.Round(hkEODPayload(chkDate.Date).PreviousCandlePayload.Low, 2) Then
                                     For Each runningPayload In hkEODPayload.OrderByDescending(Function(x)
                                                                                                   Return x.Key
@@ -108,6 +118,7 @@ Public Class FirstStrongHKAfterOppositeStrongHK
                                                 row("Time") = chkDate.Date.ToString("HH:mm:ss")
                                                 row("Signal") = "Buy"
                                                 row("Signal Type") = "EOD"
+                                                row("Nifty %") = niftyChngPer
                                                 ret.Rows.Add(row)
                                                 Exit For
                                             End If
@@ -128,6 +139,7 @@ Public Class FirstStrongHKAfterOppositeStrongHK
                                                 row("Time") = chkDate.Date.ToString("HH:mm:ss")
                                                 row("Signal") = "Sell"
                                                 row("Signal Type") = "EOD"
+                                                row("Nifty %") = niftyChngPer
                                                 ret.Rows.Add(row)
                                                 Exit For
                                             End If
@@ -138,6 +150,8 @@ Public Class FirstStrongHKAfterOppositeStrongHK
 
                             For Each runningCurrentPayload In currentDayPayload
                                 _canceller.Token.ThrowIfCancellationRequested()
+                                Dim niftyChngPer As Decimal = ((niftyIntradayPayload(runningCurrentPayload.Value.PreviousCandlePayload.PayloadDate).Close - niftyClose) / niftyClose) * 100
+
                                 If Math.Round(runningCurrentPayload.Value.PreviousCandlePayload.Open, 2) = Math.Round(runningCurrentPayload.Value.PreviousCandlePayload.Low, 2) Then
                                     For Each runningPayload In inputPayload.OrderByDescending(Function(x)
                                                                                                   Return x.Key
@@ -153,6 +167,7 @@ Public Class FirstStrongHKAfterOppositeStrongHK
                                                 row("Time") = runningCurrentPayload.Key.ToString("HH:mm:ss")
                                                 row("Signal") = "Buy"
                                                 row("Signal Type") = "Intraday"
+                                                row("Nifty %") = niftyChngPer
                                                 ret.Rows.Add(row)
                                                 Exit For
                                             End If
@@ -173,6 +188,7 @@ Public Class FirstStrongHKAfterOppositeStrongHK
                                                 row("Time") = runningCurrentPayload.Key.ToString("HH:mm:ss")
                                                 row("Signal") = "Sell"
                                                 row("Signal Type") = "Intraday"
+                                                row("Nifty %") = niftyChngPer
                                                 ret.Rows.Add(row)
                                                 Exit For
                                             End If
