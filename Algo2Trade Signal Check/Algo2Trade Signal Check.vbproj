@@ -115,6 +115,7 @@
     <Compile Include="StrategyRules\DoubleTopDoubleBottom.vb" />
     <Compile Include="StrategyRules\DoubleVolumeEOD.vb" />
     <Compile Include="StrategyRules\EODSignal.vb" />
+    <Compile Include="StrategyRules\FirstStrongHKAfterOppositeStrongHK.vb" />
     <Compile Include="StrategyRules\FractalBreakoutShortTrend.vb" />
     <Compile Include="StrategyRules\FractalCut2MA.vb" />
     <Compile Include="StrategyRules\FractalDip.vb" />
