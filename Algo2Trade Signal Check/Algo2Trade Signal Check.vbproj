@@ -161,6 +161,7 @@
     <Compile Include="StrategyRules\SupertrendConfirmation.vb" />
     <Compile Include="StrategyRules\SupertrendSMAOpenHighLow.vb" />
     <Compile Include="StrategyRules\SwingCandle.vb" />
+    <Compile Include="StrategyRules\ValueInvestingCashFuture.vb" />
     <Compile Include="StrategyRules\VolumeIndex.vb" />
     <Compile Include="StrategyRules\VolumeWithCandleRange.vb" />
     <Compile Include="StrategyRules\WickBeyondSlabLevel.vb" />

@@ -430,6 +430,10 @@ Public Class frmMain
                     rule = New HammerCandleStickPattern(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 64
                     rule = New FirstStrongHKAfterOppositeStrongHK(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 65
+                    rule = New ValueInvestingCashFuture(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case Else
+                    Throw New NotImplementedException
             End Select
             AddHandler rule.Heartbeat, AddressOf OnHeartbeat
             AddHandler rule.WaitingFor, AddressOf OnWaitingFor
@@ -654,6 +658,9 @@ Public Class frmMain
             Case 64
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
+            Case 65
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("Return Cash and Future EOD Data for the given stock")
             Case Else
                 Throw New NotImplementedException
         End Select
