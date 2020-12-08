@@ -102,6 +102,7 @@
     <Compile Include="StockSelection.vb" />
     <Compile Include="StrategyRules\BollingerSqueeze.vb" />
     <Compile Include="StrategyRules\BollingerWithATRBands.vb" />
+    <Compile Include="StrategyRules\BTST_XMin.vb" />
     <Compile Include="StrategyRules\CandleRangeWithATR.vb" />
     <Compile Include="StrategyRules\ConstrictionAtBreakout.vb" />
     <Compile Include="StrategyRules\DailyStrongHKOppositeVolume.vb" />

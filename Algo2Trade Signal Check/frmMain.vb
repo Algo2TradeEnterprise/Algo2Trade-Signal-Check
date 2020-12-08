@@ -432,6 +432,8 @@ Public Class frmMain
                     rule = New FirstStrongHKAfterOppositeStrongHK(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 65
                     rule = New ValueInvestingCashFuture(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 66
+                    rule = New BTST_XMin(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case Else
                     Throw New NotImplementedException
             End Select
@@ -661,6 +663,9 @@ Public Class frmMain
             Case 65
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Return Cash and Future EOD Data for the given stock")
+            Case 66
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("Description ...")
             Case Else
                 Throw New NotImplementedException
         End Select
