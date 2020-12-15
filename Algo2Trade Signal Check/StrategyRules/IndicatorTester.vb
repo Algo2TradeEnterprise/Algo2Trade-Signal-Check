@@ -16,7 +16,16 @@ Public Class IndicatorTester
         ret.Columns.Add("High")
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
-        ret.Columns.Add("ATR")
+        ret.Columns.Add("SMA1")
+        ret.Columns.Add("SMA2")
+        ret.Columns.Add("SMA3")
+        ret.Columns.Add("SMA4")
+        ret.Columns.Add("SMA5")
+        ret.Columns.Add("SMA6")
+        ret.Columns.Add("SMA7")
+        ret.Columns.Add("SMA8")
+        ret.Columns.Add("SMA9")
+        ret.Columns.Add("SMA10")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -78,8 +87,8 @@ Public Class IndicatorTester
 
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            Dim atrPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Indicator.ATR.CalculateATR(14, inputPayload, atrPayload)
+                            Dim rainbowPayload As Dictionary(Of Date, Indicator.RainbowMA) = Nothing
+                            Indicator.RainbowMovingAverage.CalculateRainbowMovingAverage(2, inputPayload, rainbowPayload)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
@@ -92,7 +101,16 @@ Public Class IndicatorTester
                                 row("High") = inputPayload(runningPayload).High
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
-                                row("ATR") = Math.Round(atrPayload(runningPayload), 2)
+                                row("SMA1") = rainbowPayload(runningPayload).SMA1
+                                row("SMA2") = rainbowPayload(runningPayload).SMA2
+                                row("SMA3") = rainbowPayload(runningPayload).SMA3
+                                row("SMA4") = rainbowPayload(runningPayload).SMA4
+                                row("SMA5") = rainbowPayload(runningPayload).SMA5
+                                row("SMA6") = rainbowPayload(runningPayload).SMA6
+                                row("SMA7") = rainbowPayload(runningPayload).SMA7
+                                row("SMA8") = rainbowPayload(runningPayload).SMA8
+                                row("SMA9") = rainbowPayload(runningPayload).SMA9
+                                row("SMA10") = rainbowPayload(runningPayload).SMA10
 
                                 ret.Rows.Add(row)
                             Next

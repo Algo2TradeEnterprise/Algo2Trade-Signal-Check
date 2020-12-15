@@ -14,8 +14,7 @@
                     midInputPayload.Add(runningPayload, inputVal)
                 Next
 
-                Dim midInputConPayload As Dictionary(Of Date, Payload) = Nothing
-                Common.ConvertDecimalToPayload(Payload.PayloadFields.Additional_Field, midInputPayload, midInputConPayload)
+                Dim midInputConPayload As Dictionary(Of Date, Payload) = Common.ConvertDecimalToPayload(Payload.PayloadFields.Additional_Field, midInputPayload)
 
                 WMA.CalculateWMA(CInt(Math.Sqrt(hmaPeriod)), Payload.PayloadFields.Additional_Field, midInputConPayload, outputPayload)
             End If

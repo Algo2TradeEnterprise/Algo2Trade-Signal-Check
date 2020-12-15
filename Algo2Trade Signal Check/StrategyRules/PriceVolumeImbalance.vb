@@ -106,8 +106,7 @@ Public Class PriceVolumeImbalance
                                 End If
                             Next
 
-                            Dim highLowVolConPayload As Dictionary(Of Date, Payload) = Nothing
-                            Common.ConvertDecimalToPayload(Payload.PayloadFields.Additional_Field, highLowVolPayload, highLowVolConPayload)
+                            Dim highLowVolConPayload As Dictionary(Of Date, Payload) = Common.ConvertDecimalToPayload(Payload.PayloadFields.Additional_Field, highLowVolPayload)
 
                             Dim smaPayload As Dictionary(Of Date, Decimal) = Nothing
                             Indicator.SMA.CalculateSMA(_period, Payload.PayloadFields.Additional_Field, highLowVolConPayload, smaPayload)
