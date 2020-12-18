@@ -11,6 +11,7 @@ Public Class NIFTYBANKOptions
         ret.Columns.Add("Date")
         ret.Columns.Add("Trading Symbol")
         ret.Columns.Add("Lot Size")
+        ret.Columns.Add("Signal Candle Time")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -145,6 +146,7 @@ Public Class NIFTYBANKOptions
                                             row("Date") = chkDate.ToString("dd-MMM-yyyy")
                                             row("Trading Symbol") = optionStrike(selectedStrike).TradingSymbol
                                             row("Lot Size") = optionStrike(selectedStrike).LotSize
+                                            row("Signal Candle Time") = signalCandle.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
 
                                             ret.Rows.Add(row)
                                         End If
