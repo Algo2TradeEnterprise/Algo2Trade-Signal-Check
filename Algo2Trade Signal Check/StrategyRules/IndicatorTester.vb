@@ -16,16 +16,13 @@ Public Class IndicatorTester
         ret.Columns.Add("High")
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
-        ret.Columns.Add("SMA1")
-        ret.Columns.Add("SMA2")
-        ret.Columns.Add("SMA3")
-        ret.Columns.Add("SMA4")
-        ret.Columns.Add("SMA5")
-        ret.Columns.Add("SMA6")
-        ret.Columns.Add("SMA7")
-        ret.Columns.Add("SMA8")
-        ret.Columns.Add("SMA9")
-        ret.Columns.Add("SMA10")
+        ret.Columns.Add("Pivot High")
+        ret.Columns.Add("Pivot High Time")
+        ret.Columns.Add("Pivot Low")
+        ret.Columns.Add("Pivot Low Time")
+        ret.Columns.Add("High Trend")
+        ret.Columns.Add("Low Trend")
+        ret.Columns.Add("Trend")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -87,8 +84,13 @@ Public Class IndicatorTester
 
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            Dim rainbowPayload As Dictionary(Of Date, Indicator.RainbowMA) = Nothing
-                            Indicator.RainbowMovingAverage.CalculateRainbowMovingAverage(2, inputPayload, rainbowPayload)
+                            Dim pivotPayload As Dictionary(Of Date, Indicator.Pivot) = Nothing
+                            Indicator.PivotHighLow.CalculatePivotHighLow(4, inputPayload, pivotPayload)
+
+                            Dim highTrendPayload As Dictionary(Of Date, Decimal) = Nothing
+                            Dim lowTrendPayload As Dictionary(Of Date, Decimal) = Nothing
+                            Dim trendPayload As Dictionary(Of Date, Color) = Nothing
+                            Indicator.PivotHighLow.CalculatePivotHighLowTrend(4, 3, inputPayload, highTrendPayload, lowTrendPayload, trendPayload)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
@@ -101,16 +103,13 @@ Public Class IndicatorTester
                                 row("High") = inputPayload(runningPayload).High
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
-                                row("SMA1") = rainbowPayload(runningPayload).SMA1
-                                row("SMA2") = rainbowPayload(runningPayload).SMA2
-                                row("SMA3") = rainbowPayload(runningPayload).SMA3
-                                row("SMA4") = rainbowPayload(runningPayload).SMA4
-                                row("SMA5") = rainbowPayload(runningPayload).SMA5
-                                row("SMA6") = rainbowPayload(runningPayload).SMA6
-                                row("SMA7") = rainbowPayload(runningPayload).SMA7
-                                row("SMA8") = rainbowPayload(runningPayload).SMA8
-                                row("SMA9") = rainbowPayload(runningPayload).SMA9
-                                row("SMA10") = rainbowPayload(runningPayload).SMA10
+                                row("Pivot High") = pivotPayload(runningPayload).PivotHigh
+                                row("Pivot High Time") = pivotPayload(runningPayload).PivotHighTime.ToString("dd-MMM-yyyy HH:mm:ss")
+                                row("Pivot Low") = pivotPayload(runningPayload).PivotLow
+                                row("Pivot Low Time") = pivotPayload(runningPayload).PivotLowTime.ToString("dd-MMM-yyyy HH:mm:ss")
+                                row("High Trend") = Math.Round(highTrendPayload(runningPayload), 4)
+                                row("Low Trend") = Math.Round(lowTrendPayload(runningPayload), 4)
+                                row("Trend") = trendPayload(runningPayload).Name
 
                                 ret.Rows.Add(row)
                             Next
