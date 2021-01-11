@@ -434,6 +434,8 @@ Public Class frmMain
                     rule = New ValueInvestingCashFuture(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 66
                     rule = New BTST_XMin(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 67
+                    rule = New GetWeeklyCandle(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case Else
                     Throw New NotImplementedException
             End Select
@@ -664,6 +666,9 @@ Public Class frmMain
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Return Cash and Future EOD Data for the given stock")
             Case 66
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("Description ...")
+            Case 67
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case Else

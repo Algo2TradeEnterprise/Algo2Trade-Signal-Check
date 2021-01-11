@@ -123,6 +123,7 @@
     <Compile Include="StrategyRules\GetRawCandle.vb" />
     <Compile Include="StrategyRules\GetStockTrend.vb" />
     <Compile Include="StrategyRules\GetStockTrendDirection.vb" />
+    <Compile Include="StrategyRules\GetWeeklyCandle.vb" />
     <Compile Include="StrategyRules\GraphAngle.vb" />
     <Compile Include="StrategyRules\HammerCandleStickPattern.vb" />
     <Compile Include="StrategyRules\HighestOIOptions.vb" />
