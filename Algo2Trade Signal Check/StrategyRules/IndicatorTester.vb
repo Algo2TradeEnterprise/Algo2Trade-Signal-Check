@@ -79,7 +79,7 @@ Public Class IndicatorTester
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
                             Dim trendPayload As Dictionary(Of Date, Color) = Nothing
-                            CalculateHKKeltnerChannelTrend(inputPayload, trendPayload)
+                            CalculateIchimokuTrend(inputPayload, trendPayload)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
@@ -106,25 +106,18 @@ Public Class IndicatorTester
     End Function
 
 #Region "HK Trend Calculation"
-    Private Sub CalculateHKKeltnerChannelTrend(ByVal inputPayload As Dictionary(Of Date, Payload), ByRef outputPayload As Dictionary(Of Date, Color))
+    Private Sub CalculateIchimokuTrend(ByVal inputPayload As Dictionary(Of Date, Payload), ByRef outputPayload As Dictionary(Of Date, Color))
         If inputPayload IsNot Nothing AndAlso inputPayload.Count > 0 Then
-            Dim hkPayload As Dictionary(Of Date, Payload) = Nothing
-            Indicator.HeikenAshi.ConvertToHeikenAshi(inputPayload, hkPayload)
-            Dim emaPayload As Dictionary(Of Date, Decimal) = Nothing
-            Dim highKeltnerPayload As Dictionary(Of Date, Decimal) = Nothing
-            Dim lowKeltnerPayload As Dictionary(Of Date, Decimal) = Nothing
-            Indicator.KeltnerChannel.CalculateEMAKeltnerChannel(50, 0.5, hkPayload, highKeltnerPayload, lowKeltnerPayload, emaPayload)
+            Dim leadingSpanAPayload As Dictionary(Of Date, Decimal) = Nothing
+            Dim leadingSpanBPayload As Dictionary(Of Date, Decimal) = Nothing
+            Indicator.IchimokuClouds.CalculateIchimokuClouds(9, 26, 52, 26, inputPayload, Nothing, Nothing, leadingSpanAPayload, leadingSpanBPayload, Nothing)
 
             Dim trend As Color = Color.White
-            For Each runningPayload In hkPayload
-                If runningPayload.Value.CandleStrengthHeikenAshi = Payload.StrongCandle.Bullish Then
-                    If runningPayload.Value.Close > highKeltnerPayload(runningPayload.Key) Then
-                        trend = Color.Green
-                    End If
-                ElseIf runningPayload.Value.CandleStrengthHeikenAshi = Payload.StrongCandle.Bearish Then
-                    If runningPayload.Value.Close < lowKeltnerPayload(runningPayload.Key) Then
-                        trend = Color.Red
-                    End If
+            For Each runningPayload In inputPayload
+                If runningPayload.Value.Close > Math.Max(leadingSpanAPayload(runningPayload.Key), leadingSpanBPayload(runningPayload.Key)) Then
+                    trend = Color.Green
+                ElseIf runningPayload.Value.Close < Math.Min(leadingSpanAPayload(runningPayload.Key), leadingSpanBPayload(runningPayload.Key)) Then
+                    trend = Color.Red
                 End If
 
                 If outputPayload Is Nothing Then outputPayload = New Dictionary(Of Date, Color)
