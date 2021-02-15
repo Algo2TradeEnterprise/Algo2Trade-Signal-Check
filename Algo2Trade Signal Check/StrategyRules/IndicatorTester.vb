@@ -105,7 +105,7 @@ Public Class IndicatorTester
         Return ret
     End Function
 
-#Region "HK Trend Calculation"
+#Region "Trend Calculation"
     Private Sub CalculateIchimokuTrend(ByVal inputPayload As Dictionary(Of Date, Payload), ByRef outputPayload As Dictionary(Of Date, Color))
         If inputPayload IsNot Nothing AndAlso inputPayload.Count > 0 Then
             Dim leadingSpanAPayload As Dictionary(Of Date, Decimal) = Nothing
