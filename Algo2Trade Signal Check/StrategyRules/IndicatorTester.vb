@@ -16,12 +16,6 @@ Public Class IndicatorTester
         ret.Columns.Add("High")
         ret.Columns.Add("Close")
         ret.Columns.Add("Volume")
-        ret.Columns.Add("Pivot High")
-        ret.Columns.Add("Pivot High Time")
-        ret.Columns.Add("Pivot Low")
-        ret.Columns.Add("Pivot Low Time")
-        ret.Columns.Add("High Trend")
-        ret.Columns.Add("Low Trend")
         ret.Columns.Add("Trend")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
@@ -48,7 +42,7 @@ Public Class IndicatorTester
                         Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency, Common.DataBaseTable.Intraday_Futures, Common.DataBaseTable.Intraday_Futures_Options
                             stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-300), chkDate)
                         Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL, Common.DataBaseTable.EOD_Futures_Options
-                            stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-200), chkDate)
+                            stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-300), chkDate)
                     End Select
                     _canceller.Token.ThrowIfCancellationRequested()
                     If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
@@ -84,13 +78,8 @@ Public Class IndicatorTester
 
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            Dim pivotPayload As Dictionary(Of Date, Indicator.Pivot) = Nothing
-                            Indicator.PivotHighLow.CalculatePivotHighLow(4, inputPayload, pivotPayload)
-
-                            Dim highTrendPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Dim lowTrendPayload As Dictionary(Of Date, Decimal) = Nothing
                             Dim trendPayload As Dictionary(Of Date, Color) = Nothing
-                            Indicator.PivotHighLow.CalculatePivotHighLowTrend(4, 3, inputPayload, highTrendPayload, lowTrendPayload, trendPayload)
+                            CalculateHKKeltnerChannelTrend(inputPayload, trendPayload)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
@@ -103,12 +92,6 @@ Public Class IndicatorTester
                                 row("High") = inputPayload(runningPayload).High
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
-                                row("Pivot High") = pivotPayload(runningPayload).PivotHigh
-                                row("Pivot High Time") = pivotPayload(runningPayload).PivotHighTime.ToString("dd-MMM-yyyy HH:mm:ss")
-                                row("Pivot Low") = pivotPayload(runningPayload).PivotLow
-                                row("Pivot Low Time") = pivotPayload(runningPayload).PivotLowTime.ToString("dd-MMM-yyyy HH:mm:ss")
-                                row("High Trend") = Math.Round(highTrendPayload(runningPayload), 4)
-                                row("Low Trend") = Math.Round(lowTrendPayload(runningPayload), 4)
                                 row("Trend") = trendPayload(runningPayload).Name
 
                                 ret.Rows.Add(row)
@@ -121,4 +104,33 @@ Public Class IndicatorTester
         End While
         Return ret
     End Function
+
+#Region "HK Trend Calculation"
+    Private Sub CalculateHKKeltnerChannelTrend(ByVal inputPayload As Dictionary(Of Date, Payload), ByRef outputPayload As Dictionary(Of Date, Color))
+        If inputPayload IsNot Nothing AndAlso inputPayload.Count > 0 Then
+            Dim hkPayload As Dictionary(Of Date, Payload) = Nothing
+            Indicator.HeikenAshi.ConvertToHeikenAshi(inputPayload, hkPayload)
+            Dim emaPayload As Dictionary(Of Date, Decimal) = Nothing
+            Dim highKeltnerPayload As Dictionary(Of Date, Decimal) = Nothing
+            Dim lowKeltnerPayload As Dictionary(Of Date, Decimal) = Nothing
+            Indicator.KeltnerChannel.CalculateEMAKeltnerChannel(50, 0.5, hkPayload, highKeltnerPayload, lowKeltnerPayload, emaPayload)
+
+            Dim trend As Color = Color.White
+            For Each runningPayload In hkPayload
+                If runningPayload.Value.CandleStrengthHeikenAshi = Payload.StrongCandle.Bullish Then
+                    If runningPayload.Value.Close > highKeltnerPayload(runningPayload.Key) Then
+                        trend = Color.Green
+                    End If
+                ElseIf runningPayload.Value.CandleStrengthHeikenAshi = Payload.StrongCandle.Bearish Then
+                    If runningPayload.Value.Close < lowKeltnerPayload(runningPayload.Key) Then
+                        trend = Color.Red
+                    End If
+                End If
+
+                If outputPayload Is Nothing Then outputPayload = New Dictionary(Of Date, Color)
+                outputPayload.Add(runningPayload.Key, trend)
+            Next
+        End If
+    End Sub
+#End Region
 End Class
