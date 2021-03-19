@@ -436,6 +436,8 @@ Public Class frmMain
                     rule = New BTST_XMin(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 67
                     rule = New GetWeeklyCandle(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 68
+                    rule = New FractalBreakoutTowardsMA(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case Else
                     Throw New NotImplementedException
             End Select
@@ -669,6 +671,9 @@ Public Class frmMain
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 67
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("Description ...")
+            Case 68
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case Else
