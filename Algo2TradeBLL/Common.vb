@@ -821,8 +821,8 @@ Public Class Common
         Dim ret As Dictionary(Of Date, Payload) = Nothing
         Dim instrumentToken As String = Nothing
         Dim tradingSymbol As String = Nothing
-        Dim ZerodhaEODHistoricalURL As String = "https://kitecharts-aws.zerodha.com/api/chart/{0}/day?api_key=kitefront&access_token=K&from={1}&to={2}"
-        Dim ZerodhaIntradayHistoricalURL As String = "https://kitecharts-aws.zerodha.com/api/chart/{0}/minute?api_key=kitefront&access_token=K&from={1}&to={2}"
+        Dim ZerodhaEODHistoricalURL As String = "https://kite.zerodha.com/oms/instruments/historical/{0}/day?&oi=1&from={1}&to={2}"
+        Dim ZerodhaIntradayHistoricalURL As String = "https://kite.zerodha.com/oms/instruments/historical/{0}/minute?oi=1&from={1}&to={2}"
         Dim ZerodhaHistoricalURL As String = Nothing
         Select Case tableName
             Case DataBaseTable.EOD_Cash, DataBaseTable.EOD_Commodity, DataBaseTable.EOD_Currency, DataBaseTable.EOD_Futures
@@ -839,10 +839,31 @@ Public Class Common
             Dim historicalDataURL As String = String.Format(ZerodhaHistoricalURL, instrumentToken, startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"))
             OnHeartbeat(String.Format("Fetching historical Data: {0}", historicalDataURL))
             Dim historicalCandlesJSONDict As Dictionary(Of String, Object) = Nothing
-            Using sr As New StreamReader(HttpWebRequest.Create(historicalDataURL).GetResponseAsync().Result.GetResponseStream)
-                Dim jsonString = Await sr.ReadToEndAsync.ConfigureAwait(False)
-                historicalCandlesJSONDict = StringManipulation.JsonDeserialize(jsonString)
+            ServicePointManager.Expect100Continue = False
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12
+            ServicePointManager.ServerCertificateValidationCallback = Function(s, Ca, CaC, sslPE)
+                                                                          Return True
+                                                                      End Function
+            Using browser As New Utilities.Network.HttpBrowser(Nothing, Net.DecompressionMethods.GZip Or DecompressionMethods.Deflate Or DecompressionMethods.None, New TimeSpan(0, 1, 0), _cts)
+                Dim headers As New Dictionary(Of String, String)
+                headers.Add("Host", "kite.zerodha.com")
+                headers.Add("Accept", "*/*")
+                headers.Add("Accept-Encoding", "gzip, deflate")
+                headers.Add("Accept-Language", "en-US,en;q=0.9,hi;q=0.8,ko;q=0.7")
+                headers.Add("Authorization", String.Format("enctoken {0}", "QsaC2MB9Oo5QZNVu5/8RqRAFV+RmmQpoMGkMeVQ2iuH1LXzRkx+SiWgJNqk8ySFqNGQCBaHqecQ3ZqR/04TfLWmjBDu87g=="))
+                headers.Add("Referer", "https://kite.zerodha.com/static/build/chart.html?v=2.4.0")
+                headers.Add("sec-fetch-mode", "cors")
+                headers.Add("sec-fetch-site", "same-origin")
+                headers.Add("Connection", "keep-alive")
+
+                _cts.Token.ThrowIfCancellationRequested()
+                Dim l As Tuple(Of Uri, Object) = Await browser.NonPOSTRequestAsync(historicalDataURL, System.Net.Http.HttpMethod.Get, Nothing, False, headers, True, "application/json").ConfigureAwait(False)
+                _cts.Token.ThrowIfCancellationRequested()
+                If l IsNot Nothing AndAlso l.Item2 IsNot Nothing Then
+                    historicalCandlesJSONDict = l.Item2
+                End If
             End Using
+
             If historicalCandlesJSONDict IsNot Nothing AndAlso historicalCandlesJSONDict.Count > 0 AndAlso
                 historicalCandlesJSONDict.ContainsKey("data") Then
                 Dim historicalCandlesDict As Dictionary(Of String, Object) = historicalCandlesJSONDict("data")
@@ -856,7 +877,7 @@ Public Class Common
 
                         Dim runningPayload As Payload = New Payload(Payload.CandleDataSource.Chart)
                         With runningPayload
-                            .PayloadDate = Utilities.Time.GetDateTimeTillMinutes(historicalCandle(0))
+                            .PayloadDate = runningSnapshotTime
                             .TradingSymbol = tradingSymbol
                             .Open = historicalCandle(1)
                             .High = historicalCandle(2)

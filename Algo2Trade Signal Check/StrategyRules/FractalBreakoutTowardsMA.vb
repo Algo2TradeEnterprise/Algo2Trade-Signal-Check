@@ -32,16 +32,30 @@ Public Class FractalBreakoutTowardsMA
                 For Each stock In stockList
                     _canceller.Token.ThrowIfCancellationRequested()
                     Dim stockPayload As Dictionary(Of Date, Payload) = Nothing
-                    Select Case _category
-                        Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency, Common.DataBaseTable.Intraday_Futures
-                            stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-30), chkDate)
-                        Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL
-                            stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-200), chkDate)
-                        Case Common.DataBaseTable.Intraday_Futures_Options
-                            stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-30), chkDate)
-                        Case Common.DataBaseTable.EOD_Futures_Options
-                            stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-200), chkDate)
-                    End Select
+                    If chkDate.Date = Now.Date Then
+                        Select Case _category
+                            Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency, Common.DataBaseTable.Intraday_Futures
+                                stockPayload = Await _cmn.GetHistoricalDataAsync(_category, stock, chkDate.AddDays(-30), chkDate).ConfigureAwait(False)
+                            Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL
+                                stockPayload = Await _cmn.GetHistoricalDataAsync(_category, stock, chkDate.AddDays(-500), chkDate).ConfigureAwait(False)
+                            Case Else
+                                Throw New NotImplementedException
+                        End Select
+
+                    Else
+                        Select Case _category
+                            Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency, Common.DataBaseTable.Intraday_Futures
+                                stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-30), chkDate)
+                            Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL
+                                stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-200), chkDate)
+                            Case Common.DataBaseTable.Intraday_Futures_Options
+                                stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-30), chkDate)
+                            Case Common.DataBaseTable.EOD_Futures_Options
+                                stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-200), chkDate)
+                            Case Else
+                                Throw New NotImplementedException
+                        End Select
+                    End If
                     _canceller.Token.ThrowIfCancellationRequested()
                     If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
                         Dim XMinutePayload As Dictionary(Of Date, Payload) = Nothing
@@ -79,12 +93,15 @@ Public Class FractalBreakoutTowardsMA
                             Dim fractalHighPayload As Dictionary(Of Date, Decimal) = Nothing
                             Dim fractalLowPayload As Dictionary(Of Date, Decimal) = Nothing
                             Indicator.FractalBands.CalculateFractal(inputPayload, fractalHighPayload, fractalLowPayload)
-                            Dim smaPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Indicator.SMA.CalculateSMA(50, Payload.PayloadFields.Close, inputPayload, smaPayload)
+                            Dim sma50Payload As Dictionary(Of Date, Decimal) = Nothing
+                            Indicator.SMA.CalculateSMA(50, Payload.PayloadFields.Close, inputPayload, sma50Payload)
+                            Dim sma200Payload As Dictionary(Of Date, Decimal) = Nothing
+                            Indicator.SMA.CalculateSMA(200, Payload.PayloadFields.Close, inputPayload, sma200Payload)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
-                                If smaPayload(runningPayload) > fractalHighPayload(runningPayload) Then
+                                If sma50Payload(runningPayload) > sma200Payload(runningPayload) AndAlso
+                                    sma50Payload(runningPayload) > fractalHighPayload(runningPayload) Then
                                     If currentDayPayload(runningPayload).High > fractalHighPayload(runningPayload) AndAlso
                                         currentDayPayload(runningPayload).PreviousCandlePayload.High < fractalHighPayload(runningPayload) Then
                                         Dim row As DataRow = ret.NewRow
@@ -94,7 +111,8 @@ Public Class FractalBreakoutTowardsMA
 
                                         ret.Rows.Add(row)
                                     End If
-                                ElseIf smaPayload(runningPayload) < fractalLowPayload(runningPayload) Then
+                                ElseIf sma50Payload(runningPayload) < sma200Payload(runningPayload) AndAlso
+                                    sma50Payload(runningPayload) < fractalLowPayload(runningPayload) Then
                                     If currentDayPayload(runningPayload).Low < fractalLowPayload(runningPayload) AndAlso
                                         currentDayPayload(runningPayload).PreviousCandlePayload.Low > fractalLowPayload(runningPayload) Then
                                         Dim row As DataRow = ret.NewRow
