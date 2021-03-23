@@ -40,8 +40,8 @@ Public Class GetWeeklyCandle
                     _canceller.Token.ThrowIfCancellationRequested()
                     Dim stockPayload As Dictionary(Of Date, Payload) = Nothing
                     Select Case _category
-                        Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.EOD_Cash
-                            stockPayload = _cmn.GetRawPayload(Common.DataBaseTable.EOD_Cash, stock, startDate.AddDays(-15), chkDate)
+                        Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_POSITIONAL
+                            stockPayload = _cmn.GetRawPayload(Common.DataBaseTable.EOD_POSITIONAL, stock, startDate.AddDays(-15), chkDate)
                         Case Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.EOD_Commodity
                             stockPayload = _cmn.GetRawPayload(Common.DataBaseTable.EOD_Commodity, stock, startDate.AddDays(-15), chkDate)
                         Case Common.DataBaseTable.Intraday_Currency, Common.DataBaseTable.EOD_Currency
@@ -50,6 +50,8 @@ Public Class GetWeeklyCandle
                             stockPayload = _cmn.GetRawPayload(Common.DataBaseTable.EOD_Futures, stock, startDate.AddDays(-15), chkDate)
                         Case Common.DataBaseTable.Intraday_Futures_Options, Common.DataBaseTable.EOD_Futures_Options
                             stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.EOD_Futures_Options, stock, startDate.AddDays(-15), chkDate)
+                        Case Else
+                            Throw New NotImplementedException
                     End Select
                     _canceller.Token.ThrowIfCancellationRequested()
                     If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
