@@ -11,6 +11,7 @@ Public Class FractalConfirmationOnHTHK
         ret.Columns.Add("Date")
         ret.Columns.Add("Trading Symbol")
         ret.Columns.Add("Signal")
+        ret.Columns.Add("Signal Candle")
         ret.Columns.Add("Stoploss")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
@@ -87,6 +88,8 @@ Public Class FractalConfirmationOnHTHK
                             Dim tradingSymbol As String = _cmn.GetCurrentTradingSymbol(Common.DataBaseTable.EOD_Futures, chkDate, stock)
                             Dim lotSize As Integer = _cmn.GetLotSize(Common.DataBaseTable.EOD_Futures, tradingSymbol, chkDate)
 
+                            Dim activeDirection As Integer = 0
+                            Dim sl As Decimal = Decimal.MinValue
                             Dim lastSignl As Integer = 0
                             Dim lastSignalCandle As Payload = Nothing
                             Dim lastSupportCandle As Payload = Nothing
@@ -97,80 +100,130 @@ Public Class FractalConfirmationOnHTHK
                                     Dim previousHTHKCandle As Payload = htHKPayload(currentXMinute).PreviousCandlePayload
                                     If previousHTHKCandle IsNot Nothing Then
                                         Dim currentCandle As Payload = currentDayPayload(runningPayload)
-
-                                        If lastSignalCandle IsNot Nothing Then
-                                            If lastSignl = 1 Then
-                                                If currentCandle.High >= lastSignalCandle.High Then
-                                                    Dim row As DataRow = ret.NewRow
-                                                    row("Date") = inputPayload(runningPayload).PayloadDate
-                                                    row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
-                                                    row("Signal") = "BUY"
-                                                    row("Stoploss") = GetStoploss(If(lastSupportCandle, lastSignalCandle), lastSignalCandle, 1, currentDayPayload, lotSize)
-                                                    ret.Rows.Add(row)
-
-                                                    lastSignl = 0
-                                                    lastSignalCandle = Nothing
-                                                    lastSupportCandle = Nothing
-                                                End If
-                                            ElseIf lastSignl = -1 Then
-                                                If currentCandle.Low <= lastSignalCandle.Low Then
-                                                    Dim row As DataRow = ret.NewRow
-                                                    row("Date") = inputPayload(runningPayload).PayloadDate
-                                                    row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
-                                                    row("Signal") = "SELL"
-                                                    row("Stoploss") = GetStoploss(If(lastSupportCandle, lastSignalCandle), lastSignalCandle, -1, currentDayPayload, lotSize)
-                                                    ret.Rows.Add(row)
-
-                                                    lastSignl = 0
-                                                    lastSignalCandle = Nothing
-                                                    lastSupportCandle = Nothing
-                                                End If
+                                        If activeDirection <> 0 Then
+                                            If activeDirection = 1 AndAlso currentCandle.Low <= sl Then
+                                                activeDirection = 0
+                                                sl = Decimal.MinValue
+                                            ElseIf activeDirection = -1 AndAlso currentCandle.High >= sl Then
+                                                activeDirection = 0
+                                                sl = Decimal.MinValue
+                                            Else
+                                                'If activeDirection = -1 AndAlso previousHTHKCandle.CandleColor = Color.Green Then
+                                                '    activeDirection = 0
+                                                '    sl = Decimal.MinValue
+                                                'ElseIf activeDirection = 1 AndAlso previousHTHKCandle.CandleColor = Color.Red Then
+                                                '    activeDirection = 0
+                                                '    sl = Decimal.MinValue
+                                                'End If
                                             End If
                                         End If
+                                        If activeDirection = 0 Then
+                                            If lastSignalCandle IsNot Nothing Then
+                                                If lastSignl = 1 Then
+                                                    If currentCandle.High > lastSignalCandle.High Then
+                                                        sl = GetStoploss(If(lastSupportCandle, lastSignalCandle), lastSignalCandle, 1, currentDayPayload, fractalLowPayload)
 
-                                        If previousHTHKCandle.CandleColor = Color.Green Then
-                                            If lastSignl <> 1 Then
-                                                lastSignl = 0
-                                                lastSignalCandle = Nothing
-                                                lastSupportCandle = Nothing
-                                            End If
-                                            If lastSupportCandle IsNot Nothing Then
-                                                If currentCandle.CandleColor = Color.Green Then
-                                                    lastSignalCandle = currentCandle
+                                                        Dim row As DataRow = ret.NewRow
+                                                        row("Date") = inputPayload(runningPayload).PayloadDate
+                                                        row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
+                                                        row("Signal") = "BUY"
+                                                        row("Signal Candle") = lastSignalCandle.PayloadDate.ToString("HH:mm:ss")
+                                                        row("Stoploss") = (lastSignalCandle.High - sl) * lotSize
+                                                        ret.Rows.Add(row)
+
+                                                        lastSignl = 0
+                                                        lastSignalCandle = Nothing
+                                                        lastSupportCandle = Nothing
+                                                        activeDirection = 1
+                                                    End If
+                                                ElseIf lastSignl = -1 Then
+                                                    If currentCandle.Low < lastSignalCandle.Low Then
+                                                        sl = GetStoploss(If(lastSupportCandle, lastSignalCandle), lastSignalCandle, -1, currentDayPayload, fractalHighPayload)
+
+                                                        Dim row As DataRow = ret.NewRow
+                                                        row("Date") = inputPayload(runningPayload).PayloadDate
+                                                        row("Trading Symbol") = inputPayload(runningPayload).TradingSymbol
+                                                        row("Signal") = "SELL"
+                                                        row("Signal Candle") = lastSignalCandle.PayloadDate.ToString("HH:mm:ss")
+                                                        row("Stoploss") = (sl - lastSignalCandle.Low) * lotSize
+                                                        ret.Rows.Add(row)
+
+                                                        lastSignl = 0
+                                                        lastSignalCandle = Nothing
+                                                        lastSupportCandle = Nothing
+                                                        activeDirection = -1
+                                                    End If
                                                 End If
-                                            Else
-                                                If currentCandle.CandleColor = Color.Red AndAlso
+                                            End If
+
+                                            If previousHTHKCandle.CandleColor = Color.Green Then
+                                                If lastSignl <> 1 Then
+                                                    lastSignl = 0
+                                                    lastSignalCandle = Nothing
+                                                    lastSupportCandle = Nothing
+                                                End If
+                                                If lastSupportCandle IsNot Nothing Then
+                                                    If currentCandle.CandleColor = Color.Green Then
+                                                        lastSignalCandle = currentCandle
+                                                    End If
+                                                Else
+                                                    If currentCandle.CandleColor = Color.Red AndAlso
                                                     currentCandle.Close <= fractalLowPayload(currentCandle.PayloadDate) Then
-                                                    lastSupportCandle = currentCandle
-                                                    lastSignl = 1
+                                                        lastSupportCandle = currentCandle
+                                                        lastSignl = 1
+                                                    End If
                                                 End If
-                                            End If
-                                            If lastSupportCandle Is Nothing AndAlso
-                                                currentCandle.Low <= fractalLowPayload(currentCandle.PayloadDate) Then
-                                                lastSignalCandle = currentCandle
-                                                lastSignl = 1
-                                            End If
-                                        ElseIf previousHTHKCandle.CandleColor = Color.Red Then
-                                            If lastSignl <> -1 Then
-                                                lastSignl = 0
-                                                lastSignalCandle = Nothing
-                                                lastSupportCandle = Nothing
-                                            End If
-                                            If lastSupportCandle IsNot Nothing Then
-                                                If currentCandle.CandleColor = Color.Red Then
-                                                    lastSignalCandle = currentCandle
+                                                If currentCandle.Low <= fractalLowPayload(currentCandle.PayloadDate) AndAlso
+                                                    currentCandle.Close >= fractalLowPayload(currentCandle.PayloadDate) Then
+                                                    If lastSignalCandle Is Nothing Then
+                                                        lastSignalCandle = currentCandle
+                                                        lastSignl = 1
+                                                    Else
+                                                        If lastSupportCandle IsNot Nothing Then
+                                                            If fractalLowPayload(lastSupportCandle.PayloadDate) <> fractalLowPayload(currentCandle.PayloadDate) Then
+                                                                lastSignalCandle = currentCandle
+                                                                lastSignl = 1
+                                                            End If
+                                                        Else
+                                                            lastSignalCandle = currentCandle
+                                                            lastSignl = 1
+                                                        End If
+                                                    End If
                                                 End If
-                                            Else
-                                                If currentCandle.CandleColor = Color.Green AndAlso
+                                            ElseIf previousHTHKCandle.CandleColor = Color.Red Then
+                                                If lastSignl <> -1 Then
+                                                    lastSignl = 0
+                                                    lastSignalCandle = Nothing
+                                                    lastSupportCandle = Nothing
+                                                End If
+                                                If lastSupportCandle IsNot Nothing Then
+                                                    If currentCandle.CandleColor = Color.Red Then
+                                                        lastSignalCandle = currentCandle
+                                                    End If
+                                                Else
+                                                    If currentCandle.CandleColor = Color.Green AndAlso
                                                     currentCandle.Close >= fractalHighPayload(currentCandle.PayloadDate) Then
-                                                    lastSupportCandle = currentCandle
-                                                    lastSignl = -1
+                                                        lastSupportCandle = currentCandle
+                                                        lastSignl = -1
+                                                    End If
                                                 End If
-                                            End If
-                                            If lastSupportCandle Is Nothing AndAlso
-                                                currentCandle.High >= fractalHighPayload(currentCandle.PayloadDate) Then
-                                                lastSignalCandle = currentCandle
-                                                lastSignl = -1
+                                                If currentCandle.High >= fractalHighPayload(currentCandle.PayloadDate) AndAlso
+                                                    currentCandle.Close <= fractalHighPayload(currentCandle.PayloadDate) Then
+                                                    If lastSignalCandle Is Nothing Then
+                                                        lastSignalCandle = currentCandle
+                                                        lastSignl = -1
+                                                    Else
+                                                        If lastSupportCandle IsNot Nothing Then
+                                                            If fractalHighPayload(lastSupportCandle.PayloadDate) <> fractalHighPayload(currentCandle.PayloadDate) Then
+                                                                lastSignalCandle = currentCandle
+                                                                lastSignl = -1
+                                                            End If
+                                                        Else
+                                                            lastSignalCandle = currentCandle
+                                                            lastSignl = -1
+                                                        End If
+                                                    End If
+                                                End If
                                             End If
                                         End If
                                     End If
@@ -185,27 +238,27 @@ Public Class FractalConfirmationOnHTHK
         Return ret
     End Function
 
-    Private Function GetStoploss(ByVal supportCandle As Payload, ByVal signalCandle As Payload, ByVal signalDirection As Integer, ByVal currentDayPayload As Dictionary(Of Date, Payload), ByVal lotSize As Integer) As Decimal
+    Private Function GetStoploss(ByVal supportCandle As Payload, ByVal signalCandle As Payload, ByVal signalDirection As Integer, ByVal currentDayPayload As Dictionary(Of Date, Payload), ByVal fractalPayload As Dictionary(Of Date, Decimal)) As Decimal
         Dim ret As Decimal = Decimal.MinValue
         If signalCandle.PayloadDate < supportCandle.PayloadDate Then supportCandle = signalCandle
         If signalDirection = 1 Then
             Dim lowestLow As Decimal = currentDayPayload.Min(Function(x)
                                                                  If x.Key >= supportCandle.PayloadDate AndAlso x.Key <= signalCandle.PayloadDate Then
-                                                                     Return x.Value.Low
+                                                                     Return Math.Min(x.Value.Low, fractalPayload(x.Key))
                                                                  Else
                                                                      Return Decimal.MaxValue
                                                                  End If
                                                              End Function)
-            ret = (signalCandle.High - lowestLow) * lotSize
+            ret = lowestLow
         ElseIf signalDirection = -1 Then
             Dim highestHigh As Decimal = currentDayPayload.Max(Function(x)
                                                                    If x.Key >= supportCandle.PayloadDate AndAlso x.Key <= signalCandle.PayloadDate Then
-                                                                       Return x.Value.High
+                                                                       Return Math.Max(x.Value.High, fractalPayload(x.Key))
                                                                    Else
                                                                        Return Decimal.MinValue
                                                                    End If
                                                                End Function)
-            ret = (highestHigh - signalCandle.Low) * lotSize
+            ret = highestHigh
         End If
         Return ret
     End Function
