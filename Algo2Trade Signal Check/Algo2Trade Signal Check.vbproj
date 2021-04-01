@@ -119,6 +119,7 @@
     <Compile Include="StrategyRules\FirstStrongHKAfterOppositeStrongHK.vb" />
     <Compile Include="StrategyRules\FractalBreakoutShortTrend.vb" />
     <Compile Include="StrategyRules\FractalBreakoutTowardsMA.vb" />
+    <Compile Include="StrategyRules\FractalConfirmationOnHTHK.vb" />
     <Compile Include="StrategyRules\FractalCut2MA.vb" />
     <Compile Include="StrategyRules\FractalDip.vb" />
     <Compile Include="StrategyRules\GetRawCandle.vb" />
