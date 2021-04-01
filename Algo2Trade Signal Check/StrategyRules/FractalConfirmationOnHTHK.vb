@@ -84,8 +84,8 @@ Public Class FractalConfirmationOnHTHK
                             Dim fractalLowPayload As Dictionary(Of Date, Decimal) = Nothing
                             Indicator.FractalBands.CalculateFractal(inputPayload, fractalHighPayload, fractalLowPayload)
 
-                            Dim tradingSymbol As String = currentDayPayload.FirstOrDefault.Value.TradingSymbol
-                            Dim lotSize As Integer = _cmn.GetLotSize(_category, tradingSymbol, chkDate)
+                            Dim tradingSymbol As String = _cmn.GetCurrentTradingSymbol(Common.DataBaseTable.EOD_Futures, chkDate, stock)
+                            Dim lotSize As Integer = _cmn.GetLotSize(Common.DataBaseTable.EOD_Futures, tradingSymbol, chkDate)
 
                             Dim lastSignl As Integer = 0
                             Dim lastSignalCandle As Payload = Nothing
@@ -187,6 +187,7 @@ Public Class FractalConfirmationOnHTHK
 
     Private Function GetStoploss(ByVal supportCandle As Payload, ByVal signalCandle As Payload, ByVal signalDirection As Integer, ByVal currentDayPayload As Dictionary(Of Date, Payload), ByVal lotSize As Integer) As Decimal
         Dim ret As Decimal = Decimal.MinValue
+        If signalCandle.PayloadDate < supportCandle.PayloadDate Then supportCandle = signalCandle
         If signalDirection = 1 Then
             Dim lowestLow As Decimal = currentDayPayload.Min(Function(x)
                                                                  If x.Key >= supportCandle.PayloadDate AndAlso x.Key <= signalCandle.PayloadDate Then
