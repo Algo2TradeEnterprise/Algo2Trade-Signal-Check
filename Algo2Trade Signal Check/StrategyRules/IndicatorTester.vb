@@ -40,7 +40,7 @@ Public Class IndicatorTester
                     Dim stockPayload As Dictionary(Of Date, Payload) = Nothing
                     Select Case _category
                         Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency, Common.DataBaseTable.Intraday_Futures, Common.DataBaseTable.Intraday_Futures_Options
-                            stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-300), chkDate)
+                            stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-5), chkDate)
                         Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL, Common.DataBaseTable.EOD_Futures_Options
                             stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-300), chkDate)
                     End Select
@@ -78,8 +78,9 @@ Public Class IndicatorTester
 
                         'Main Logic
                         If currentDayPayload IsNot Nothing AndAlso currentDayPayload.Count > 0 Then
-                            Dim trendPayload As Dictionary(Of Date, Color) = Nothing
-                            CalculateIchimokuTrend(inputPayload, trendPayload)
+                            Dim outputHighPayload As Dictionary(Of Date, TrendLineVeriables) = Nothing
+                            Dim outputLowPayload As Dictionary(Of Date, TrendLineVeriables) = Nothing
+                            Indicator.FractalBandsTrendLine.CalculateFractalBandsTrendLine(inputPayload, outputHighPayload, outputLowPayload)
 
                             For Each runningPayload In currentDayPayload.Keys
                                 _canceller.Token.ThrowIfCancellationRequested()
@@ -92,7 +93,7 @@ Public Class IndicatorTester
                                 row("High") = inputPayload(runningPayload).High
                                 row("Close") = inputPayload(runningPayload).Close
                                 row("Volume") = inputPayload(runningPayload).Volume
-                                row("Trend") = trendPayload(runningPayload).Name
+                                'row("Trend") = trendPayload(runningPayload).Name
 
                                 ret.Rows.Add(row)
                             Next
