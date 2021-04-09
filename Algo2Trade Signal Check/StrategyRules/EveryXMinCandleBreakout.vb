@@ -36,12 +36,15 @@ Public Class EveryXMinCandleBreakout
             End If
             _canceller.Token.ThrowIfCancellationRequested()
             If stockList IsNot Nothing AndAlso stockList.Count > 0 Then
+                Dim ctr As Integer = 0
                 For Each stock In stockList
                     _canceller.Token.ThrowIfCancellationRequested()
+                    ctr += 1
+                    OnHeartbeat(String.Format("Running #{0}/{1} on {2}", ctr, stockList.Count, chkDate.ToString("dd-MMM-yyyy")))
                     Dim stockPayload As Dictionary(Of Date, Payload) = Nothing
                     Select Case _category
                         Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency, Common.DataBaseTable.Intraday_Futures
-                            stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-5), chkDate)
+                            stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-5), chkDate)
                         Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL
                             stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-200), chkDate)
                         Case Common.DataBaseTable.Intraday_Futures_Options
