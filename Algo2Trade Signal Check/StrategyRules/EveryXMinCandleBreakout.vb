@@ -24,16 +24,56 @@ Public Class EveryXMinCandleBreakout
         AddHandler stockData.WaitingFor, AddressOf OnWaitingFor
         AddHandler stockData.DocumentRetryStatus, AddressOf OnDocumentRetryStatus
         AddHandler stockData.DocumentDownloadComplete, AddressOf OnDocumentDownloadComplete
+
+        Dim stockList As List(Of String) = Nothing
+        If _instrumentName Is Nothing OrElse _instrumentName = "" Then
+            stockList = Await stockData.GetStockList(endDate).ConfigureAwait(False)
+        Else
+            stockList = New List(Of String)
+            stockList.Add(_instrumentName)
+        End If
+
+        Dim allStockPayload As Dictionary(Of String, Dictionary(Of Date, Payload)) = Nothing
+        Dim ctr0 As Integer = 0
+        For Each stock In stockList
+            ctr0 += 1
+            OnHeartbeat(String.Format("Fetching Data #{0}/{1}", ctr0, stockList.Count))
+            Dim stockPayload As Dictionary(Of Date, Payload) = Nothing
+            Select Case _category
+                Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency, Common.DataBaseTable.Intraday_Futures
+                    stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, startDate.AddDays(-5), endDate)
+                Case Else
+                    Throw New NotImplementedException
+            End Select
+            If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
+                Dim XMinutePayload As Dictionary(Of Date, Payload) = Nothing
+                Dim exchangeStartTime As Date = Date.MinValue
+                Select Case _category
+                    Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL, Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Futures
+                        exchangeStartTime = New Date(endDate.Year, endDate.Month, endDate.Day, 9, 15, 0)
+                    Case Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency
+                        exchangeStartTime = New Date(endDate.Year, endDate.Month, endDate.Day, 9, 0, 0)
+                End Select
+                If _timeFrame > 1 Then
+                    XMinutePayload = Common.ConvertPayloadsToXMinutes(stockPayload, _timeFrame, exchangeStartTime)
+                Else
+                    XMinutePayload = stockPayload
+                End If
+                _canceller.Token.ThrowIfCancellationRequested()
+                Dim inputPayload As Dictionary(Of Date, Payload) = Nothing
+                If _useHA Then
+                    Indicator.HeikenAshi.ConvertToHeikenAshi(XMinutePayload, inputPayload)
+                Else
+                    inputPayload = XMinutePayload
+                End If
+                If allStockPayload Is Nothing Then allStockPayload = New Dictionary(Of String, Dictionary(Of Date, Payload))
+                allStockPayload.Add(stock, inputPayload)
+            End If
+        Next
+
         Dim chkDate As Date = startDate
         While chkDate <= endDate
             _canceller.Token.ThrowIfCancellationRequested()
-            Dim stockList As List(Of String) = Nothing
-            If _instrumentName Is Nothing OrElse _instrumentName = "" Then
-                stockList = Await stockData.GetStockList(chkDate).ConfigureAwait(False)
-            Else
-                stockList = New List(Of String)
-                stockList.Add(_instrumentName)
-            End If
             _canceller.Token.ThrowIfCancellationRequested()
             If stockList IsNot Nothing AndAlso stockList.Count > 0 Then
                 Dim ctr As Integer = 0
@@ -41,40 +81,9 @@ Public Class EveryXMinCandleBreakout
                     _canceller.Token.ThrowIfCancellationRequested()
                     ctr += 1
                     OnHeartbeat(String.Format("Running #{0}/{1} on {2}", ctr, stockList.Count, chkDate.ToString("dd-MMM-yyyy")))
-                    Dim stockPayload As Dictionary(Of Date, Payload) = Nothing
-                    Select Case _category
-                        Case Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency, Common.DataBaseTable.Intraday_Futures
-                            stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-5), chkDate)
-                        Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL
-                            stockPayload = _cmn.GetRawPayload(_category, stock, chkDate.AddDays(-200), chkDate)
-                        Case Common.DataBaseTable.Intraday_Futures_Options
-                            stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-8), chkDate)
-                        Case Common.DataBaseTable.EOD_Futures_Options
-                            stockPayload = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, stock, chkDate.AddDays(-200), chkDate)
-                    End Select
-                    _canceller.Token.ThrowIfCancellationRequested()
-                    If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
-                        Dim XMinutePayload As Dictionary(Of Date, Payload) = Nothing
-                        Dim exchangeStartTime As Date = Date.MinValue
-                        Select Case _category
-                            Case Common.DataBaseTable.EOD_Cash, Common.DataBaseTable.EOD_Futures, Common.DataBaseTable.EOD_POSITIONAL, Common.DataBaseTable.Intraday_Cash, Common.DataBaseTable.Intraday_Futures
-                                exchangeStartTime = New Date(chkDate.Year, chkDate.Month, chkDate.Day, 9, 15, 0)
-                            Case Common.DataBaseTable.EOD_Commodity, Common.DataBaseTable.EOD_Currency, Common.DataBaseTable.Intraday_Commodity, Common.DataBaseTable.Intraday_Currency
-                                exchangeStartTime = New Date(chkDate.Year, chkDate.Month, chkDate.Day, 9, 0, 0)
-                        End Select
-                        If _timeFrame > 1 Then
-                            XMinutePayload = Common.ConvertPayloadsToXMinutes(stockPayload, _timeFrame, exchangeStartTime)
-                        Else
-                            XMinutePayload = stockPayload
-                        End If
+                    If allStockPayload.ContainsKey(stock) Then
                         _canceller.Token.ThrowIfCancellationRequested()
-                        Dim inputPayload As Dictionary(Of Date, Payload) = Nothing
-                        If _useHA Then
-                            Indicator.HeikenAshi.ConvertToHeikenAshi(XMinutePayload, inputPayload)
-                        Else
-                            inputPayload = XMinutePayload
-                        End If
-                        _canceller.Token.ThrowIfCancellationRequested()
+                        Dim inputPayload As Dictionary(Of Date, Payload) = allStockPayload(stock)
                         Dim currentDayPayload As Dictionary(Of Date, Payload) = Nothing
                         For Each runningPayload In inputPayload.Keys
                             _canceller.Token.ThrowIfCancellationRequested()
