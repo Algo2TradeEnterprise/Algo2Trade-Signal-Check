@@ -43,6 +43,7 @@ Public Class FractalHighBreakoutBelowSupport
                     Throw New NotImplementedException
             End Select
             If stockPayload IsNot Nothing AndAlso stockPayload.Count > 0 Then
+                OnHeartbeat(String.Format("Calculating Indicators #{0}/{1}", ctr0, stockList.Count))
                 Dim XMinutePayload As Dictionary(Of Date, Payload) = Nothing
                 Dim exchangeStartTime As Date = Date.MinValue
                 Select Case _category
