@@ -442,6 +442,8 @@ Public Class frmMain
                     rule = New FractalConfirmationOnHTHK(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 70
                     rule = New EveryXMinCandleBreakout(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 71
+                    rule = New FractalHighBreakoutBelowSupport(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case Else
                     Throw New NotImplementedException
             End Select
@@ -684,6 +686,9 @@ Public Class frmMain
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 70
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("Description ...")
+            Case 71
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case Else
