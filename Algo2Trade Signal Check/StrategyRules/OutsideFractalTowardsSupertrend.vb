@@ -14,7 +14,7 @@ Public Class OutsideFractalTowardsSupertrend
         ret.Columns.Add("Direction")
         ret.Columns.Add("ATR")
         ret.Columns.Add("ST Distance")
-        ret.Columns.Add("Multiplier")
+        ret.Columns.Add("ATR to Distance %")
         ret.Columns.Add("Signal Type")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
@@ -104,30 +104,13 @@ Public Class OutsideFractalTowardsSupertrend
                                     End If
                                     If supertrendColorPayload(runningPayload.Key) = Color.Green AndAlso lastDirection = 1 Then
                                         If lastEntryDirection <> 1 Then
-                                            If runningPayload.Value.Close < fractalLowPayload(runningPayload.Key) Then
-                                                lastEntryDirection = 1
-                                                lastSignalCandle = runningPayload.Value
-
+                                            If runningPayload.Value.Close < fractalLowPayload(runningPayload.Key) AndAlso
+                                                fractalLowPayload(runningPayload.Key) > supertrendPayload(runningPayload.Key) Then
                                                 Dim atr As Decimal = Math.Round(atrPayload(runningPayload.Key), 2)
                                                 Dim dstnc As Decimal = Math.Round(runningPayload.Value.Close - supertrendPayload(runningPayload.Key), 2)
-
-                                                Dim row As DataRow = ret.NewRow
-                                                row("Date") = runningPayload.Value.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
-                                                row("Trading Symbol") = runningPayload.Value.TradingSymbol
-                                                row("Direction") = "BUY"
-                                                row("ATR") = atr
-                                                row("ST Distance") = dstnc
-                                                row("Multiplier") = Math.Round(atr / dstnc, 2)
-                                                row("Signal Type") = "Close"
-                                                ret.Rows.Add(row)
-                                            End If
-                                        Else
-                                            If lastSignalCandle IsNot Nothing Then
-                                                If runningPayload.Value.High >= fractalLowPayload(lastSignalCandle.PayloadDate) Then
-                                                    lastSignalCandle = Nothing
-
-                                                    Dim atr As Decimal = Math.Round(atrPayload(runningPayload.Key), 2)
-                                                    Dim dstnc As Decimal = Math.Round(fractalLowPayload(runningPayload.Key) - supertrendPayload(runningPayload.Key), 2)
+                                                If dstnc <> 0 Then
+                                                    lastEntryDirection = 1
+                                                    lastSignalCandle = runningPayload.Value
 
                                                     Dim row As DataRow = ret.NewRow
                                                     row("Date") = runningPayload.Value.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
@@ -135,9 +118,29 @@ Public Class OutsideFractalTowardsSupertrend
                                                     row("Direction") = "BUY"
                                                     row("ATR") = atr
                                                     row("ST Distance") = dstnc
-                                                    row("Multiplier") = Math.Round(atr / dstnc, 2)
-                                                    row("Signal Type") = "Fractal Low"
+                                                    row("ATR to Distance %") = Math.Round((dstnc / atr) * 100, 2)
+                                                    row("Signal Type") = "Close"
                                                     ret.Rows.Add(row)
+                                                End If
+                                            End If
+                                        Else
+                                            If lastSignalCandle IsNot Nothing Then
+                                                If runningPayload.Value.High >= fractalLowPayload(lastSignalCandle.PayloadDate) Then
+                                                    Dim atr As Decimal = Math.Round(atrPayload(runningPayload.Key), 2)
+                                                    Dim dstnc As Decimal = Math.Round(fractalLowPayload(lastSignalCandle.PayloadDate) - supertrendPayload(runningPayload.Key), 2)
+                                                    If dstnc <> 0 Then
+                                                        Dim row As DataRow = ret.NewRow
+                                                        row("Date") = runningPayload.Value.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
+                                                        row("Trading Symbol") = runningPayload.Value.TradingSymbol
+                                                        row("Direction") = "BUY"
+                                                        row("ATR") = atr
+                                                        row("ST Distance") = dstnc
+                                                        row("ATR to Distance %") = Math.Round((dstnc / atr) * 100, 2)
+                                                        row("Signal Type") = "Fractal Low"
+                                                        ret.Rows.Add(row)
+                                                    End If
+
+                                                    lastSignalCandle = Nothing
                                                 End If
                                                 If lastSignalCandle IsNot Nothing AndAlso fractalLowPayload(runningPayload.Key) <> fractalLowPayload(lastSignalCandle.PayloadDate) Then
                                                     lastSignalCandle = Nothing
@@ -146,30 +149,13 @@ Public Class OutsideFractalTowardsSupertrend
                                         End If
                                     ElseIf supertrendColorPayload(runningPayload.Key) = Color.Red AndAlso lastDirection = -1 Then
                                         If lastEntryDirection <> -1 Then
-                                            If runningPayload.Value.Close > fractalHighPayload(runningPayload.Key) Then
-                                                lastEntryDirection = -1
-                                                lastSignalCandle = runningPayload.Value
-
+                                            If runningPayload.Value.Close > fractalHighPayload(runningPayload.Key) AndAlso
+                                                fractalHighPayload(runningPayload.Key) < supertrendPayload(runningPayload.Key) Then
                                                 Dim atr As Decimal = Math.Round(atrPayload(runningPayload.Key), 2)
                                                 Dim dstnc As Decimal = Math.Round(supertrendPayload(runningPayload.Key) - runningPayload.Value.Close, 2)
-
-                                                Dim row As DataRow = ret.NewRow
-                                                row("Date") = runningPayload.Value.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
-                                                row("Trading Symbol") = runningPayload.Value.TradingSymbol
-                                                row("Direction") = "SELL"
-                                                row("ATR") = atr
-                                                row("ST Distance") = dstnc
-                                                row("Multiplier") = Math.Round(atr / dstnc, 2)
-                                                row("Signal Type") = "Close"
-                                                ret.Rows.Add(row)
-                                            End If
-                                        Else
-                                            If lastSignalCandle IsNot Nothing Then
-                                                If runningPayload.Value.Low <= fractalHighPayload(lastSignalCandle.PayloadDate) Then
-                                                    lastSignalCandle = Nothing
-
-                                                    Dim atr As Decimal = Math.Round(atrPayload(runningPayload.Key), 2)
-                                                    Dim dstnc As Decimal = Math.Round(supertrendPayload(runningPayload.Key) - fractalHighPayload(runningPayload.Key), 2)
+                                                If dstnc <> 0 Then
+                                                    lastEntryDirection = -1
+                                                    lastSignalCandle = runningPayload.Value
 
                                                     Dim row As DataRow = ret.NewRow
                                                     row("Date") = runningPayload.Value.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
@@ -177,9 +163,28 @@ Public Class OutsideFractalTowardsSupertrend
                                                     row("Direction") = "SELL"
                                                     row("ATR") = atr
                                                     row("ST Distance") = dstnc
-                                                    row("Multiplier") = Math.Round(atr / dstnc, 2)
-                                                    row("Signal Type") = "Fractal High"
+                                                    row("ATR to Distance %") = Math.Round((dstnc / atr) * 100, 2)
+                                                    row("Signal Type") = "Close"
                                                     ret.Rows.Add(row)
+                                                End If
+                                            End If
+                                        Else
+                                            If lastSignalCandle IsNot Nothing Then
+                                                If runningPayload.Value.Low <= fractalHighPayload(lastSignalCandle.PayloadDate) Then
+                                                    Dim atr As Decimal = Math.Round(atrPayload(runningPayload.Key), 2)
+                                                    Dim dstnc As Decimal = Math.Round(supertrendPayload(runningPayload.Key) - fractalHighPayload(lastSignalCandle.PayloadDate), 2)
+                                                    If dstnc <> 0 Then
+                                                        Dim row As DataRow = ret.NewRow
+                                                        row("Date") = runningPayload.Value.PayloadDate.ToString("dd-MMM-yyyy HH:mm:ss")
+                                                        row("Trading Symbol") = runningPayload.Value.TradingSymbol
+                                                        row("Direction") = "SELL"
+                                                        row("ATR") = atr
+                                                        row("ST Distance") = dstnc
+                                                        row("ATR to Distance %") = Math.Round((dstnc / atr) * 100, 2)
+                                                        row("Signal Type") = "Fractal High"
+                                                        ret.Rows.Add(row)
+                                                    End If
+                                                    lastSignalCandle = Nothing
                                                 End If
                                                 If lastSignalCandle IsNot Nothing AndAlso fractalHighPayload(runningPayload.Key) <> fractalHighPayload(lastSignalCandle.PayloadDate) Then
                                                     lastSignalCandle = Nothing
