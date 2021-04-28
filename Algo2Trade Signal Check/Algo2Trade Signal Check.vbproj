@@ -165,6 +165,7 @@
     <Compile Include="StrategyRules\SpotFutureArbritrage.vb" />
     <Compile Include="StrategyRules\SqueezeZone.vb" />
     <Compile Include="StrategyRules\StallPattern.vb" />
+    <Compile Include="StrategyRules\StrongHKInsideFractal.vb" />
     <Compile Include="StrategyRules\SupertrendConfirmation.vb" />
     <Compile Include="StrategyRules\SupertrendSMAOpenHighLow.vb" />
     <Compile Include="StrategyRules\SwingCandle.vb" />

@@ -446,6 +446,8 @@ Public Class frmMain
                     rule = New FractalHighBreakoutBelowSupport(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 72
                     rule = New OutsideFractalTowardsSupertrend(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 73
+                    rule = New StrongHKInsideFractal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case Else
                     Throw New NotImplementedException
             End Select
@@ -694,6 +696,9 @@ Public Class frmMain
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case 72
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("Description ...")
+            Case 73
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case Else
