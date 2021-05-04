@@ -124,6 +124,7 @@ Public Class PairHighLowBreak
                                                 row("Pair 2") = signalCandle2.TradingSymbol
 
                                                 ret.Rows.Add(row)
+                                                Exit For
                                             ElseIf currentDayPayload1(runningTime).High >= signalCandle1.High AndAlso
                                                 currentDayPayload2(runningTime).Low <= signalCandle2.Low Then
                                                 Dim row As DataRow = ret.NewRow
@@ -132,6 +133,7 @@ Public Class PairHighLowBreak
                                                 row("Pair 2") = signalCandle2.TradingSymbol
 
                                                 ret.Rows.Add(row)
+                                                Exit For
                                             End If
                                         End If
                                     End If
