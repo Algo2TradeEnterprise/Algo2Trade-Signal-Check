@@ -151,6 +151,7 @@
     <Compile Include="StrategyRules\OHL.vb" />
     <Compile Include="StrategyRules\OneSidedVolume.vb" />
     <Compile Include="StrategyRules\OutsideFractalTowardsSupertrend.vb" />
+    <Compile Include="StrategyRules\PairHighLowBreak.vb" />
     <Compile Include="StrategyRules\PiercingAndDarkCloud.vb" />
     <Compile Include="StrategyRules\PinBarFormation.vb" />
     <Compile Include="StrategyRules\PinocchioBarFormation.vb" />

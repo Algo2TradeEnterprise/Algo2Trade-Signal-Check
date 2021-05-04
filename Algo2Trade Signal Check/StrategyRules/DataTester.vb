@@ -88,27 +88,27 @@ Public Class DataTester
                     _canceller.Token.ThrowIfCancellationRequested()
                     'If runningPayload.Key.Date >= startDate.Date Then
                     Dim row As DataRow = ret.NewRow
-                        row("Date") = runningPayload.Key.ToString("dd-MMM-yyyy HH:mm:ss")
-                        row("Instrument 1") = xMinPayload1(runningPayload.Key).TradingSymbol
-                        row("Open 1") = xMinPayload1(runningPayload.Key).Open
-                        row("Low 1") = xMinPayload1(runningPayload.Key).Low
-                        row("High 1") = xMinPayload1(runningPayload.Key).High
-                        row("Close 1") = xMinPayload1(runningPayload.Key).Close
-                        row("Instrument 2") = xMinPayload2(runningPayload.Key).TradingSymbol
-                        row("Open 2") = xMinPayload2(runningPayload.Key).Open
-                        row("Low 2") = xMinPayload2(runningPayload.Key).Low
-                        row("High 2") = xMinPayload2(runningPayload.Key).High
-                        row("Close 2") = xMinPayload2(runningPayload.Key).Close
-                        row("Ratio Open") = Math.Round(ratioPayload(runningPayload.Key).Open, 4)
-                        row("Ratio Low") = Math.Round(ratioPayload(runningPayload.Key).Low, 4)
-                        row("Ratio High") = Math.Round(ratioPayload(runningPayload.Key).High, 4)
-                        row("Ratio Close") = Math.Round(ratioPayload(runningPayload.Key).Close, 4)
-                        row("Fractal High") = Math.Round(fractalHighPayload(runningPayload.Key), 4)
-                        row("Fractal Low") = Math.Round(fractalLowPayload(runningPayload.Key), 4)
-                        row("Bollinger High") = Math.Round(bollingerHighPayload(runningPayload.Key), 4)
-                        row("Bollinger Low") = Math.Round(bollingerLowPayload(runningPayload.Key), 4)
-                        row("SMA") = Math.Round(smaPayload(runningPayload.Key), 4)
-                        ret.Rows.Add(row)
+                    row("Date") = runningPayload.Key.ToString("dd-MMM-yyyy HH:mm:ss")
+                    row("Instrument 1") = xMinPayload1(runningPayload.Key).TradingSymbol
+                    row("Open 1") = xMinPayload1(runningPayload.Key).Open
+                    row("Low 1") = xMinPayload1(runningPayload.Key).Low
+                    row("High 1") = xMinPayload1(runningPayload.Key).High
+                    row("Close 1") = xMinPayload1(runningPayload.Key).Close
+                    row("Instrument 2") = xMinPayload2(runningPayload.Key).TradingSymbol
+                    row("Open 2") = xMinPayload2(runningPayload.Key).Open
+                    row("Low 2") = xMinPayload2(runningPayload.Key).Low
+                    row("High 2") = xMinPayload2(runningPayload.Key).High
+                    row("Close 2") = xMinPayload2(runningPayload.Key).Close
+                    row("Ratio Open") = Math.Round(ratioPayload(runningPayload.Key).Open, 4)
+                    row("Ratio Low") = Math.Round(ratioPayload(runningPayload.Key).Low, 4)
+                    row("Ratio High") = Math.Round(ratioPayload(runningPayload.Key).High, 4)
+                    row("Ratio Close") = Math.Round(ratioPayload(runningPayload.Key).Close, 4)
+                    row("Fractal High") = Math.Round(fractalHighPayload(runningPayload.Key), 4)
+                    row("Fractal Low") = Math.Round(fractalLowPayload(runningPayload.Key), 4)
+                    row("Bollinger High") = Math.Round(bollingerHighPayload(runningPayload.Key), 4)
+                    row("Bollinger Low") = Math.Round(bollingerLowPayload(runningPayload.Key), 4)
+                    row("SMA") = Math.Round(smaPayload(runningPayload.Key), 4)
+                    ret.Rows.Add(row)
 
 
 

@@ -448,6 +448,8 @@ Public Class frmMain
                     rule = New OutsideFractalTowardsSupertrend(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 73
                     rule = New StrongHKInsideFractal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 74
+                    rule = New PairHighLowBreak(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case Else
                     Throw New NotImplementedException
             End Select
@@ -701,6 +703,9 @@ Public Class frmMain
             Case 73
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
+            Case 74
+                LoadSettings(Nothing)
+                lblDescription.Text = String.Format("When simultaneously Pair 1 first x-Min candle high breaks and Pair 2 first x-Min candle low breaks. And vice versa. Pair stockname seperated by '_' e.g. ABC_XYZ")
             Case Else
                 Throw New NotImplementedException
         End Select
