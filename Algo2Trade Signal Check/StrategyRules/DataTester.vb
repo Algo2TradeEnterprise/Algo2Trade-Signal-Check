@@ -23,14 +23,14 @@ Public Class DataTester
         ret.Columns.Add("Ratio Low")
         ret.Columns.Add("Ratio High")
         ret.Columns.Add("Ratio Close")
-        ret.Columns.Add("Fractal High")
-        ret.Columns.Add("Fractal Low")
+        'ret.Columns.Add("Fractal High")
+        'ret.Columns.Add("Fractal Low")
         ret.Columns.Add("Bollinger High")
         ret.Columns.Add("Bollinger Low")
         ret.Columns.Add("SMA")
 
-        Dim payload1 As Dictionary(Of Date, Payload) = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, "HDFC", startDate.AddDays(-10), endDate)
-        Dim payload2 As Dictionary(Of Date, Payload) = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, "HDFCBANK", startDate.AddDays(-10), endDate)
+        Dim payload1 As Dictionary(Of Date, Payload) = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, "AXISBANK", startDate.AddDays(-20), endDate)
+        Dim payload2 As Dictionary(Of Date, Payload) = _cmn.GetRawPayloadForSpecificTradingSymbol(_category, "SBIN", startDate.AddDays(-20), endDate)
 
         If payload1 IsNot Nothing AndAlso payload1.Count > 0 AndAlso
             payload2 IsNot Nothing AndAlso payload2.Count > 0 Then
@@ -72,9 +72,9 @@ Public Class DataTester
 
             If ratioPayload IsNot Nothing AndAlso ratioPayload.Count > 0 Then
                 OnHeartbeat("Calculating Indicators")
-                Dim fractalHighPayload As Dictionary(Of Date, Decimal) = Nothing
-                Dim fractalLowPayload As Dictionary(Of Date, Decimal) = Nothing
-                Indicator.FractalBands.CalculateFractal(ratioPayload, fractalHighPayload, fractalLowPayload)
+                'Dim fractalHighPayload As Dictionary(Of Date, Decimal) = Nothing
+                'Dim fractalLowPayload As Dictionary(Of Date, Decimal) = Nothing
+                'Indicator.FractalBands.CalculateFractal(ratioPayload, fractalHighPayload, fractalLowPayload)
 
                 Dim bollingerHighPayload As Dictionary(Of Date, Decimal) = Nothing
                 Dim bollingerLowPayload As Dictionary(Of Date, Decimal) = Nothing
@@ -103,8 +103,8 @@ Public Class DataTester
                     row("Ratio Low") = Math.Round(ratioPayload(runningPayload.Key).Low, 4)
                     row("Ratio High") = Math.Round(ratioPayload(runningPayload.Key).High, 4)
                     row("Ratio Close") = Math.Round(ratioPayload(runningPayload.Key).Close, 4)
-                    row("Fractal High") = Math.Round(fractalHighPayload(runningPayload.Key), 4)
-                    row("Fractal Low") = Math.Round(fractalLowPayload(runningPayload.Key), 4)
+                    'row("Fractal High") = Math.Round(fractalHighPayload(runningPayload.Key), 4)
+                    'row("Fractal Low") = Math.Round(fractalLowPayload(runningPayload.Key), 4)
                     row("Bollinger High") = Math.Round(bollingerHighPayload(runningPayload.Key), 4)
                     row("Bollinger Low") = Math.Round(bollingerLowPayload(runningPayload.Key), 4)
                     row("SMA") = Math.Round(smaPayload(runningPayload.Key), 4)
