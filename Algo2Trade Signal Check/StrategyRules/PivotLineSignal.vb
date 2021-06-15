@@ -82,7 +82,9 @@ Public Class PivotLineSignal
                             Dim pivotPayload As Dictionary(Of Date, PivotPoints) = Nothing
                             Indicator.Pivots.CalculatePivots(inputPayload, pivotPayload)
 
-                            Dim currentDayFirstCandle As Payload = currentDayPayload.FirstOrDefault.Value
+                            Dim currentDayFirstCandle As Payload = stockPayload.Where(Function(x)
+                                                                                          Return x.Key = currentDayPayload.FirstOrDefault.Value.PayloadDate
+                                                                                      End Function).FirstOrDefault.Value
                             Dim previousDay As Date = currentDayFirstCandle.PreviousCandlePayload.PayloadDate
 
                             Dim previousDayPayload As Dictionary(Of Date, Payload) = Nothing
