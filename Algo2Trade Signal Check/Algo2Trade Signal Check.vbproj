@@ -156,6 +156,7 @@
     <Compile Include="StrategyRules\PinBarFormation.vb" />
     <Compile Include="StrategyRules\PinocchioBarFormation.vb" />
     <Compile Include="StrategyRules\PivotLineBTSTSignal.vb" />
+    <Compile Include="StrategyRules\PivotLineSTBTSignal.vb" />
     <Compile Include="StrategyRules\PreviousDayHighLowBreak.vb" />
     <Compile Include="StrategyRules\PreviousDayHKTrendVWAPSignals.vb" />
     <Compile Include="StrategyRules\PriceVolumeImbalance.vb" />
