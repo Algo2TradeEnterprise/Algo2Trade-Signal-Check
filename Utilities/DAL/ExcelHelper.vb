@@ -109,7 +109,7 @@ Namespace DAL
             _SaveType = excelSaveType
             _canceller = canceller
             logger.Debug("Preparing to close any open instances of excel")
-            CloseOpenInstances()
+            If _wSheetInstance IsNot Nothing Then CloseOpenInstances()
             Select Case excelState
                 Case ExcelOpenStatus.OpenAfreshForWrite
                     logger.Debug("File:{0}, Deleting any existing file since its a fresh write", _excelFileName)
