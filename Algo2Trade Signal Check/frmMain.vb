@@ -451,7 +451,7 @@ Public Class frmMain
                 Case 74
                     rule = New PairHighLowBreak(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 75
-                    rule = New PivotLineSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                    rule = New PivotLineBTSTSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case Else
                     Throw New NotImplementedException
             End Select
