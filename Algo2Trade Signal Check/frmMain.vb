@@ -454,6 +454,8 @@ Public Class frmMain
                     rule = New PivotLineBTSTSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 76
                     rule = New PivotLineSTBTSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
+                Case 77
+                    rule = New BTST_STBTSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetComboBoxIndex_ThreadSafe(cmbBTST_STBTRule))
                 Case Else
                     Throw New NotImplementedException
             End Select
@@ -716,6 +718,10 @@ Public Class frmMain
             Case 76
                 LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
+            Case 77
+                LoadSettings(pnlBTST_STBTSignal)
+                cmbBTST_STBTRule.SelectedIndex = 1
+                lblDescription.Text = String.Format("Description ...")
             Case Else
                 Throw New NotImplementedException
         End Select
@@ -743,6 +749,7 @@ Public Class frmMain
         panelList.Add(pnlPriceVolumeImbalance)
         panelList.Add(pnlSupertrendConfirmation)
         panelList.Add(pnlIchimokuSignal)
+        panelList.Add(pnlBTST_STBTSignal)
 
         For Each runningPanel In panelList
             If panelName IsNot Nothing AndAlso runningPanel.Name = panelName.Name Then

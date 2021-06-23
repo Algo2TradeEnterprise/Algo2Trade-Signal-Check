@@ -73,6 +73,9 @@ Partial Class frmMain
         Me.grpbxIchimokuSignalType = New System.Windows.Forms.GroupBox()
         Me.rdbIchimokuSignalLaggingSpanConversionBaseLine = New System.Windows.Forms.RadioButton()
         Me.rdbIchimokuSignalLaggingSpan = New System.Windows.Forms.RadioButton()
+        Me.pnlBTST_STBTSignal = New System.Windows.Forms.Panel()
+        Me.Label9 = New System.Windows.Forms.Label()
+        Me.cmbBTST_STBTRule = New System.Windows.Forms.ComboBox()
         CType(Me.nmrcTimeFrame, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         CType(Me.dgvSignal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -85,6 +88,7 @@ Partial Class frmMain
         Me.pnlSupertrendConfirmation.SuspendLayout()
         Me.pnlIchimokuSignal.SuspendLayout()
         Me.grpbxIchimokuSignalType.SuspendLayout()
+        Me.pnlBTST_STBTSignal.SuspendLayout()
         Me.SuspendLayout()
         '
         'saveFile
@@ -229,7 +233,7 @@ Partial Class frmMain
         'cmbRule
         '
         Me.cmbRule.FormattingEnabled = True
-        Me.cmbRule.Items.AddRange(New Object() {"Stall Pattern", "Piercing And Dark Cloud", "One Sided Volume", "Constriction At Breakout", "HK Trend Opposing By Volume", "HK Temporary Pause", "HK Reversal", "Get Raw Candle", "Daily Strong HK Opposite Color Volume", "Fractal Cut 2 MA", "Volume Index", "EOD Signal", "Pin Bar Formation", "Bollinger With ATR Bands", "Low Loss High Gain VWAP", "Double Volume EOD", "Fractal Breakout Short Trend", "Donchian Breakout Short Trend", "Pinocchio Bar Formation", "Market Open HA Breakout Screener", "Volume With Candle Range", "DayHighLow", "Low SL Candle", "Inside Bar High Low", "Reversal HHLL Breakout", "Double Inside Bar", "High Low Support Resistance", "Open=High/Open=Low", "Spot Future Arbritrage", "Swing Candle", "Supertrend SMA Open High/Low", "Double Top Double Bottom", "Wick Beyond Slab Level", "Candle Range With ATR", "Fractal Dip", "Range Identifier", "Indicator Tester", "Bollinger Squeeze", "Inside Bar Breakout", "Low SL Fractal", "Graph Angle", "Multi EMA Line", "Multi Timeframe Multi MA", "X-Min VWAP", "Price Volume Imbalance", "First Candle Difference", "Small Body Candles", "Reverse Candles", "Inside Wick Candles", "Highest OI Options", "Squeeze Zone", "Fibonacci Trendline", "Supertrend Confirmation", "Day High Low Swing Trendline", "Sectoral Trend Of Every Minute", "Previous Day HK Trend VWAP Signals", "Get Stock Trend", "Get Stock Trend Direction", "Data Tester", "Ichimoku Signal", "MACD Crossover Swing", "Previous Day High Low Break", "High Volume Opposite Color", "Hammer Candle Stick Pattern", "First Strong HK After Opposite Strong HK", "Value Investing Cash Future Data", "BTST X-Min", "Get Weekly Candle", "Fractal Breakout Towards MA", "Fractal Confirmation On HT HK", "Every X-Min Candle Breakout", "Fractal High Breakout Below Support", "Outside Fractal Towards Supertrend", "Strong HK Inside Fractal", "Pair High Low Break", "Pivot Line BTST Signal", "Pivot Line STBT Signal"})
+        Me.cmbRule.Items.AddRange(New Object() {"Stall Pattern", "Piercing And Dark Cloud", "One Sided Volume", "Constriction At Breakout", "HK Trend Opposing By Volume", "HK Temporary Pause", "HK Reversal", "Get Raw Candle", "Daily Strong HK Opposite Color Volume", "Fractal Cut 2 MA", "Volume Index", "EOD Signal", "Pin Bar Formation", "Bollinger With ATR Bands", "Low Loss High Gain VWAP", "Double Volume EOD", "Fractal Breakout Short Trend", "Donchian Breakout Short Trend", "Pinocchio Bar Formation", "Market Open HA Breakout Screener", "Volume With Candle Range", "DayHighLow", "Low SL Candle", "Inside Bar High Low", "Reversal HHLL Breakout", "Double Inside Bar", "High Low Support Resistance", "Open=High/Open=Low", "Spot Future Arbritrage", "Swing Candle", "Supertrend SMA Open High/Low", "Double Top Double Bottom", "Wick Beyond Slab Level", "Candle Range With ATR", "Fractal Dip", "Range Identifier", "Indicator Tester", "Bollinger Squeeze", "Inside Bar Breakout", "Low SL Fractal", "Graph Angle", "Multi EMA Line", "Multi Timeframe Multi MA", "X-Min VWAP", "Price Volume Imbalance", "First Candle Difference", "Small Body Candles", "Reverse Candles", "Inside Wick Candles", "Highest OI Options", "Squeeze Zone", "Fibonacci Trendline", "Supertrend Confirmation", "Day High Low Swing Trendline", "Sectoral Trend Of Every Minute", "Previous Day HK Trend VWAP Signals", "Get Stock Trend", "Get Stock Trend Direction", "Data Tester", "Ichimoku Signal", "MACD Crossover Swing", "Previous Day High Low Break", "High Volume Opposite Color", "Hammer Candle Stick Pattern", "First Strong HK After Opposite Strong HK", "Value Investing Cash Future Data", "BTST X-Min", "Get Weekly Candle", "Fractal Breakout Towards MA", "Fractal Confirmation On HT HK", "Every X-Min Candle Breakout", "Fractal High Breakout Below Support", "Outside Fractal Towards Supertrend", "Strong HK Inside Fractal", "Pair High Low Break", "Pivot Line BTST Signal", "Pivot Line STBT Signal", "BTST/STBT Signal"})
         Me.cmbRule.Location = New System.Drawing.Point(108, 7)
         Me.cmbRule.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbRule.Name = "cmbRule"
@@ -563,11 +567,40 @@ Partial Class frmMain
         Me.rdbIchimokuSignalLaggingSpan.Text = "Lagging Span"
         Me.rdbIchimokuSignalLaggingSpan.UseVisualStyleBackColor = True
         '
+        'pnlBTST_STBTSignal
+        '
+        Me.pnlBTST_STBTSignal.Controls.Add(Me.cmbBTST_STBTRule)
+        Me.pnlBTST_STBTSignal.Controls.Add(Me.Label9)
+        Me.pnlBTST_STBTSignal.Location = New System.Drawing.Point(748, 90)
+        Me.pnlBTST_STBTSignal.Name = "pnlBTST_STBTSignal"
+        Me.pnlBTST_STBTSignal.Size = New System.Drawing.Size(484, 66)
+        Me.pnlBTST_STBTSignal.TabIndex = 33
+        '
+        'Label9
+        '
+        Me.Label9.AutoSize = True
+        Me.Label9.Location = New System.Drawing.Point(15, 22)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(41, 17)
+        Me.Label9.TabIndex = 0
+        Me.Label9.Text = "Rule:"
+        '
+        'cmbBTST_STBTRule
+        '
+        Me.cmbBTST_STBTRule.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cmbBTST_STBTRule.FormattingEnabled = True
+        Me.cmbBTST_STBTRule.Items.AddRange(New Object() {"1. Bid Ask Ratio", "2. Strong Close After Opposite Color Candle", "3. Delivery Percentage Above 5MA", "4. Open=Low or Open=High", "5. Strong HK", "6. Top Gainer Top Looser", "7. Naughty Boy", "8. Close beyond Resistance or Support"})
+        Me.cmbBTST_STBTRule.Location = New System.Drawing.Point(63, 19)
+        Me.cmbBTST_STBTRule.Name = "cmbBTST_STBTRule"
+        Me.cmbBTST_STBTRule.Size = New System.Drawing.Size(395, 24)
+        Me.cmbBTST_STBTRule.TabIndex = 1
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1244, 690)
+        Me.Controls.Add(Me.pnlBTST_STBTSignal)
         Me.Controls.Add(Me.pnlIchimokuSignal)
         Me.Controls.Add(Me.pnlSupertrendConfirmation)
         Me.Controls.Add(Me.pnlPriceVolumeImbalance)
@@ -602,6 +635,8 @@ Partial Class frmMain
         Me.pnlIchimokuSignal.ResumeLayout(False)
         Me.grpbxIchimokuSignalType.ResumeLayout(False)
         Me.grpbxIchimokuSignalType.PerformLayout()
+        Me.pnlBTST_STBTSignal.ResumeLayout(False)
+        Me.pnlBTST_STBTSignal.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -656,4 +691,7 @@ Partial Class frmMain
     Friend WithEvents grpbxIchimokuSignalType As GroupBox
     Friend WithEvents rdbIchimokuSignalLaggingSpanConversionBaseLine As RadioButton
     Friend WithEvents rdbIchimokuSignalLaggingSpan As RadioButton
+    Friend WithEvents pnlBTST_STBTSignal As Panel
+    Friend WithEvents cmbBTST_STBTRule As ComboBox
+    Friend WithEvents Label9 As Label
 End Class

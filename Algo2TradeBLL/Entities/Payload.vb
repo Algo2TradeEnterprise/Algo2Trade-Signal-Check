@@ -214,7 +214,7 @@ Public Class Payload
     Private _CandleStrengthNormal As StrongCandle
     Public ReadOnly Property CandleStrengthNormal As StrongCandle
         Get
-            If Me.CandleBody / Me.CandleRange >= 0.7 Then
+            If Me.CandleBody / Me.CandleRange >= 0.8 Then
                 If Me.CandleColor = Color.Green Then
                     _CandleStrengthNormal = StrongCandle.Bullish
                 ElseIf Me.CandleColor = Color.Red Then
