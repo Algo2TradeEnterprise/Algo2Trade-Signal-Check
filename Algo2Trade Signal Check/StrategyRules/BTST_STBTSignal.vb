@@ -25,10 +25,10 @@ Public Class BTST_STBTSignal
         ret.Columns.Add("1 Min Low %")
         ret.Columns.Add("1 Min High %")
         ret.Columns.Add("1 Min Close %")
-        ret.Columns.Add("15 Min Open %")
-        ret.Columns.Add("15 Min Low %")
-        ret.Columns.Add("15 Min High %")
-        ret.Columns.Add("15 Min Close %")
+        ret.Columns.Add("X Min Open %")
+        ret.Columns.Add("X Min Low %")
+        ret.Columns.Add("X Min High %")
+        ret.Columns.Add("X Min Close %")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -117,10 +117,10 @@ Public Class BTST_STBTSignal
                                 row("1 Min Low %") = Math.Round(((currentDayMinFirstCandle.Low / entryPrice) - 1) * 100, 4)
                                 row("1 Min High %") = Math.Round(((currentDayMinFirstCandle.High / entryPrice) - 1) * 100, 4)
                                 row("1 Min Close %") = Math.Round(((currentDayMinFirstCandle.Close / entryPrice) - 1) * 100, 4)
-                                row("15 Min Open %") = Math.Round(((currentDayXMinFirstCandle.Open / entryPrice) - 1) * 100, 4)
-                                row("15 Min Low %") = Math.Round(((currentDayXMinFirstCandle.Low / entryPrice) - 1) * 100, 4)
-                                row("15 Min High %") = Math.Round(((currentDayXMinFirstCandle.High / entryPrice) - 1) * 100, 4)
-                                row("15 Min Close %") = Math.Round(((currentDayXMinFirstCandle.Close / entryPrice) - 1) * 100, 4)
+                                row("X Min Open %") = Math.Round(((currentDayXMinFirstCandle.Open / entryPrice) - 1) * 100, 4)
+                                row("X Min Low %") = Math.Round(((currentDayXMinFirstCandle.Low / entryPrice) - 1) * 100, 4)
+                                row("X Min High %") = Math.Round(((currentDayXMinFirstCandle.High / entryPrice) - 1) * 100, 4)
+                                row("X Min Close %") = Math.Round(((currentDayXMinFirstCandle.Close / entryPrice) - 1) * 100, 4)
 
                                 ret.Rows.Add(row)
                             ElseIf signal = -1 Then
@@ -132,10 +132,10 @@ Public Class BTST_STBTSignal
                                 row("1 Min Low %") = Math.Round((1 - (currentDayMinFirstCandle.Low / entryPrice)) * 100, 4)
                                 row("1 Min High %") = Math.Round((1 - (currentDayMinFirstCandle.High / entryPrice)) * 100, 4)
                                 row("1 Min Close %") = Math.Round((1 - (currentDayMinFirstCandle.Close / entryPrice)) * 100, 4)
-                                row("15 Min Open %") = Math.Round((1 - (currentDayXMinFirstCandle.Open / entryPrice)) * 100, 4)
-                                row("15 Min Low %") = Math.Round((1 - (currentDayXMinFirstCandle.Low / entryPrice)) * 100, 4)
-                                row("15 Min High %") = Math.Round((1 - (currentDayXMinFirstCandle.High / entryPrice)) * 100, 4)
-                                row("15 Min Close %") = Math.Round((1 - (currentDayXMinFirstCandle.Close / entryPrice)) * 100, 4)
+                                row("X Min Open %") = Math.Round((1 - (currentDayXMinFirstCandle.Open / entryPrice)) * 100, 4)
+                                row("X Min Low %") = Math.Round((1 - (currentDayXMinFirstCandle.Low / entryPrice)) * 100, 4)
+                                row("X Min High %") = Math.Round((1 - (currentDayXMinFirstCandle.High / entryPrice)) * 100, 4)
+                                row("X Min Close %") = Math.Round((1 - (currentDayXMinFirstCandle.Close / entryPrice)) * 100, 4)
 
                                 ret.Rows.Add(row)
                             End If
@@ -154,6 +154,10 @@ Public Class BTST_STBTSignal
                 Return GetBidAskRatioSignal(stockName, checkDate)
             Case 1
                 Return GetStrongCandleCloseSignal(stockName, checkDate)
+            Case 2
+                Return GetDeliveryPercentageSignal(stockName, checkDate)
+            Case 3
+                Return GetOpenHighLowSignal(stockName, checkDate)
             Case Else
                 Throw New NotImplementedException
         End Select
@@ -181,6 +185,52 @@ Public Class BTST_STBTSignal
                         If currentDayCandle.PreviousCandlePayload.Close <= currentDayCandle.PreviousCandlePayload.High - currentDayCandle.PreviousCandlePayload.CandleRange * 80 / 100 Then
                             ret = -1
                         End If
+                    End If
+                End If
+            End If
+        End If
+        Return ret
+    End Function
+
+    Private Function GetDeliveryPercentageSignal(stockName As String, checkDate As Date) As Integer
+        Dim ret As Integer = 0
+        If _stockEODPayload IsNot Nothing AndAlso _stockEODPayload.ContainsKey(stockName) Then
+            If _stockEODPayload(stockName) IsNot Nothing AndAlso _stockEODPayload(stockName).ContainsKey(checkDate.Date) Then
+                Dim currentDayCandle As Payload = _stockEODPayload(stockName)(checkDate.Date)
+                If currentDayCandle IsNot Nothing AndAlso currentDayCandle.PreviousCandlePayload IsNot Nothing Then
+                    Dim query As String = String.Format("SELECT `SnapshotDate`,`DeliveryPercentage` FROM `eod_positional_data` WHERE `TradingSymbol`='{0}' AND `SnapshotDate`<='{1}' ORDER BY `SnapshotDate` DESC LIMIT 5", stockName, currentDayCandle.PreviousCandlePayload.PayloadDate.ToString("yyyy-MM-dd"))
+                    Dim dt As DataTable = _cmn.RunSelect(query)
+                    If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+                        Dim deliveryPercentage As Dictionary(Of Date, Decimal) = Nothing
+                        For Each runningRow As DataRow In dt.Rows
+                            If deliveryPercentage Is Nothing Then deliveryPercentage = New Dictionary(Of Date, Decimal)
+                            deliveryPercentage.Add(runningRow("SnapshotDate"), runningRow("DeliveryPercentage"))
+                        Next
+                        If deliveryPercentage IsNot Nothing AndAlso deliveryPercentage.Count = 5 AndAlso
+                            deliveryPercentage.ContainsKey(currentDayCandle.PreviousCandlePayload.PayloadDate) Then
+                            Dim avg As Decimal = deliveryPercentage.Values.Average()
+                            If deliveryPercentage(currentDayCandle.PreviousCandlePayload.PayloadDate) >= 50 AndAlso
+                                deliveryPercentage(currentDayCandle.PreviousCandlePayload.PayloadDate) >= avg Then
+                                ret = 1
+                            End If
+                        End If
+                    End If
+                End If
+            End If
+        End If
+        Return ret
+    End Function
+
+    Private Function GetOpenHighLowSignal(stockName As String, checkDate As Date) As Integer
+        Dim ret As Integer = 0
+        If _stockEODPayload IsNot Nothing AndAlso _stockEODPayload.ContainsKey(stockName) Then
+            If _stockEODPayload(stockName) IsNot Nothing AndAlso _stockEODPayload(stockName).ContainsKey(checkDate.Date) Then
+                Dim currentDayCandle As Payload = _stockEODPayload(stockName)(checkDate.Date)
+                If currentDayCandle IsNot Nothing AndAlso currentDayCandle.PreviousCandlePayload IsNot Nothing Then
+                    If currentDayCandle.PreviousCandlePayload.Open = currentDayCandle.PreviousCandlePayload.High Then
+                        ret = -1
+                    ElseIf currentDayCandle.PreviousCandlePayload.Open = currentDayCandle.PreviousCandlePayload.Low Then
+                        ret = 1
                     End If
                 End If
             End If

@@ -535,6 +535,21 @@ Public Class Common
         End If
         Return ret
     End Function
+    Public Function RunSelect(ByVal query As String) As DataTable
+        Dim ret As DataTable = Nothing
+        If query IsNot Nothing Then
+            Dim conn As MySqlConnection = OpenDBConnection()
+            _cts.Token.ThrowIfCancellationRequested()
+            Dim cm As MySqlCommand = Nothing
+            cm = New MySqlCommand(query, conn)
+            _cts.Token.ThrowIfCancellationRequested()
+            Dim adapter As New MySqlDataAdapter(cm)
+            adapter.SelectCommand.CommandTimeout = 300
+            ret = New DataTable()
+            adapter.Fill(ret)
+        End If
+        Return ret
+    End Function
     Public Function GetRawPayload(ByVal tableName As DataBaseTable, ByVal rawInstrumentName As String, ByVal startDate As Date, ByVal endDate As Date) As Dictionary(Of Date, Payload)
         Dim ret As Dictionary(Of Date, Payload) = Nothing
         Dim dt As DataTable = Nothing

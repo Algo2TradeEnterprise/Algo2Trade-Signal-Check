@@ -455,6 +455,8 @@ Public Class frmMain
                 Case 76
                     rule = New PivotLineSTBTSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case 77
+                    My.Settings.BTSTRuleNo = GetComboBoxIndex_ThreadSafe(cmbBTST_STBTRule)
+                    My.Settings.Save()
                     rule = New BTST_STBTSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetComboBoxIndex_ThreadSafe(cmbBTST_STBTRule))
                 Case Else
                     Throw New NotImplementedException
@@ -720,7 +722,7 @@ Public Class frmMain
                 lblDescription.Text = String.Format("Description ...")
             Case 77
                 LoadSettings(pnlBTST_STBTSignal)
-                cmbBTST_STBTRule.SelectedIndex = 1
+                cmbBTST_STBTRule.SelectedIndex = My.Settings.BTSTRuleNo
                 lblDescription.Text = String.Format("Description ...")
             Case Else
                 Throw New NotImplementedException
