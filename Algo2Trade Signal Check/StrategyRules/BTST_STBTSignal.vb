@@ -265,40 +265,44 @@ Public Class BTST_STBTSignal
 
     Private Function GetTopGainerLooserSignal(stockName As String, checkDate As Date) As Integer
         Dim ret As Integer = 0
-        If _stockEODPayload IsNot Nothing AndAlso _stockEODPayload.ContainsKey(stockName) Then
-            Dim changePer As Dictionary(Of String, Decimal) = Nothing
-            For Each runningStock In _stockEODPayload.Keys
-                If _stockEODPayload(runningStock).ContainsKey(checkDate.Date) Then
-                    If _stockEODPayload(runningStock)(checkDate.Date) IsNot Nothing AndAlso
-                        _stockEODPayload(runningStock)(checkDate.Date).PreviousCandlePayload IsNot Nothing Then
-                        If changePer Is Nothing Then changePer = New Dictionary(Of String, Decimal)
-                        changePer.Add(runningStock, ((_stockEODPayload(runningStock)(checkDate.Date).Close / _stockEODPayload(runningStock)(checkDate.Date).PreviousCandlePayload.Close) - 1) * 100)
+        If _stockEODPayload IsNot Nothing AndAlso _stockEODPayload.ContainsKey(stockName) AndAlso
+            _stockEODPayload(stockName).ContainsKey(checkDate.Date) Then
+            Dim currentDayCandle As Payload = _stockEODPayload(stockName)(checkDate.Date)
+            If currentDayCandle IsNot Nothing AndAlso currentDayCandle.PreviousCandlePayload IsNot Nothing Then
+                Dim changePer As Dictionary(Of String, Decimal) = Nothing
+                For Each runningStock In _stockEODPayload.Keys
+                    If _stockEODPayload(runningStock).ContainsKey(currentDayCandle.PreviousCandlePayload.PayloadDate) Then
+                        If _stockEODPayload(runningStock)(currentDayCandle.PreviousCandlePayload.PayloadDate) IsNot Nothing AndAlso
+                            _stockEODPayload(runningStock)(currentDayCandle.PreviousCandlePayload.PayloadDate).PreviousCandlePayload IsNot Nothing Then
+                            If changePer Is Nothing Then changePer = New Dictionary(Of String, Decimal)
+                            changePer.Add(runningStock, ((_stockEODPayload(runningStock)(currentDayCandle.PreviousCandlePayload.PayloadDate).Close / _stockEODPayload(runningStock)(currentDayCandle.PreviousCandlePayload.PayloadDate).PreviousCandlePayload.Close) - 1) * 100)
+                        End If
                     End If
+                Next
+                If changePer IsNot Nothing AndAlso changePer.Count > 0 Then
+                    Dim ctr As Integer = 0
+                    For Each runningStock In changePer.OrderByDescending(Function(x)
+                                                                             Return x.Value
+                                                                         End Function)
+                        ctr += 1
+                        If runningStock.Key.ToUpper = stockName.ToUpper Then
+                            ret = -1
+                            Exit For
+                        End If
+                        If ctr >= 5 Then Exit For
+                    Next
+                    ctr = 0
+                    For Each runningStock In changePer.OrderBy(Function(x)
+                                                                   Return x.Value
+                                                               End Function)
+                        ctr += 1
+                        If runningStock.Key.ToUpper = stockName.ToUpper Then
+                            ret = 1
+                            Exit For
+                        End If
+                        If ctr >= 5 Then Exit For
+                    Next
                 End If
-            Next
-            If changePer IsNot Nothing AndAlso changePer.Count > 0 Then
-                Dim ctr As Integer = 0
-                For Each runningStock In changePer.OrderByDescending(Function(x)
-                                                                         Return x.Value
-                                                                     End Function)
-                    ctr += 1
-                    If runningStock.Key.ToUpper = stockName.ToUpper Then
-                        ret = -1
-                        Exit For
-                    End If
-                    If ctr >= 5 Then Exit For
-                Next
-                ctr = 0
-                For Each runningStock In changePer.OrderBy(Function(x)
-                                                               Return x.Value
-                                                           End Function)
-                    ctr += 1
-                    If runningStock.Key.ToUpper = stockName.ToUpper Then
-                        ret = 1
-                        Exit For
-                    End If
-                    If ctr >= 5 Then Exit For
-                Next
             End If
         End If
         Return ret
