@@ -158,6 +158,10 @@ Public Class BTST_STBTSignal
                 Return GetDeliveryPercentageSignal(stockName, checkDate)
             Case 3
                 Return GetOpenHighLowSignal(stockName, checkDate)
+            Case 4
+                Return GetStrongHKSignal(stockName, checkDate)
+            Case 5
+                Return GetTopGainerLooserSignal(stockName, checkDate)
             Case Else
                 Throw New NotImplementedException
         End Select
@@ -233,6 +237,68 @@ Public Class BTST_STBTSignal
                         ret = 1
                     End If
                 End If
+            End If
+        End If
+        Return ret
+    End Function
+
+    Private Function GetStrongHKSignal(stockName As String, checkDate As Date) As Integer
+        Dim ret As Integer = 0
+        If _stockXMinPayload IsNot Nothing AndAlso _stockXMinPayload.ContainsKey(stockName) Then
+            Dim hkPayload As Dictionary(Of Date, Payload) = Nothing
+            Indicator.HeikenAshi.ConvertToHeikenAshi(_stockXMinPayload(stockName), hkPayload)
+            If hkPayload IsNot Nothing AndAlso hkPayload.Count > 0 Then
+                Dim currentDayXMinFirstCandle As Payload = hkPayload.Where(Function(x)
+                                                                               Return x.Key.Date = checkDate.Date
+                                                                           End Function).FirstOrDefault.Value
+                If currentDayXMinFirstCandle IsNot Nothing AndAlso currentDayXMinFirstCandle.PreviousCandlePayload IsNot Nothing Then
+                    If currentDayXMinFirstCandle.PreviousCandlePayload.CandleStrengthHeikenAshi = Payload.StrongCandle.Bullish Then
+                        ret = -1
+                    ElseIf currentDayXMinFirstCandle.PreviousCandlePayload.CandleStrengthHeikenAshi = Payload.StrongCandle.Bearish Then
+                        ret = 1
+                    End If
+                End If
+            End If
+        End If
+        Return ret
+    End Function
+
+    Private Function GetTopGainerLooserSignal(stockName As String, checkDate As Date) As Integer
+        Dim ret As Integer = 0
+        If _stockEODPayload IsNot Nothing AndAlso _stockEODPayload.ContainsKey(stockName) Then
+            Dim changePer As Dictionary(Of String, Decimal) = Nothing
+            For Each runningStock In _stockEODPayload.Keys
+                If _stockEODPayload(runningStock).ContainsKey(checkDate.Date) Then
+                    If _stockEODPayload(runningStock)(checkDate.Date) IsNot Nothing AndAlso
+                        _stockEODPayload(runningStock)(checkDate.Date).PreviousCandlePayload IsNot Nothing Then
+                        If changePer Is Nothing Then changePer = New Dictionary(Of String, Decimal)
+                        changePer.Add(runningStock, ((_stockEODPayload(runningStock)(checkDate.Date).Close / _stockEODPayload(runningStock)(checkDate.Date).PreviousCandlePayload.Close) - 1) * 100)
+                    End If
+                End If
+            Next
+            If changePer IsNot Nothing AndAlso changePer.Count > 0 Then
+                Dim ctr As Integer = 0
+                For Each runningStock In changePer.OrderByDescending(Function(x)
+                                                                         Return x.Value
+                                                                     End Function)
+                    ctr += 1
+                    If runningStock.Key.ToUpper = stockName.ToUpper Then
+                        ret = -1
+                        Exit For
+                    End If
+                    If ctr >= 5 Then Exit For
+                Next
+                ctr = 0
+                For Each runningStock In changePer.OrderBy(Function(x)
+                                                               Return x.Value
+                                                           End Function)
+                    ctr += 1
+                    If runningStock.Key.ToUpper = stockName.ToUpper Then
+                        ret = 1
+                        Exit For
+                    End If
+                    If ctr >= 5 Then Exit For
+                Next
             End If
         End If
         Return ret
