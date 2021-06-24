@@ -110,7 +110,8 @@ Public Class BTST_STBTSignal
                                                                                        Return x.Key.Date = chkDate.Date
                                                                                    End Function).FirstOrDefault.Value
 
-                        If currentDayMinFirstCandle IsNot Nothing AndAlso currentDayXMinFirstCandle IsNot Nothing AndAlso currentDayXMinLastCandle IsNot Nothing Then
+                        If currentDayMinFirstCandle IsNot Nothing AndAlso currentDayXMinFirstCandle IsNot Nothing AndAlso
+                            currentDayXMinFirstCandle.PreviousCandlePayload IsNot Nothing AndAlso currentDayXMinLastCandle IsNot Nothing Then
                             Dim entryPrice As Decimal = currentDayXMinFirstCandle.PreviousCandlePayload.Close
                             Dim signal As Integer = GetSignal(runningStock, chkDate)
                             If signal = 1 Then
