@@ -253,9 +253,9 @@ Public Class BTST_STBTSignal
                                                                            End Function).FirstOrDefault.Value
                 If currentDayXMinFirstCandle IsNot Nothing AndAlso currentDayXMinFirstCandle.PreviousCandlePayload IsNot Nothing Then
                     If currentDayXMinFirstCandle.PreviousCandlePayload.CandleStrengthHeikenAshi = Payload.StrongCandle.Bullish Then
-                        ret = -1
-                    ElseIf currentDayXMinFirstCandle.PreviousCandlePayload.CandleStrengthHeikenAshi = Payload.StrongCandle.Bearish Then
                         ret = 1
+                    ElseIf currentDayXMinFirstCandle.PreviousCandlePayload.CandleStrengthHeikenAshi = Payload.StrongCandle.Bearish Then
+                        ret = -1
                     End If
                 End If
             End If
