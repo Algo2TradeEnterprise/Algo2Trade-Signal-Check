@@ -29,6 +29,7 @@ Public Class BTST_STBTSignal
         ret.Columns.Add("X Min Low %")
         ret.Columns.Add("X Min High %")
         ret.Columns.Add("X Min Close %")
+        ret.Columns.Add("EOD Close %")
 
         Dim stockData As StockSelection = New StockSelection(_canceller, _category, _cmn, _fileName)
         AddHandler stockData.Heartbeat, AddressOf OnHeartbeat
@@ -101,11 +102,15 @@ Public Class BTST_STBTSignal
                                                                                          Return x.Key.Date = chkDate.Date
                                                                                      End Function).FirstOrDefault.Value
 
+                        Dim currentDayXMinLastCandle As Payload = xMinPayload.Where(Function(x)
+                                                                                        Return x.Key.Date = chkDate.Date
+                                                                                    End Function).LastOrDefault.Value
+
                         Dim currentDayMinFirstCandle As Payload = minPayload.Where(Function(x)
                                                                                        Return x.Key.Date = chkDate.Date
                                                                                    End Function).FirstOrDefault.Value
 
-                        If currentDayMinFirstCandle IsNot Nothing AndAlso currentDayXMinFirstCandle IsNot Nothing Then
+                        If currentDayMinFirstCandle IsNot Nothing AndAlso currentDayXMinFirstCandle IsNot Nothing AndAlso currentDayXMinLastCandle IsNot Nothing Then
                             Dim entryPrice As Decimal = currentDayXMinFirstCandle.PreviousCandlePayload.Close
                             Dim signal As Integer = GetSignal(runningStock, chkDate)
                             If signal = 1 Then
@@ -121,6 +126,7 @@ Public Class BTST_STBTSignal
                                 row("X Min Low %") = Math.Round(((currentDayXMinFirstCandle.Low / entryPrice) - 1) * 100, 4)
                                 row("X Min High %") = Math.Round(((currentDayXMinFirstCandle.High / entryPrice) - 1) * 100, 4)
                                 row("X Min Close %") = Math.Round(((currentDayXMinFirstCandle.Close / entryPrice) - 1) * 100, 4)
+                                row("EOD Close %") = Math.Round(((currentDayXMinLastCandle.Close / entryPrice) - 1) * 100, 4)
 
                                 ret.Rows.Add(row)
                             ElseIf signal = -1 Then
@@ -136,6 +142,7 @@ Public Class BTST_STBTSignal
                                 row("X Min Low %") = Math.Round((1 - (currentDayXMinFirstCandle.Low / entryPrice)) * 100, 4)
                                 row("X Min High %") = Math.Round((1 - (currentDayXMinFirstCandle.High / entryPrice)) * 100, 4)
                                 row("X Min Close %") = Math.Round((1 - (currentDayXMinFirstCandle.Close / entryPrice)) * 100, 4)
+                                row("EOD Close %") = Math.Round((1 - (currentDayXMinLastCandle.Close / entryPrice)) * 100, 4)
 
                                 ret.Rows.Add(row)
                             End If
