@@ -286,7 +286,7 @@ Public Class BTST_STBTSignal
                                                                          End Function)
                         ctr += 1
                         If runningStock.Key.ToUpper = stockName.ToUpper Then
-                            ret = -1
+                            ret = 1
                             Exit For
                         End If
                         If ctr >= 5 Then Exit For
@@ -297,7 +297,7 @@ Public Class BTST_STBTSignal
                                                                End Function)
                         ctr += 1
                         If runningStock.Key.ToUpper = stockName.ToUpper Then
-                            ret = 1
+                            ret = -1
                             Exit For
                         End If
                         If ctr >= 5 Then Exit For
