@@ -170,6 +170,8 @@ Public Class BTST_STBTSignal
                 Return GetStrongHKSignal(stockName, checkDate)
             Case 5
                 Return GetTopGainerLooserSignal(stockName, checkDate)
+            Case 6
+                Return GetNaughtyBoySignal(stockName, checkDate)
             Case 7
                 Return GetLastBarClosesOutsideSupportResistanceSignal(stockName, checkDate)
             Case 8
@@ -316,6 +318,30 @@ Public Class BTST_STBTSignal
                         End If
                         If ctr >= 5 Then Exit For
                     Next
+                End If
+            End If
+        End If
+        Return ret
+    End Function
+
+    Private Function GetNaughtyBoySignal(stockName As String, checkDate As Date) As Integer
+        Dim ret As Integer = 0
+        If _stockEODPayload IsNot Nothing AndAlso _stockEODPayload.ContainsKey(stockName) Then
+            If _stockEODPayload(stockName) IsNot Nothing AndAlso _stockEODPayload(stockName).ContainsKey(checkDate.Date) Then
+                Dim currentDayCandle As Payload = _stockEODPayload(stockName)(checkDate.Date)
+                If currentDayCandle IsNot Nothing AndAlso currentDayCandle.PreviousCandlePayload IsNot Nothing Then
+                    Dim query As String = String.Format("SELECT `Close`-`Open` FROM `eod_positional_data` WHERE `TradingSymbol`='{0}' AND `SnapshotDate`='{1}'", "NIFTY 50", currentDayCandle.PreviousCandlePayload.PayloadDate.ToString("yyyy-MM-dd"))
+                    Dim dt As DataTable = _cmn.RunSelect(query)
+                    If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+                        Dim niftyChange As Decimal = dt.Rows(0).Item(0)
+                        Dim stockChange As Decimal = currentDayCandle.PreviousCandlePayload.Close - currentDayCandle.PreviousCandlePayload.Open
+
+                        If niftyChange > 0 AndAlso stockChange < 0 Then
+                            ret = 1
+                        ElseIf niftyChange < 0 AndAlso stockChange > 0 Then
+                            ret = -1
+                        End If
+                    End If
                 End If
             End If
         End If
