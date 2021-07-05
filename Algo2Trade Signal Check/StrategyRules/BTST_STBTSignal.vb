@@ -170,6 +170,12 @@ Public Class BTST_STBTSignal
                 Return GetStrongHKSignal(stockName, checkDate)
             Case 5
                 Return GetTopGainerLooserSignal(stockName, checkDate)
+            Case 7
+                Return GetLastBarClosesOutsideSupportResistanceSignal(stockName, checkDate)
+            Case 8
+                Return GetLastBarOutsideBarSignal(stockName, checkDate)
+            Case 9
+                Return GetLastBarClosesOutsideSwingHighLowSignal(stockName, checkDate)
             Case Else
                 Throw New NotImplementedException
         End Select
@@ -310,6 +316,73 @@ Public Class BTST_STBTSignal
                         End If
                         If ctr >= 5 Then Exit For
                     Next
+                End If
+            End If
+        End If
+        Return ret
+    End Function
+
+    Private Function GetLastBarClosesOutsideSupportResistanceSignal(stockName As String, checkDate As Date) As Integer
+        Dim ret As Integer = 0
+        If _stockXMinPayload IsNot Nothing AndAlso _stockXMinPayload.ContainsKey(stockName) Then
+            Dim pivotPayload As Dictionary(Of Date, PivotPoints) = Nothing
+            Indicator.Pivots.CalculatePivots(_stockXMinPayload(stockName), pivotPayload)
+
+            Dim currentDayXMinFirstCandle As Payload = _stockXMinPayload(stockName).Where(Function(x)
+                                                                                              Return x.Key.Date = checkDate.Date
+                                                                                          End Function).FirstOrDefault.Value
+            If currentDayXMinFirstCandle IsNot Nothing AndAlso currentDayXMinFirstCandle.PreviousCandlePayload IsNot Nothing AndAlso
+                currentDayXMinFirstCandle.PreviousCandlePayload.PreviousCandlePayload IsNot Nothing AndAlso
+                pivotPayload.ContainsKey(currentDayXMinFirstCandle.PreviousCandlePayload.PreviousCandlePayload.PayloadDate) Then
+                Dim pivot As PivotPoints = pivotPayload(currentDayXMinFirstCandle.PreviousCandlePayload.PreviousCandlePayload.PayloadDate)
+                If currentDayXMinFirstCandle.PreviousCandlePayload.Close >= pivot.Resistance1 Then
+                    ret = -1
+                ElseIf currentDayXMinFirstCandle.PreviousCandlePayload.Close <= pivot.Support1 Then
+                    ret = 1
+                End If
+            End If
+        End If
+        Return ret
+    End Function
+
+    Private Function GetLastBarOutsideBarSignal(stockName As String, checkDate As Date) As Integer
+        Dim ret As Integer = 0
+        If _stockXMinPayload IsNot Nothing AndAlso _stockXMinPayload.ContainsKey(stockName) Then
+            Dim currentDayXMinFirstCandle As Payload = _stockXMinPayload(stockName).Where(Function(x)
+                                                                                              Return x.Key.Date = checkDate.Date
+                                                                                          End Function).FirstOrDefault.Value
+            If currentDayXMinFirstCandle IsNot Nothing AndAlso currentDayXMinFirstCandle.PreviousCandlePayload IsNot Nothing AndAlso
+                currentDayXMinFirstCandle.PreviousCandlePayload.PreviousCandlePayload IsNot Nothing Then
+                If currentDayXMinFirstCandle.PreviousCandlePayload.High >= currentDayXMinFirstCandle.PreviousCandlePayload.PreviousCandlePayload.High AndAlso
+                    currentDayXMinFirstCandle.PreviousCandlePayload.Low <= currentDayXMinFirstCandle.PreviousCandlePayload.PreviousCandlePayload.Low Then
+                    If currentDayXMinFirstCandle.PreviousCandlePayload.CandleColor = Color.Green Then
+                        ret = 1
+                    ElseIf currentDayXMinFirstCandle.PreviousCandlePayload.CandleColor = Color.Red Then
+                        ret = -1
+                    End If
+                End If
+            End If
+        End If
+        Return ret
+    End Function
+
+    Private Function GetLastBarClosesOutsideSwingHighLowSignal(stockName As String, checkDate As Date) As Integer
+        Dim ret As Integer = 0
+        If _stockXMinPayload IsNot Nothing AndAlso _stockXMinPayload.ContainsKey(stockName) Then
+            Dim swingPayload As Dictionary(Of Date, Indicator.Swing) = Nothing
+            Indicator.SwingHighLow.CalculateSwingHighLow(_stockXMinPayload(stockName), True, swingPayload)
+
+            Dim currentDayXMinFirstCandle As Payload = _stockXMinPayload(stockName).Where(Function(x)
+                                                                                              Return x.Key.Date = checkDate.Date
+                                                                                          End Function).FirstOrDefault.Value
+            If currentDayXMinFirstCandle IsNot Nothing AndAlso currentDayXMinFirstCandle.PreviousCandlePayload IsNot Nothing AndAlso
+                currentDayXMinFirstCandle.PreviousCandlePayload.PreviousCandlePayload IsNot Nothing AndAlso
+                swingPayload.ContainsKey(currentDayXMinFirstCandle.PreviousCandlePayload.PreviousCandlePayload.PayloadDate) Then
+                Dim swing As Indicator.Swing = swingPayload(currentDayXMinFirstCandle.PreviousCandlePayload.PreviousCandlePayload.PayloadDate)
+                If currentDayXMinFirstCandle.PreviousCandlePayload.Close >= swing.SwingHigh Then
+                    ret = 1
+                ElseIf currentDayXMinFirstCandle.PreviousCandlePayload.Close <= swing.SwingLow Then
+                    ret = -1
                 End If
             End If
         End If

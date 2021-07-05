@@ -74,8 +74,8 @@ Partial Class frmMain
         Me.rdbIchimokuSignalLaggingSpanConversionBaseLine = New System.Windows.Forms.RadioButton()
         Me.rdbIchimokuSignalLaggingSpan = New System.Windows.Forms.RadioButton()
         Me.pnlBTST_STBTSignal = New System.Windows.Forms.Panel()
-        Me.Label9 = New System.Windows.Forms.Label()
         Me.cmbBTST_STBTRule = New System.Windows.Forms.ComboBox()
+        Me.Label9 = New System.Windows.Forms.Label()
         CType(Me.nmrcTimeFrame, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         CType(Me.dgvSignal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -576,6 +576,16 @@ Partial Class frmMain
         Me.pnlBTST_STBTSignal.Size = New System.Drawing.Size(484, 66)
         Me.pnlBTST_STBTSignal.TabIndex = 33
         '
+        'cmbBTST_STBTRule
+        '
+        Me.cmbBTST_STBTRule.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cmbBTST_STBTRule.FormattingEnabled = True
+        Me.cmbBTST_STBTRule.Items.AddRange(New Object() {"1. Bid Ask Ratio", "2. Strong Close After Opposite Color Candle", "3. Delivery Percentage Above 5MA", "4. Open=Low or Open=High", "5. Strong HK", "6. Top Gainer Top Looser", "7. Naughty Boy", "8. Close beyond Resistance or Support", "9. Last Bar is Outside Bar", "10. Last Bar closes outside previous Swing High/Low"})
+        Me.cmbBTST_STBTRule.Location = New System.Drawing.Point(63, 19)
+        Me.cmbBTST_STBTRule.Name = "cmbBTST_STBTRule"
+        Me.cmbBTST_STBTRule.Size = New System.Drawing.Size(395, 24)
+        Me.cmbBTST_STBTRule.TabIndex = 1
+        '
         'Label9
         '
         Me.Label9.AutoSize = True
@@ -584,16 +594,6 @@ Partial Class frmMain
         Me.Label9.Size = New System.Drawing.Size(41, 17)
         Me.Label9.TabIndex = 0
         Me.Label9.Text = "Rule:"
-        '
-        'cmbBTST_STBTRule
-        '
-        Me.cmbBTST_STBTRule.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cmbBTST_STBTRule.FormattingEnabled = True
-        Me.cmbBTST_STBTRule.Items.AddRange(New Object() {"1. Bid Ask Ratio", "2. Strong Close After Opposite Color Candle", "3. Delivery Percentage Above 5MA", "4. Open=Low or Open=High", "5. Strong HK", "6. Top Gainer Top Looser", "7. Naughty Boy", "8. Close beyond Resistance or Support"})
-        Me.cmbBTST_STBTRule.Location = New System.Drawing.Point(63, 19)
-        Me.cmbBTST_STBTRule.Name = "cmbBTST_STBTRule"
-        Me.cmbBTST_STBTRule.Size = New System.Drawing.Size(395, 24)
-        Me.cmbBTST_STBTRule.TabIndex = 1
         '
         'frmMain
         '
