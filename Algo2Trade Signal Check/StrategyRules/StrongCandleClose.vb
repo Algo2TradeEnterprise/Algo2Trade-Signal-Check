@@ -23,32 +23,36 @@ Public Class StrongCandleClose
         AddHandler stockData.WaitingFor, AddressOf OnWaitingFor
         AddHandler stockData.DocumentRetryStatus, AddressOf OnDocumentRetryStatus
         AddHandler stockData.DocumentDownloadComplete, AddressOf OnDocumentDownloadComplete
-        Dim tradingDate As Date = startDate
-        While tradingDate <= endDate
-            _canceller.Token.ThrowIfCancellationRequested()
-            Dim stockList As List(Of String) = Nothing
-            If _instrumentName Is Nothing OrElse _instrumentName = "" Then
-                stockList = Await stockData.GetStockList(tradingDate).ConfigureAwait(False)
-            Else
-                stockList = New List(Of String)
-                stockList.Add(_instrumentName)
-            End If
-            _canceller.Token.ThrowIfCancellationRequested()
-            If stockList IsNot Nothing AndAlso stockList.Count > 0 Then
-                Dim ctr As Integer = 0
-                For Each runningStock In stockList
+
+        Dim stockList As List(Of String) = Nothing
+        If _instrumentName Is Nothing OrElse _instrumentName = "" Then
+            stockList = Await stockData.GetStockList(startDate).ConfigureAwait(False)
+        Else
+            stockList = New List(Of String)
+            stockList.Add(_instrumentName)
+        End If
+        _canceller.Token.ThrowIfCancellationRequested()
+        If stockList IsNot Nothing AndAlso stockList.Count > 0 Then
+            Dim ctr As Integer = 0
+            For Each runningStock In stockList
+                _canceller.Token.ThrowIfCancellationRequested()
+                ctr += 1
+                OnHeartbeat(String.Format("Getting stock data for {0} #{1}/{2}", runningStock, ctr, stockList.Count))
+
+                Dim eodPayload As Dictionary(Of Date, Payload) = _cmn.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.EOD_POSITIONAL, runningStock, startDate.AddDays(-180), endDate)
+                _canceller.Token.ThrowIfCancellationRequested()
+                Dim atrPayload As Dictionary(Of Date, Decimal) = Nothing
+                Indicator.ATR.CalculateATR(14, eodPayload, atrPayload, True)
+
+                Dim tradingDate As Date = startDate
+                While tradingDate <= endDate
                     _canceller.Token.ThrowIfCancellationRequested()
-                    ctr += 1
                     OnHeartbeat(String.Format("Checking signal for {0} #{1}/{2} on {3}", runningStock, ctr, stockList.Count, tradingDate.ToString("dd-MMM-yyyy")))
-                    Dim eodPayload As Dictionary(Of Date, Payload) = _cmn.GetRawPayloadForSpecificTradingSymbol(Common.DataBaseTable.EOD_POSITIONAL, runningStock, tradingDate.AddDays(-180), tradingDate)
-                    _canceller.Token.ThrowIfCancellationRequested()
                     If eodPayload IsNot Nothing AndAlso eodPayload.ContainsKey(tradingDate.Date) AndAlso eodPayload.Count > 100 Then
                         Dim currentDayCandle As Payload = eodPayload(tradingDate.Date)
                         If currentDayCandle IsNot Nothing AndAlso currentDayCandle.PreviousCandlePayload IsNot Nothing AndAlso
                             currentDayCandle.Close >= 100 AndAlso currentDayCandle.Close <= 6000 Then
-                            Dim atrPayload As Dictionary(Of Date, Decimal) = Nothing
-                            Indicator.ATR.CalculateATR(14, eodPayload, atrPayload)
-                            Dim atrPercentage As Decimal = (atrPayload.LastOrDefault.Value / currentDayCandle.Close) * 100
+                            Dim atrPercentage As Decimal = (atrPayload(tradingDate.Date) / currentDayCandle.Close) * 100
                             If atrPercentage >= 3 Then
                                 If currentDayCandle.CandleColor = Color.Green AndAlso currentDayCandle.PreviousCandlePayload.CandleColor = Color.Red Then
                                     If currentDayCandle.Close >= currentDayCandle.Low + currentDayCandle.CandleRange * 80 / 100 Then
@@ -59,7 +63,7 @@ Public Class StrongCandleClose
                                         row("Direction") = "Buy"
                                         row("Entry") = currentDayCandle.Close
                                         row("X-Min Close") = GetXMinClose(tradingDate, runningStock)
-                                        row("Avg Volume") = Math.Round(GetLast5DayAverageVolume(eodPayload), 0)
+                                        row("Avg Volume") = Math.Round(GetLast5DayAverageVolume(currentDayCandle), 0)
 
                                         ret.Rows.Add(row)
                                     End If
@@ -72,7 +76,7 @@ Public Class StrongCandleClose
                                         row("Direction") = "Sell"
                                         row("Entry") = currentDayCandle.Close
                                         row("X-Min Close") = GetXMinClose(tradingDate, runningStock)
-                                        row("Avg Volume") = Math.Round(GetLast5DayAverageVolume(eodPayload), 0)
+                                        row("Avg Volume") = Math.Round(GetLast5DayAverageVolume(currentDayCandle), 0)
 
                                         ret.Rows.Add(row)
                                     End If
@@ -80,19 +84,23 @@ Public Class StrongCandleClose
                             End If
                         End If
                     End If
-                Next
-            End If
-            tradingDate = tradingDate.AddDays(1)
-        End While
+                    tradingDate = tradingDate.AddDays(1)
+                End While
+            Next
+        End If
         Return ret
     End Function
 
-    Private Function GetLast5DayAverageVolume(eodPayload As Dictionary(Of Date, Payload)) As Double
+    Private Function GetLast5DayAverageVolume(currentDayCandle As Payload) As Double
         Dim ret As Double = Double.MinValue
-        If eodPayload IsNot Nothing AndAlso eodPayload.Count >= 5 Then
-            ret = eodPayload.Skip(eodPayload.Count - 5).Average(Function(x)
-                                                                    Return x.Value.Volume
-                                                                End Function)
+        If currentDayCandle IsNot Nothing Then
+            Dim sumVolume As Long = currentDayCandle.Volume
+            If currentDayCandle.PreviousCandlePayload IsNot Nothing Then sumVolume += currentDayCandle.PreviousCandlePayload.Volume
+            If currentDayCandle.PreviousCandlePayload.PreviousCandlePayload IsNot Nothing Then sumVolume += currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.Volume
+            If currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload IsNot Nothing Then sumVolume += currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.Volume
+            If currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload IsNot Nothing Then sumVolume += currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.Volume
+
+            ret = sumVolume / 5
         End If
         Return ret
     End Function
