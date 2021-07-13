@@ -45,13 +45,22 @@ Public Class StrongCandleClose
                 Indicator.ATR.CalculateATR(14, eodPayload, atrPayload, True)
 
                 Dim tradingDate As Date = startDate
+                Dim previous100CandleAvailable As Boolean = False
                 While tradingDate <= endDate
                     _canceller.Token.ThrowIfCancellationRequested()
                     OnHeartbeat(String.Format("Checking signal for {0} #{1}/{2} on {3}", runningStock, ctr, stockList.Count, tradingDate.ToString("dd-MMM-yyyy")))
                     If eodPayload IsNot Nothing AndAlso eodPayload.ContainsKey(tradingDate.Date) AndAlso eodPayload.Count > 100 Then
+                        If Not previous100CandleAvailable Then
+                            Dim previousNCandle = eodPayload.Where(Function(x)
+                                                                       Return x.Key.Date <= tradingDate.Date
+                                                                   End Function)
+                            If previousNCandle IsNot Nothing AndAlso previousNCandle.Count >= 100 Then
+                                previous100CandleAvailable = True
+                            End If
+                        End If
                         Dim currentDayCandle As Payload = eodPayload(tradingDate.Date)
                         If currentDayCandle IsNot Nothing AndAlso currentDayCandle.PreviousCandlePayload IsNot Nothing AndAlso
-                            currentDayCandle.Close >= 100 AndAlso currentDayCandle.Close <= 6000 Then
+                            currentDayCandle.Close >= 100 AndAlso currentDayCandle.Close <= 6000 AndAlso previous100CandleAvailable Then
                             Dim atrPercentage As Decimal = (atrPayload(tradingDate.Date) / currentDayCandle.Close) * 100
                             If atrPercentage >= 3 Then
                                 If currentDayCandle.CandleColor = Color.Green AndAlso currentDayCandle.PreviousCandlePayload.CandleColor = Color.Red Then
@@ -95,12 +104,25 @@ Public Class StrongCandleClose
         Dim ret As Double = Double.MinValue
         If currentDayCandle IsNot Nothing Then
             Dim sumVolume As Long = currentDayCandle.Volume
-            If currentDayCandle.PreviousCandlePayload IsNot Nothing Then sumVolume += currentDayCandle.PreviousCandlePayload.Volume
-            If currentDayCandle.PreviousCandlePayload.PreviousCandlePayload IsNot Nothing Then sumVolume += currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.Volume
-            If currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload IsNot Nothing Then sumVolume += currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.Volume
-            If currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload IsNot Nothing Then sumVolume += currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.Volume
+            Dim count As Integer = 0
+            If currentDayCandle.PreviousCandlePayload IsNot Nothing Then
+                sumVolume += currentDayCandle.PreviousCandlePayload.Volume
+                count += 1
+                If currentDayCandle.PreviousCandlePayload.PreviousCandlePayload IsNot Nothing Then
+                    sumVolume += currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.Volume
+                    count += 1
+                    If currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload IsNot Nothing Then
+                        sumVolume += currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.Volume
+                        count += 1
+                        If currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload IsNot Nothing Then
+                            sumVolume += currentDayCandle.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.PreviousCandlePayload.Volume
+                            count += 1
+                        End If
+                    End If
+                End If
+            End If
 
-            ret = sumVolume / 5
+            ret = sumVolume / count
         End If
         Return ret
     End Function
