@@ -458,6 +458,8 @@ Public Class frmMain
                     My.Settings.BTSTRuleNo = GetComboBoxIndex_ThreadSafe(cmbBTST_STBTRule)
                     My.Settings.Save()
                     rule = New BTST_STBTSignal(_canceller, category, timeFrame, useHA, instrumentName, filePath, GetComboBoxIndex_ThreadSafe(cmbBTST_STBTRule))
+                Case 78
+                    rule = New StrongCandleClose(_canceller, category, timeFrame, useHA, instrumentName, filePath)
                 Case Else
                     Throw New NotImplementedException
             End Select
@@ -723,6 +725,9 @@ Public Class frmMain
             Case 77
                 LoadSettings(pnlBTST_STBTSignal)
                 cmbBTST_STBTRule.SelectedIndex = My.Settings.BTSTRuleNo
+                lblDescription.Text = String.Format("Description ...")
+            Case 78
+                LoadSettings(Nothing)
                 lblDescription.Text = String.Format("Description ...")
             Case Else
                 Throw New NotImplementedException

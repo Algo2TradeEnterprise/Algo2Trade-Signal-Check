@@ -26,14 +26,12 @@ Partial Class frmMain
         Me.saveFile = New System.Windows.Forms.SaveFileDialog()
         Me.btnExport = New System.Windows.Forms.Button()
         Me.chkbHA = New System.Windows.Forms.CheckBox()
-        Me.btnCancel = New System.Windows.Forms.Button()
         Me.nmrcTimeFrame = New System.Windows.Forms.NumericUpDown()
         Me.lblTimeFrame = New System.Windows.Forms.Label()
         Me.dtpckrToDate = New System.Windows.Forms.DateTimePicker()
         Me.dtpckrFromDate = New System.Windows.Forms.DateTimePicker()
         Me.lblToDate = New System.Windows.Forms.Label()
         Me.lblFromDate = New System.Windows.Forms.Label()
-        Me.btnView = New System.Windows.Forms.Button()
         Me.txtInstrumentName = New System.Windows.Forms.TextBox()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.cmbCategory = New System.Windows.Forms.ComboBox()
@@ -45,6 +43,8 @@ Partial Class frmMain
         Me.btnBrowse = New System.Windows.Forms.Button()
         Me.txtFilePath = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.btnCancel = New System.Windows.Forms.Button()
+        Me.btnView = New System.Windows.Forms.Button()
         Me.dgvSignal = New System.Windows.Forms.DataGridView()
         Me.opnFile = New System.Windows.Forms.OpenFileDialog()
         Me.lblDescription = New System.Windows.Forms.Label()
@@ -116,17 +116,6 @@ Partial Class frmMain
         Me.chkbHA.Text = "HeikenAshi Candle"
         Me.chkbHA.UseVisualStyleBackColor = True
         '
-        'btnCancel
-        '
-        Me.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right
-        Me.btnCancel.Location = New System.Drawing.Point(1125, 44)
-        Me.btnCancel.Margin = New System.Windows.Forms.Padding(4)
-        Me.btnCancel.Name = "btnCancel"
-        Me.btnCancel.Size = New System.Drawing.Size(100, 28)
-        Me.btnCancel.TabIndex = 29
-        Me.btnCancel.Text = "Stop"
-        Me.btnCancel.UseVisualStyleBackColor = True
-        '
         'nmrcTimeFrame
         '
         Me.nmrcTimeFrame.Location = New System.Drawing.Point(883, 12)
@@ -182,17 +171,6 @@ Partial Class frmMain
         Me.lblFromDate.TabIndex = 23
         Me.lblFromDate.Text = "From Date:"
         '
-        'btnView
-        '
-        Me.btnView.Anchor = System.Windows.Forms.AnchorStyles.Right
-        Me.btnView.Location = New System.Drawing.Point(1125, 7)
-        Me.btnView.Margin = New System.Windows.Forms.Padding(4)
-        Me.btnView.Name = "btnView"
-        Me.btnView.Size = New System.Drawing.Size(100, 28)
-        Me.btnView.TabIndex = 22
-        Me.btnView.Text = "View"
-        Me.btnView.UseVisualStyleBackColor = True
-        '
         'txtInstrumentName
         '
         Me.txtInstrumentName.Location = New System.Drawing.Point(518, 52)
@@ -233,7 +211,7 @@ Partial Class frmMain
         'cmbRule
         '
         Me.cmbRule.FormattingEnabled = True
-        Me.cmbRule.Items.AddRange(New Object() {"Stall Pattern", "Piercing And Dark Cloud", "One Sided Volume", "Constriction At Breakout", "HK Trend Opposing By Volume", "HK Temporary Pause", "HK Reversal", "Get Raw Candle", "Daily Strong HK Opposite Color Volume", "Fractal Cut 2 MA", "Volume Index", "EOD Signal", "Pin Bar Formation", "Bollinger With ATR Bands", "Low Loss High Gain VWAP", "Double Volume EOD", "Fractal Breakout Short Trend", "Donchian Breakout Short Trend", "Pinocchio Bar Formation", "Market Open HA Breakout Screener", "Volume With Candle Range", "DayHighLow", "Low SL Candle", "Inside Bar High Low", "Reversal HHLL Breakout", "Double Inside Bar", "High Low Support Resistance", "Open=High/Open=Low", "Spot Future Arbritrage", "Swing Candle", "Supertrend SMA Open High/Low", "Double Top Double Bottom", "Wick Beyond Slab Level", "Candle Range With ATR", "Fractal Dip", "Range Identifier", "Indicator Tester", "Bollinger Squeeze", "Inside Bar Breakout", "Low SL Fractal", "Graph Angle", "Multi EMA Line", "Multi Timeframe Multi MA", "X-Min VWAP", "Price Volume Imbalance", "First Candle Difference", "Small Body Candles", "Reverse Candles", "Inside Wick Candles", "Highest OI Options", "Squeeze Zone", "Fibonacci Trendline", "Supertrend Confirmation", "Day High Low Swing Trendline", "Sectoral Trend Of Every Minute", "Previous Day HK Trend VWAP Signals", "Get Stock Trend", "Get Stock Trend Direction", "Data Tester", "Ichimoku Signal", "MACD Crossover Swing", "Previous Day High Low Break", "High Volume Opposite Color", "Hammer Candle Stick Pattern", "First Strong HK After Opposite Strong HK", "Value Investing Cash Future Data", "BTST X-Min", "Get Weekly Candle", "Fractal Breakout Towards MA", "Fractal Confirmation On HT HK", "Every X-Min Candle Breakout", "Fractal High Breakout Below Support", "Outside Fractal Towards Supertrend", "Strong HK Inside Fractal", "Pair High Low Break", "Pivot Line BTST Signal", "Pivot Line STBT Signal", "BTST/STBT Signal"})
+        Me.cmbRule.Items.AddRange(New Object() {"Stall Pattern", "Piercing And Dark Cloud", "One Sided Volume", "Constriction At Breakout", "HK Trend Opposing By Volume", "HK Temporary Pause", "HK Reversal", "Get Raw Candle", "Daily Strong HK Opposite Color Volume", "Fractal Cut 2 MA", "Volume Index", "EOD Signal", "Pin Bar Formation", "Bollinger With ATR Bands", "Low Loss High Gain VWAP", "Double Volume EOD", "Fractal Breakout Short Trend", "Donchian Breakout Short Trend", "Pinocchio Bar Formation", "Market Open HA Breakout Screener", "Volume With Candle Range", "DayHighLow", "Low SL Candle", "Inside Bar High Low", "Reversal HHLL Breakout", "Double Inside Bar", "High Low Support Resistance", "Open=High/Open=Low", "Spot Future Arbritrage", "Swing Candle", "Supertrend SMA Open High/Low", "Double Top Double Bottom", "Wick Beyond Slab Level", "Candle Range With ATR", "Fractal Dip", "Range Identifier", "Indicator Tester", "Bollinger Squeeze", "Inside Bar Breakout", "Low SL Fractal", "Graph Angle", "Multi EMA Line", "Multi Timeframe Multi MA", "X-Min VWAP", "Price Volume Imbalance", "First Candle Difference", "Small Body Candles", "Reverse Candles", "Inside Wick Candles", "Highest OI Options", "Squeeze Zone", "Fibonacci Trendline", "Supertrend Confirmation", "Day High Low Swing Trendline", "Sectoral Trend Of Every Minute", "Previous Day HK Trend VWAP Signals", "Get Stock Trend", "Get Stock Trend Direction", "Data Tester", "Ichimoku Signal", "MACD Crossover Swing", "Previous Day High Low Break", "High Volume Opposite Color", "Hammer Candle Stick Pattern", "First Strong HK After Opposite Strong HK", "Value Investing Cash Future Data", "BTST X-Min", "Get Weekly Candle", "Fractal Breakout Towards MA", "Fractal Confirmation On HT HK", "Every X-Min Candle Breakout", "Fractal High Breakout Below Support", "Outside Fractal Towards Supertrend", "Strong HK Inside Fractal", "Pair High Low Break", "Pivot Line BTST Signal", "Pivot Line STBT Signal", "BTST/STBT Signal", "Strong Candle Close Signal"})
         Me.cmbRule.Location = New System.Drawing.Point(108, 7)
         Me.cmbRule.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbRule.Name = "cmbRule"
@@ -313,6 +291,28 @@ Partial Class frmMain
         Me.Label1.Size = New System.Drawing.Size(67, 17)
         Me.Label1.TabIndex = 31
         Me.Label1.Text = "File Path:"
+        '
+        'btnCancel
+        '
+        Me.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.btnCancel.Location = New System.Drawing.Point(1125, 44)
+        Me.btnCancel.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnCancel.Name = "btnCancel"
+        Me.btnCancel.Size = New System.Drawing.Size(100, 28)
+        Me.btnCancel.TabIndex = 29
+        Me.btnCancel.Text = "Stop"
+        Me.btnCancel.UseVisualStyleBackColor = True
+        '
+        'btnView
+        '
+        Me.btnView.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.btnView.Location = New System.Drawing.Point(1125, 7)
+        Me.btnView.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnView.Name = "btnView"
+        Me.btnView.Size = New System.Drawing.Size(100, 28)
+        Me.btnView.TabIndex = 22
+        Me.btnView.Text = "View"
+        Me.btnView.UseVisualStyleBackColor = True
         '
         'dgvSignal
         '
@@ -644,14 +644,12 @@ Partial Class frmMain
     Friend WithEvents saveFile As SaveFileDialog
     Friend WithEvents btnExport As Button
     Friend WithEvents chkbHA As CheckBox
-    Friend WithEvents btnCancel As Button
     Friend WithEvents nmrcTimeFrame As NumericUpDown
     Friend WithEvents lblTimeFrame As Label
     Friend WithEvents dtpckrToDate As DateTimePicker
     Friend WithEvents dtpckrFromDate As DateTimePicker
     Friend WithEvents lblToDate As Label
     Friend WithEvents lblFromDate As Label
-    Friend WithEvents btnView As Button
     Friend WithEvents txtInstrumentName As TextBox
     Friend WithEvents Label4 As Label
     Friend WithEvents cmbCategory As ComboBox
@@ -694,4 +692,6 @@ Partial Class frmMain
     Friend WithEvents pnlBTST_STBTSignal As Panel
     Friend WithEvents cmbBTST_STBTRule As ComboBox
     Friend WithEvents Label9 As Label
+    Friend WithEvents btnCancel As Button
+    Friend WithEvents btnView As Button
 End Class
