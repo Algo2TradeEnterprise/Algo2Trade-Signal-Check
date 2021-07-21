@@ -16,9 +16,11 @@
                         If runningPayload.Value.Close <= highestLow Then
                             runningTrend = -1
                             highestLow = Decimal.MinValue
+                            lowestHigh = runningPayload.Value.High
                         ElseIf runningPayload.Value.Close >= lowestHigh Then
                             runningTrend = 1
                             lowestHigh = Decimal.MaxValue
+                            highestLow = runningPayload.Value.Low
                         Else
                             highestLow = Math.Max(highestLow, runningPayload.Value.Low)
                             lowestHigh = Math.Min(lowestHigh, runningPayload.Value.High)
@@ -27,6 +29,7 @@
                         If runningPayload.Value.Close <= highestLow Then
                             runningTrend = -1
                             highestLow = Decimal.MinValue
+                            lowestHigh = runningPayload.Value.High
                         Else
                             highestLow = Math.Max(highestLow, runningPayload.Value.Low)
                         End If
@@ -34,6 +37,7 @@
                         If runningPayload.Value.Close >= lowestHigh Then
                             runningTrend = 1
                             lowestHigh = Decimal.MaxValue
+                            highestLow = runningPayload.Value.Low
                         Else
                             lowestHigh = Math.Min(lowestHigh, runningPayload.Value.High)
                         End If
