@@ -119,6 +119,7 @@
     <Compile Include="Indicators\SwingHighLowTrendLine.vb" />
     <Compile Include="Indicators\SwingHighLowWithVWAP.vb" />
     <Compile Include="Indicators\TrendIntensityIndex.vb" />
+    <Compile Include="Indicators\TrendTransition.vb" />
     <Compile Include="Indicators\TrueRange.vb" />
     <Compile Include="Indicators\VWAP.vb" />
     <Compile Include="Indicators\WMA.vb" />
